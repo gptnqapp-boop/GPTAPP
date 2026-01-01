@@ -1,143 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Dashboard | Learn with GPT</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Sign Up | Learn with GPT</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
-    <style>
-        body { margin: 0; font-family: Arial, sans-serif; background: #f4f6f8; }
-
-        /* HEADER */
-        .header {
-            background: #0B3D91;
-            color: white;
-            padding: 15px 15px 25px;
-            border-bottom-left-radius: 22px;
-            border-bottom-right-radius: 22px;
-            position: relative;
-            text-align: center;
-        }
-        .hamburger { position: absolute; left: 15px; top: 18px; font-size: 22px; cursor: pointer; }
-        .logout { position: absolute; right: 15px; top: 18px; font-size: 20px; cursor: pointer; }
-        .title { font-size: 20px; font-weight: bold; }
-        .welcome { margin-top: 6px; font-size: 15px; opacity: 0.9; }
-
-        /* SIDE MENU */
-        .menu {
-            position: fixed;
-            top: 0;
-            left: -260px;
-            width: 260px;
-            height: 100%;
-            background: #fff;
-            box-shadow: 2px 0 6px rgba(0,0,0,0.2);
-            padding-top: 20px;
-            transition: 0.3s;
-            z-index: 1000;
-        }
-        .menu-top { text-align: center; padding: 20px 0; border-bottom: 1px solid #e3ebf5; }
-        .menu-logo { width: 100px; height: auto; border-radius: 50%; }
-        .menu a { display: block; padding: 15px 20px; text-decoration: none; color: #333; font-size: 16px; }
-        .menu a i { margin-right: 10px; color: #0B3D91; }
-        .menu a:hover { background: #e3ebf5; }
-
-        /* GRID */
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 20px; }
-        .card {
-            background: white; padding: 30px 20px; text-align: center; border-radius: 14px; cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-        }
-        .card i { font-size: 30px; color: #0B3D91; margin-bottom: 10px; }
-        .card span { display: block; font-size: 16px; font-weight: 500; }
-        .card:hover { background: #eef3fa; }
-    </style>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.box {
+    background: white;
+    padding: 30px 25px;
+    width: 320px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+.box img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+h2 {
+    color: #0B3D91;
+    margin-bottom: 15px;
+}
+input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+}
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 18px;
+    border-radius: 6px;
+    border: none;
+    background: #0B3D91;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+button:hover {
+    background: #09337a;
+}
+p {
+    margin-top: 15px;
+    font-size: 14px;
+}
+a {
+    color: #0B3D91;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
-<!-- SIDE MENU -->
-<div id="sideMenu" class="menu">
-    <div class="menu-top">
-        <img src="assets/logo.png" alt="Logo" class="menu-logo">
-    </div>
-    <a href="contact.html"><i class="fa-solid fa-phone"></i>Contact Us</a>
-    <a href="motivation.html"><i class="fa-solid fa-lightbulb"></i>Motivation</a>
-    <a href="calculator.html"><i class="fa-solid fa-calculator"></i>Calculator</a>
+<div class="box">
+    <!-- TOP IMAGE -->
+    <img src="assets/logo.png" alt="Learn with GPT">
+
+    <h2>Create Account</h2>
+
+    <input type="text" id="name" placeholder="Full Name">
+    <input type="email" id="email" placeholder="Email Address">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="signup()">Sign Up</button>
+
+    <p>Already have an account? <a href="login.html">Login</a></p>
 </div>
 
-<!-- HEADER -->
-<div class="header">
-    <div class="hamburger" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></div>
-    <div class="title">Learn with GPT</div>
-    <div class="welcome">Welcome, <strong id="username"></strong></div>
-    <div class="logout" onclick="logout()"><i class="fa-solid fa-power-off"></i></div>
-</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-<!-- MAIN GRID -->
-<div class="grid">
-    <div class="card" onclick="location.href='videos.html'"><i class="fa-solid fa-play"></i><span>Videos</span></div>
-    <div class="card" onclick="location.href='documents.html'"><i class="fa-solid fa-folder-open"></i><span>Documents</span></div>
-    <div class="card" onclick="location.href='quiz.html'"><i class="fa-solid fa-circle-question"></i><span>Quiz</span></div>
-    <div class="card" onclick="location.href='past-papers.html'"><i class="fa-solid fa-box-archive"></i><span>Past Papers</span></div>
-</div>
+/* 🔥 FIREBASE CONFIG */
+const firebaseConfig = {
+  apiKey: "AIzaSyClCl9tSlMfUNxBWym__WXj8FS_uBOA64M",
+  authDomain: "gptapp-fa2ff.firebaseapp.com",
+  projectId: "gptapp-fa2ff",
+  storageBucket: "gptapp-fa2ff.firebasestorage.app",
+  messagingSenderId: "834440426142",
+  appId: "1:834440426142:web:e01c200e13ee25bade818f"
+};
 
-<script>
-    // Firebase config
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+/* 🔥 INIT */
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-    const sideMenu = document.getElementById("sideMenu");
-    const hamburger = document.querySelector('.hamburger');
+/* ✅ SIGN UP FUNCTION */
+async function signup() {
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
 
-    // Toggle menu
-    function toggleMenu() {
-        sideMenu.style.left = (sideMenu.style.left === "0px") ? "-260px" : "0px";
+    if (!name || !email || !password) {
+        alert("Please fill all fields");
+        return;
     }
 
-    // Close menu on outside click
-    document.addEventListener('click', function(event) {
-        const isClickInside = sideMenu.contains(event.target) || hamburger.contains(event.target);
-        if (!isClickInside) sideMenu.style.left = "-260px";
-    });
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
 
-    // Close menu on link click
-    const links = sideMenu.querySelectorAll('a');
-    links.forEach(link => { link.addEventListener('click', () => { sideMenu.style.left = "-260px"; }); });
+        await setDoc(doc(db, "users", user.uid), {
+            name: name,
+            email: email,
+            createdAt: new Date()
+        });
 
-    // Logout
-    function logout() { auth.signOut().then(() => window.location.href = "login.html"); }
+        alert("Account created successfully!");
+        window.location.href = "login.html";
 
-    // Check auth state
-    auth.onAuthStateChanged(user => {
-        if(user){
-            // Fetch user name from Firestore
-            db.collection('users').doc(user.uid).get().then(doc => {
-                if(doc.exists){
-                    document.getElementById("username").innerText = doc.data().name;
-                }
-            });
-        } else {
-            // No user logged in → redirect to login
-            window.location.href = "login.html";
-        }
-    });
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+/* 🚀 EXPOSE FUNCTION TO HTML */
+window.signup = signup;
 </script>
 
 </body>

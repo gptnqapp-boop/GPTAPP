@@ -24,6 +24,19 @@ body{ margin:0; font-family:Arial,sans-serif; background:#f4f6f8; }
 .title{ font-size:20px; font-weight:bold; }
 .welcome{ font-size:14px; margin-top:5px; opacity:0.9; }
 
+/* Search */
+.search-box{
+  padding:15px 20px;
+}
+.search-box input{
+  width:100%;
+  padding:14px 18px;
+  border-radius:30px;
+  border:1px solid #ccc;
+  font-size:15px;
+  outline:none;
+}
+
 /* Sidebar */
 .menu{
   position:fixed; top:0; left:0;
@@ -127,13 +140,29 @@ body{ margin:0; font-family:Arial,sans-serif; background:#f4f6f8; }
 
 <!-- Header -->
 <div class="header">
-  <div class="hamburger"><i class="fa-solid fa-bars"></i></div>
+  <div class="hamburger" onclick="sideMenu.classList.toggle('open')">
+    <i class="fa-solid fa-bars"></i>
+  </div>
   <div class="logout"><i class="fa-solid fa-power-off"></i></div>
   <div class="title">Learn with GPT</div>
   <div class="welcome">Welcome, <strong id="username"></strong></div>
 </div>
 
+<!-- Search -->
+<div class="search-box">
+  <input
+    id="searchInput"
+    placeholder="Search video topics..."
+    oninput="searchTopics()">
+</div>
+
 <div class="content">
+
+<!-- SEARCH RESULTS -->
+<div id="searchResults" style="display:none;">
+  <h3>Search Results</h3>
+  <div id="resultsGrid" class="grid"></div>
+</div>
 
 <!-- COURSES -->
 <div id="coursesView">
@@ -163,10 +192,9 @@ body{ margin:0; font-family:Arial,sans-serif; background:#f4f6f8; }
 </div>
 
 <script>
-/* Course data with EMBED links */
 const courseTopics={
   MA110:[
-    {title:"Algebra Basics",link:"hhttps://drive.google.com/file/d/1s-JBM2hGlP2bhizgFkpw9bp7tr1HwIix/preview"},
+    {title:"Algebra Basics",link:"https://drive.google.com/file/d/1s-JBM2hGlP2bhizgFkpw9bp7tr1HwIix/preview"},
     {title:"Introduction to Calculus",link:"https://drive.google.com/file/d/FILE_ID_2/preview"}
   ],
   CH110:[
@@ -186,8 +214,9 @@ const courseTopics={
 function openCourse(course){
   coursesView.style.display="none";
   topicsView.style.display="block";
-  courseTitle.innerText = course + " Topics";
-  topicsGrid.innerHTML = "";
+  searchResults.style.display="none";
+  courseTitle.innerText = course+" Topics";
+  topicsGrid.innerHTML="";
   courseTopics[course].forEach(t=>{
     topicsGrid.innerHTML+=`
       <div class="card" onclick="playVideo('${t.link}')">
@@ -212,8 +241,40 @@ function closeVideo(){
   videoModal.style.display = "none";
 }
 
-/* Optional: Close video on ESC */
-document.addEventListener("keydown", e=>{
+function searchTopics(){
+  const q = searchInput.value.toLowerCase().trim();
+  resultsGrid.innerHTML = "";
+
+  if(q===""){
+    searchResults.style.display="none";
+    coursesView.style.display="block";
+    return;
+  }
+
+  searchResults.style.display="block";
+  coursesView.style.display="none";
+  topicsView.style.display="none";
+
+  let found=false;
+  for(const course in courseTopics){
+    courseTopics[course].forEach(t=>{
+      if(t.title.toLowerCase().includes(q)){
+        found=true;
+        resultsGrid.innerHTML+=`
+          <div class="card" onclick="playVideo('${t.link}')">
+            <i class="fa-solid fa-play"></i>
+            <span>${course} – ${t.title}</span>
+          </div>`;
+      }
+    });
+  }
+
+  if(!found){
+    resultsGrid.innerHTML="<p>No results found</p>";
+  }
+}
+
+document.addEventListener("keydown",e=>{
   if(e.key==="Escape") closeVideo();
 });
 </script>

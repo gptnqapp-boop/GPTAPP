@@ -7,81 +7,84 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-body{ margin:0; font-family:Arial,sans-serif; background:#f4f6f8; }
+body{margin:0;font-family:Arial,sans-serif;background:#f4f6f8}
 
-/* Header */
+/* HEADER */
 .header{
   background:#0B3D91;
   color:white;
-  padding:15px 20px 30px;
+  padding:15px 20px 35px;
   border-bottom-left-radius:22px;
   border-bottom-right-radius:22px;
   position:relative;
   text-align:center;
 }
-.hamburger{ position:absolute; left:20px; top:18px; font-size:22px; cursor:pointer; }
-.logout{ position:absolute; right:20px; top:18px; font-size:20px; cursor:pointer; }
-.title{ font-size:20px; font-weight:bold; }
-.welcome{ font-size:14px; margin-top:5px; opacity:0.9; }
+.hamburger{position:absolute;left:20px;top:18px;font-size:22px;cursor:pointer}
+.logout{position:absolute;right:20px;top:18px;font-size:20px;cursor:pointer}
+.title{font-size:20px;font-weight:bold}
+.welcome{font-size:14px;margin-top:5px;opacity:.9}
 
-/* Search */
+/* SEARCH */
 .search-box{
-  padding:15px 20px;
+  margin-top:12px;
+  display:flex;
+  justify-content:center;
 }
 .search-box input{
-  width:100%;
-  padding:14px 18px;
-  border-radius:30px;
-  border:1px solid #ccc;
-  font-size:15px;
+  width:80%;
+  max-width:350px;
+  padding:10px 14px;
+  border:none;
+  border-radius:20px;
   outline:none;
+  font-size:14px;
 }
 
-/* Sidebar */
+/* SIDEBAR */
 .menu{
-  position:fixed; top:0; left:0;
-  width:260px; height:100%;
-  background:white;
-  box-shadow:2px 0 6px rgba(0,0,0,0.2);
+  position:fixed;top:0;left:0;
+  width:260px;height:100%;
+  background:#fff;
+  box-shadow:2px 0 6px rgba(0,0,0,.2);
   transform:translateX(-100%);
-  transition:0.3s;
+  transition:.3s;
   z-index:1000;
 }
-.menu.open{ transform:translateX(0); }
-.menu-top{ text-align:center; padding:20px; border-bottom:1px solid #e3ebf5; }
-.menu-logo{ width:90px; border-radius:50%; }
+.menu.open{transform:translateX(0)}
+.menu-top{text-align:center;padding:20px;border-bottom:1px solid #e3ebf5}
+.menu-logo{width:90px;border-radius:50%}
 .menu a{
-  display:block; padding:15px 20px;
-  text-decoration:none; color:#333;
+  display:block;padding:15px 20px;
+  text-decoration:none;color:#333;
 }
-.menu a i{ margin-right:10px; color:#0B3D91; }
-.menu a:hover{ background:#eef3fa; }
+.menu a i{margin-right:10px;color:#0B3D91}
+.menu a:hover{background:#eef3fa}
 
-/* Content */
-.content{ padding:20px; }
+/* CONTENT */
+.content{padding:20px}
 
-/* Grid */
+/* GRID */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
   gap:15px;
 }
 
-/* Cards */
+/* CARDS */
 .card{
-  background:white;
+  background:#fff;
   padding:30px 20px;
   border-radius:14px;
   text-align:center;
   cursor:pointer;
-  box-shadow:0 2px 5px rgba(0,0,0,0.08);
-  transition:0.2s;
+  box-shadow:0 2px 5px rgba(0,0,0,.08);
+  transition:.2s;
 }
-.card:hover{ background:#eef3fa; }
-.card i{ font-size:30px; color:#0B3D91; margin-bottom:10px; }
-.card span{ display:block; font-weight:500; }
+.card:hover{background:#eef3fa}
+.card i{font-size:30px;color:#0B3D91;margin-bottom:10px}
+.card span{display:block;font-weight:500}
 
-/* Back */
+/* BACK */
 .back{
   margin-bottom:15px;
   cursor:pointer;
@@ -94,7 +97,7 @@ body{ margin:0; font-family:Arial,sans-serif; background:#f4f6f8; }
   display:none;
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.7);
+  background:rgba(0,0,0,.8);
   z-index:2000;
   justify-content:center;
   align-items:center;
@@ -102,7 +105,7 @@ body{ margin:0; font-family:Arial,sans-serif; background:#f4f6f8; }
 .video-box{
   width:90%;
   max-width:900px;
-  background:#000;
+  background:black;
   border-radius:10px;
   position:relative;
 }
@@ -121,56 +124,44 @@ body{ margin:0; font-family:Arial,sans-serif; background:#f4f6f8; }
   cursor:pointer;
 }
 @media(max-width:600px){
-  .video-box iframe{ height:240px; }
+  .video-box iframe{height:240px}
 }
 </style>
 </head>
 <body>
 
-<!-- Sidebar -->
+<!-- SIDEBAR -->
 <div id="sideMenu" class="menu">
   <div class="menu-top">
     <img src="assets/logo.png" class="menu-logo">
   </div>
-  <a href="dashboard.html"><i class="fa-solid fa-house"></i>Dashboard</a>
-  <a href="contact.html"><i class="fa-solid fa-phone"></i>Contact Us</a>
-  <a href="motivation.html"><i class="fa-solid fa-lightbulb"></i>Motivation</a>
-  <a href="calculator.html"><i class="fa-solid fa-calculator"></i>Calculator</a>
+  <a href="dashboard.html"><i class="fa fa-house"></i>Dashboard</a>
+  <a href="contact.html"><i class="fa fa-phone"></i>Contact Us</a>
+  <a href="motivation.html"><i class="fa fa-lightbulb"></i>Motivation</a>
+  <a href="calculator.html"><i class="fa fa-calculator"></i>Calculator</a>
 </div>
 
-<!-- Header -->
+<!-- HEADER -->
 <div class="header">
-  <div class="hamburger" onclick="sideMenu.classList.toggle('open')">
-    <i class="fa-solid fa-bars"></i>
-  </div>
-  <div class="logout"><i class="fa-solid fa-power-off"></i></div>
+  <div class="hamburger" id="hamburger"><i class="fa fa-bars"></i></div>
+  <div class="logout"><i class="fa fa-power-off"></i></div>
   <div class="title">Learn with GPT</div>
-  <div class="welcome">Welcome, <strong id="username"></strong></div>
-</div>
+  <div class="welcome">Video Library</div>
 
-<!-- Search -->
-<div class="search-box">
-  <input
-    id="searchInput"
-    placeholder="Search video topics..."
-    oninput="searchTopics()">
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search topics...">
+  </div>
 </div>
 
 <div class="content">
 
-<!-- SEARCH RESULTS -->
-<div id="searchResults" style="display:none;">
-  <h3>Search Results</h3>
-  <div id="resultsGrid" class="grid"></div>
-</div>
-
 <!-- COURSES -->
 <div id="coursesView">
   <div class="grid">
-    <div class="card" onclick="openCourse('MA110')"><i class="fa-solid fa-square-root-variable"></i><span>MA110 - Mathematics</span></div>
-    <div class="card" onclick="openCourse('CH110')"><i class="fa-solid fa-flask"></i><span>CH110 - Chemistry</span></div>
-    <div class="card" onclick="openCourse('PH110')"><i class="fa-solid fa-atom"></i><span>PH110 - Physics</span></div>
-    <div class="card" onclick="openCourse('BI110')"><i class="fa-solid fa-dna"></i><span>BI110 - Biology</span></div>
+    <div class="card" onclick="openCourse('MA110')"><span>MA110 Mathematics</span></div>
+    <div class="card" onclick="openCourse('CH110')"><span>CH110 Chemistry</span></div>
+    <div class="card" onclick="openCourse('PH110')"><span>PH110 Physics</span></div>
+    <div class="card" onclick="openCourse('BI110')"><span>BI110 Biology</span></div>
   </div>
 </div>
 
@@ -183,7 +174,7 @@ body{ margin:0; font-family:Arial,sans-serif; background:#f4f6f8; }
 
 </div>
 
-<!-- VIDEO PLAYER -->
+<!-- VIDEO MODAL -->
 <div id="videoModal" class="video-modal">
   <div class="video-box">
     <div class="close-video" onclick="closeVideo()">✕</div>
@@ -192,90 +183,79 @@ body{ margin:0; font-family:Arial,sans-serif; background:#f4f6f8; }
 </div>
 
 <script>
+/* COURSE DATA */
 const courseTopics={
   MA110:[
-    {title:"Algebra Basics",link:"https://drive.google.com/file/d/1s-JBM2hGlP2bhizgFkpw9bp7tr1HwIix/preview"},
-    {title:"Introduction to Calculus",link:"https://drive.google.com/file/d/FILE_ID_2/preview"}
+    {title:"Relations",link:"https://drive.google.com/file/d/1s-JBM2hGlP2bhizgFkpw9bp7tr1HwIix/preview"},
+    {title:"Introduction to Calculus",link:"https://drive.google.com/file/d/FILE_ID/preview"}
   ],
   CH110:[
-    {title:"Atomic Structure",link:"https://drive.google.com/file/d/FILE_ID_3/preview"},
-    {title:"Chemical Bonding",link:"https://drive.google.com/file/d/FILE_ID_4/preview"}
+    {title:"Atomic Structure",link:"https://drive.google.com/file/d/FILE_ID/preview"},
+    {title:"Chemical Bonding",link:"https://drive.google.com/file/d/FILE_ID/preview"}
   ],
   PH110:[
-    {title:"Motion",link:"https://drive.google.com/file/d/FILE_ID_5/preview"},
-    {title:"Work & Energy",link:"https://drive.google.com/file/d/FILE_ID_6/preview"}
+    {title:"Motion",link:"https://drive.google.com/file/d/FILE_ID/preview"},
+    {title:"Work and Energy",link:"https://drive.google.com/file/d/FILE_ID/preview"}
   ],
   BI110:[
-    {title:"Cell Structure",link:"https://drive.google.com/file/d/FILE_ID_7/preview"},
-    {title:"Genetics",link:"https://drive.google.com/file/d/FILE_ID_8/preview"}
+    {title:"Cell Structure",link:"https://drive.google.com/file/d/FILE_ID/preview"},
+    {title:"Genetics",link:"https://drive.google.com/file/d/FILE_ID/preview"}
   ]
 };
 
+/* OPEN COURSE */
 function openCourse(course){
   coursesView.style.display="none";
   topicsView.style.display="block";
-  searchResults.style.display="none";
-  courseTitle.innerText = course+" Topics";
+  courseTitle.innerText=course+" Topics";
   topicsGrid.innerHTML="";
   courseTopics[course].forEach(t=>{
     topicsGrid.innerHTML+=`
       <div class="card" onclick="playVideo('${t.link}')">
-        <i class="fa-solid fa-play"></i>
+        <i class="fa fa-play"></i>
         <span>${t.title}</span>
       </div>`;
   });
 }
 
+/* BACK */
 function goBack(){
   topicsView.style.display="none";
   coursesView.style.display="block";
+  searchInput.value="";
+  showAllCards();
 }
 
+/* VIDEO */
 function playVideo(link){
-  videoFrame.src = link;
-  videoModal.style.display = "flex";
+  videoFrame.src=link;
+  videoModal.style.display="flex";
 }
-
 function closeVideo(){
-  videoFrame.src = "";
-  videoModal.style.display = "none";
+  videoFrame.src="";
+  videoModal.style.display="none";
 }
 
-function searchTopics(){
-  const q = searchInput.value.toLowerCase().trim();
-  resultsGrid.innerHTML = "";
-
-  if(q===""){
-    searchResults.style.display="none";
-    coursesView.style.display="block";
-    return;
-  }
-
-  searchResults.style.display="block";
-  coursesView.style.display="none";
-  topicsView.style.display="none";
-
-  let found=false;
-  for(const course in courseTopics){
-    courseTopics[course].forEach(t=>{
-      if(t.title.toLowerCase().includes(q)){
-        found=true;
-        resultsGrid.innerHTML+=`
-          <div class="card" onclick="playVideo('${t.link}')">
-            <i class="fa-solid fa-play"></i>
-            <span>${course} – ${t.title}</span>
-          </div>`;
-      }
-    });
-  }
-
-  if(!found){
-    resultsGrid.innerHTML="<p>No results found</p>";
-  }
+/* SEARCH – MAINLY FOR TOPICS */
+const searchInput=document.getElementById("searchInput");
+searchInput.addEventListener("keyup",()=>{
+  const q=searchInput.value.toLowerCase();
+  document.querySelectorAll(".card").forEach(card=>{
+    card.style.display=card.innerText.toLowerCase().includes(q)?"block":"none";
+  });
+});
+function showAllCards(){
+  document.querySelectorAll(".card").forEach(c=>c.style.display="block");
 }
 
-document.addEventListener("keydown",e=>{
-  if(e.key==="Escape") closeVideo();
+/* HAMBURGER */
+const menu=document.getElementById("sideMenu");
+const hamburger=document.getElementById("hamburger");
+hamburger.onclick=()=>menu.classList.toggle("open");
+document.addEventListener("click",e=>{
+  if(!menu.contains(e.target)&&!hamburger.contains(e.target)){
+    menu.classList.remove("open");
+  }
 });
 </script>
 

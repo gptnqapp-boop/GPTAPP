@@ -5,11 +5,6 @@
 <title>Login | Learn with GPT</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
 <style>
 body {
     font-family: Arial, sans-serif;
@@ -23,11 +18,12 @@ body {
     background: white;
     padding: 30px 25px;
     width: 320px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     text-align: center;
 }
-input, button {
+h2 { color: #0B3D91; margin-bottom: 15px; }
+input {
     width: 100%;
     padding: 12px;
     margin-top: 12px;
@@ -36,20 +32,18 @@ input, button {
     font-size: 15px;
 }
 button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 18px;
+    border-radius: 6px;
+    border: none;
     background: #0B3D91;
     color: white;
-    border: none;
+    font-size: 16px;
     cursor: pointer;
 }
-button:hover { background: #09427a; }
-h2 {
-    margin-bottom: 20px;
-    color: #0B3D91;
-}
-p {
-    margin-top: 15px;
-    font-size: 14px;
-}
+button:hover { background: #09337a; }
+p { margin-top: 15px; font-size: 14px; }
 a { color: #0B3D91; text-decoration: none; }
 a:hover { text-decoration: underline; }
 </style>
@@ -58,44 +52,74 @@ a:hover { text-decoration: underline; }
 
 <div class="box">
     <h2>Login</h2>
-    <input type="email" id="email" placeholder="Email Address" required>
-    <input type="password" id="password" placeholder="Password" required>
+
+    <input type="email" id="email" placeholder="Email Address">
+    <input type="password" id="password" placeholder="Password">
+
     <button onclick="login()">Login</button>
 
-    <p>
-        Don’t have an account? <a href="signup.html">Sign Up</a>
-    </p>
+    <p>Don’t have an account? <a href="signup.html">Sign Up</a></p>
 </div>
 
-<script>
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-  function login() {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
+/* 🔥 FIREBASE CONFIG */
+const firebaseConfig = {
+  apiKey: "AIzaSyClCl9tSlMfUNxBWym__WXj8FS_uBOA64M",
+  authDomain: "gptapp-fa2ff.firebaseapp.com",
+  projectId: "gptapp-fa2ff",
+  storageBucket: "gptapp-fa2ff.firebasestorage.app",
+  messagingSenderId: "834440426142",
+  appId: "1:834440426142:web:e01c200e13ee25bade818f"
+};
 
-      auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            const user = userCredential.user;
-            db.collection('users').doc(user.uid).get().then(doc => {
-                if(doc.exists){
-                    localStorage.setItem("name", doc.data().name);
-                    window.location.href = "dashboard.html";
-                }
-            });
-        })
-        .catch((error) => { alert(error.message); });
-  }
+/* 🔥 INIT */
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* ✅ SAFE LOGIN */
+async function login() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    if (!email || !password) {
+        alert("Please fill all fields");
+        return;
+    }
+
+    try {
+        // 1️⃣ Authenticate user (this works even if Firestore fails)
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // 2️⃣ Try Firestore (non-blocking)
+        let userName = "User";
+        try {
+            const docSnap = await getDoc(doc(db, "users", user.uid));
+            if (docSnap.exists()) {
+                userName = docSnap.data().name;
+            }
+        } catch (firestoreError) {
+            console.warn("Firestore unavailable, using fallback name");
+        }
+
+        // 3️⃣ Save name locally
+        localStorage.setItem("name", userName);
+
+        // 4️⃣ Go to dashboard
+        window.location.href = "dashboard.html";
+
+    } catch (authError) {
+        alert(authError.message);
+    }
+}
+
+/* 🚀 MAKE FUNCTION AVAILABLE TO HTML */
+window.login = login;
 </script>
 
 </body>

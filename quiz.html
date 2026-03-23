@@ -1,344 +1,779 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Quiz | Learn with GPT</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz</title>
 
-<style>
-body{ margin:0; font-family:Arial,sans-serif; background:#f4f6f8; }
+  <style>
+    * { box-sizing: border-box; }
 
-/* Header */
-.header{
-  background:#0B3D91;
-  color:white;
-  padding:15px 20px 25px;
-  border-bottom-left-radius:22px;
-  border-bottom-right-radius:22px;
-  position:relative;
-  text-align:center;
-}
-.hamburger{ position:absolute; left:20px; top:18px; font-size:22px; cursor:pointer; }
-.logout{ position:absolute; right:20px; top:18px; font-size:20px; cursor:pointer; }
-.title{ font-size:20px; font-weight:bold; }
-.welcome{ font-size:14px; margin-top:5px; opacity:0.9; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #e9eff5;
+      color: #222;
+    }
 
-/* Sidebar */
-.menu{
-  position:fixed; top:0; left:0;
-  width:260px; height:100%;
-  background:white;
-  box-shadow:2px 0 6px rgba(0,0,0,0.2);
-  transform:translateX(-100%);
-  transition:0.3s;
-  z-index:1000;
-}
-.menu.open{ transform:translateX(0); }
-.menu-top{ text-align:center; padding:20px; border-bottom:1px solid #e3ebf5; }
-.menu-logo{ width:90px; border-radius:50%; }
-.menu a{
-  display:block; padding:15px 20px;
-  text-decoration:none; color:#333;
-}
-.menu a i{ margin-right:10px; color:#0B3D91; }
-.menu a:hover{ background:#eef3fa; }
+    header {
+      background: #0B3D91;
+      color: white;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-/* Content */
-.content{ padding:20px; }
+    .back-btn {
+      font-size: 24px;
+      cursor: pointer;
+      user-select: none;
+      width: 32px;
+      flex-shrink: 0;
+    }
 
-/* Grid */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-  gap:15px;
-}
+    .header-center {
+      flex: 1;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+    }
 
-/* Cards */
-.card{
-  background:white;
-  padding:25px 20px;
-  border-radius:14px;
-  text-align:center;
-  cursor:pointer;
-  box-shadow:0 2px 5px rgba(0,0,0,0.08);
-  transition:0.2s;
-}
-.card:hover{ background:#eef3fa; }
-.card i{ font-size:30px; color:#0B3D91; margin-bottom:10px; }
-.card span{ display:block; font-weight:500; }
+    header h1 {
+      margin: 0;
+      font-size: 1.55rem;
+      font-weight: bold;
+      line-height: 1.1;
+    }
 
-/* Back Button */
-.back{
-  margin-bottom:15px;
-  cursor:pointer;
-  color:#0B3D91;
-  font-weight:bold;
-}
+    #quizCountdown {
+      margin-top: 4px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: white;
+      line-height: 1.2;
+      text-align: center;
+      word-break: break-word;
+    }
 
-/* Quiz */
-.quiz-container{
-  background:white;
-  padding:20px;
-  border-radius:12px;
-  max-width:700px;
-  margin:20px auto;
-  box-shadow:0 2px 8px rgba(0,0,0,0.1);
-}
-.question{
-  font-weight:bold;
-  margin-bottom:10px;
-}
-.options button{
-  display:block;
-  width:100%;
-  text-align:left;
-  margin-bottom:10px;
-  padding:12px;
-  border:none;
-  border-radius:8px;
-  background:#eef3fa;
-  cursor:pointer;
-  transition:0.2s;
-}
-.options button:hover{ background:#d6e0f5; }
-.options button.correct{ background:#4caf50; color:white; }
-.options button.wrong{ background:#f44336; color:white; }
-.next-btn{
-  margin-top:10px;
-  padding:10px 18px;
-  background:#0B3D91;
-  color:white;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  float:right;
-}
-.score-display{
-  font-size:18px;
-  font-weight:bold;
-  text-align:center;
-  margin-top:10px;
-}
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 18px 14px 30px;
+    }
 
-/* Timer */
-.timer{
-  font-weight:bold;
-  color:#0B3D91;
-  margin-bottom:10px;
-  text-align:right;
-}
-</style>
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .card, .quiz-card, .question-card, .result-card {
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .card {
+      padding: 20px 14px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1rem;
+      color: #0B3D91;
+      cursor: pointer;
+      transition: 0.2s;
+      min-height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      background: #f4f8ff;
+    }
+
+    .quiz-card {
+      padding: 16px;
+      margin-bottom: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .quiz-card:hover {
+      transform: translateY(-2px);
+      background: #f8fbff;
+    }
+
+    .quiz-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #0B3D91;
+      margin-bottom: 8px;
+    }
+
+    .quiz-meta {
+      font-size: 0.92rem;
+      color: #555;
+      line-height: 1.4;
+    }
+
+    .question-card {
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .question-title {
+      font-size: 1.05rem;
+      font-weight: bold;
+      margin-bottom: 14px;
+      color: #0B3D91;
+      line-height: 1.5;
+    }
+
+    .option {
+      display: block;
+      background: #f5f7fb;
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: 0.15s;
+    }
+
+    .option:hover {
+      background: #edf4ff;
+    }
+
+    .option input {
+      margin-right: 8px;
+    }
+
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: 0.2s;
+    }
+
+    .btn-primary {
+      background: #0B3D91;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #0a347b;
+    }
+
+    .btn-secondary {
+      background: #e9eef8;
+      color: #0B3D91;
+    }
+
+    .btn-secondary:hover {
+      background: #dce6f8;
+    }
+
+    .result-card {
+      padding: 22px 18px;
+      text-align: center;
+    }
+
+    .score {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #0B3D91;
+      margin-bottom: 8px;
+    }
+
+    .score-text {
+      color: #444;
+      margin-bottom: 18px;
+      font-size: 1rem;
+    }
+
+    .review-item {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .review-q {
+      font-weight: bold;
+      color: #0B3D91;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .review-line {
+      padding: 8px 10px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    .correct {
+      background: #e8f7e8;
+      color: #146b14;
+      border-left: 4px solid #2eaf2e;
+    }
+
+    .wrong {
+      background: #fdeaea;
+      color: #a91f1f;
+      border-left: 4px solid #e53935;
+    }
+
+    .neutral {
+      background: #f5f7fb;
+      color: #333;
+      border-left: 4px solid #c7d3ea;
+    }
+
+    .empty {
+      text-align: center;
+      background: white;
+      padding: 28px 16px;
+      border-radius: 20px;
+      font-size: 1rem;
+      color: #555;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      margin-top: 20px;
+      line-height: 1.5;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      header h1 {
+        font-size: 1.35rem;
+      }
+
+      #quizCountdown {
+        font-size: 0.85rem;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<!-- Sidebar -->
-<div id="sideMenu" class="menu">
-  <div class="menu-top">
-    <img src="assets/logo.png" class="menu-logo">
-  </div>
-  <a href="dashboard.html"><i class="fa-solid fa-house"></i>Dashboard</a>
-  <a href="contact.html"><i class="fa-solid fa-phone"></i>Contact Us</a>
-  <a href="motivation.html"><i class="fa-solid fa-lightbulb"></i>Motivation</a>
-  <a href="calculator.html"><i class="fa-solid fa-calculator"></i>Calculator</a>
-</div>
+  <header>
+    <div class="back-btn" id="backBtn" style="visibility:hidden;">←</div>
 
-<!-- Header -->
-<div class="header">
-  <div class="hamburger"><i class="fa-solid fa-bars"></i></div>
-  <div class="logout"><i class="fa-solid fa-power-off"></i></div>
-  <div class="title">Learn with GPT</div>
-  <div class="welcome">Welcome, <strong id="username"></strong></div>
-</div>
-
-<div class="content">
-
-  <!-- COURSES -->
-  <div id="coursesView">
-    <div class="grid">
-      <div class="card" onclick="openTopics('MA110')"><i class="fa-solid fa-square-root-variable"></i><span>MA110 - Mathematics</span></div>
-      <div class="card" onclick="openTopics('CH110')"><i class="fa-solid fa-flask"></i><span>CH110 - Chemistry</span></div>
-      <div class="card" onclick="openTopics('PH110')"><i class="fa-solid fa-atom"></i><span>PH110 - Physics</span></div>
-      <div class="card" onclick="openTopics('BI110')"><i class="fa-solid fa-dna"></i><span>BI110 - Biology</span></div>
-      <div class="card" onclick="openTopics('CS110')"><i class="fa-solid fa-code"></i><span>CS110 - Programming</span></div>
-      <div class="card" onclick="openTopics('LA110')"><i class="fa-solid fa-pen-nib"></i><span>LA110 - Communication</span></div>
+    <div class="header-center">
+      <h1>Quiz</h1>
+      <div id="quizCountdown">Select a quiz</div>
     </div>
-  </div>
 
-  <!-- TOPICS -->
-  <div id="topicsView" style="display:none;">
-    <div class="back" onclick="goBack()">← Back to Courses</div>
-    <h3 id="courseTitle"></h3>
-    <div id="topicsGrid" class="grid"></div>
-  </div>
+    <div style="width:32px;"></div>
+  </header>
 
-  <!-- QUIZ -->
-  <div id="quizView" style="display:none;">
-    <div class="back" onclick="goBackToTopics()">← Back to Topics</div>
-    <div class="quiz-container">
-      <div class="timer" id="timer">Time Left: 0s</div>
-      <div class="question" id="questionText"></div>
-      <div class="options" id="optionsButtons"></div>
-      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next</button>
-      <div class="score-display" id="scoreDisplay" style="display:none;"></div>
+  <div class="container">
+
+    <div id="coursesView">
+      <div class="grid" id="coursesGrid"></div>
+      <div id="coursesEmpty" class="empty hidden">No quizzes uploaded yet.</div>
     </div>
+
+    <div id="quizListView" class="hidden">
+      <div id="quizList"></div>
+      <div id="quizListEmpty" class="empty hidden">No quizzes available for this course yet.</div>
+    </div>
+
+    <div id="quizTakeView" class="hidden">
+      <div id="quizQuestions"></div>
+      <button class="btn btn-primary" id="submitQuizBtn">Submit Quiz</button>
+    </div>
+
+    <div id="resultView" class="hidden">
+      <div class="result-card">
+        <div class="score" id="scoreText">0/0</div>
+        <div class="score-text" id="scoreMessage"></div>
+        <button class="btn btn-primary" id="reviewBtn">Review Corrections</button>
+        <button class="btn btn-secondary" id="backToQuizzesBtn">Back to Quizzes</button>
+      </div>
+    </div>
+
+    <div id="reviewView" class="hidden">
+      <div id="reviewContainer"></div>
+      <button class="btn btn-secondary" id="reviewBackBtn">Back to Quizzes</button>
+    </div>
+
   </div>
 
-</div>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-<script>
-/* Sample Quiz Questions per topic */
-const quizData={
-  "MA110-Algebra":[
-    {q:"2 + 2 =", options:["3","4","5","6"], answer:1},
-    {q:"5 x 3 =", options:["15","10","20","25"], answer:0},
-    {q:"Simplify: 3x + 2x =", options:["5x","6x","x","None"], answer:0}
-  ],
-  "CH110-Atomic Structure":[
-    {q:"Protons have a charge of?", options:["0","+1","-1","+2"], answer:1},
-    {q:"Electrons are found in?", options:["Nucleus","Orbitals","Protons","Neutrons"], answer:1}
-  ],
-  "PH110-Motion":[
-    {q:"Acceleration formula?", options:["v/t","s/t","v-u/t","s*v"], answer:2}
-  ],
-  "BI110-Cell Structure":[
-    {q:"Cell membrane is made of?", options:["Lipids","Proteins","Carbs","All"], answer:3}
-  ],
-  "CS110-Programming Basics":[
-    {q:"JS stands for?", options:["JavaScript","Java","JustScript","JScript"], answer:0}
-  ],
-  "LA110-Writing Skills":[
-    {q:"Formal letter starts with?", options:["Dear Sir/Madam","Hey","Yo","Hi"], answer:0}
-  ]
-};
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyClCl9tSlMfUNxBWym__WXj8FS_uBOA64M",
+      authDomain: "gptapp-fa2ff.firebaseapp.com",
+      projectId: "gptapp-fa2ff",
+      storageBucket: "gptapp-fa2ff.firebasestorage.app",
+      messagingSenderId: "834440426142",
+      appId: "1:834440426142:web:e01c200e13ee25bade818f",
+      measurementId: "G-GZZ28RMH36"
+    };
 
-/* DOM elements */
-const coursesView = document.getElementById("coursesView");
-const topicsView = document.getElementById("topicsView");
-const quizView = document.getElementById("quizView");
-const topicsGrid = document.getElementById("topicsGrid");
-const courseTitle = document.getElementById("courseTitle");
-const questionText = document.getElementById("questionText");
-const optionsButtons = document.getElementById("optionsButtons");
-const nextBtn = document.getElementById("nextBtn");
-const scoreDisplay = document.getElementById("scoreDisplay");
-const timerDisplay = document.getElementById("timer");
-
-let currentCourse="", currentTopic="", currentQuiz=[], currentQIndex=0, score=0;
-let timeLeft=60; // total time in seconds
-let quizTimer;
-
-/* Hamburger */
-const sideMenu = document.getElementById("sideMenu");
-const hamburger = document.querySelector('.hamburger');
-hamburger.onclick = ()=>{ sideMenu.classList.toggle('open'); };
-document.addEventListener('click', e=>{
-  if(!sideMenu.contains(e.target) && !hamburger.contains(e.target)) sideMenu.classList.remove('open');
-});
-
-/* Logout */
-document.querySelector(".logout").onclick = ()=>{ window.location.href="login.html"; };
-
-/* Open Topics */
-function openTopics(course){
-  coursesView.style.display="none";
-  topicsView.style.display="block";
-  currentCourse = course;
-  courseTitle.innerText = course + " Topics";
-  topicsGrid.innerHTML="";
-  
-  const topics = Object.keys(quizData).filter(k=>k.startsWith(course+"-"));
-  topics.forEach(t=>{
-    const topicName = t.split("-")[1];
-    const card = document.createElement("div");
-    card.className="card";
-    card.innerHTML=`<i class="fa-solid fa-question"></i><span>${topicName}</span>`;
-    card.onclick=()=>{ startQuiz(t); };
-    topicsGrid.appendChild(card);
-  });
-}
-
-/* Back */
-function goBack(){
-  topicsView.style.display="none";
-  coursesView.style.display="block";
-}
-function goBackToTopics(){
-  quizView.style.display="none";
-  topicsView.style.display="block";
-  clearInterval(quizTimer);
-}
-
-/* Quiz Functions */
-function startQuiz(topic){
-  currentTopic = topic;
-  currentQuiz = quizData[topic];
-  currentQIndex=0;
-  score=0;
-  timeLeft=60; // reset timer per quiz
-  topicsView.style.display="none";
-  quizView.style.display="block";
-  scoreDisplay.style.display="none";
-  nextBtn.style.display="inline-block";
-  startTimer();
-  showQuestion();
-}
-
-function startTimer(){
-  clearInterval(quizTimer);
-  timerDisplay.innerText=`Time Left: ${timeLeft}s`;
-  quizTimer = setInterval(()=>{
-    timeLeft--;
-    timerDisplay.innerText=`Time Left: ${timeLeft}s`;
-    if(timeLeft<=0){
-      clearInterval(quizTimer);
-      alert(`Time's up! Your Score: ${score} / ${currentQuiz.length}`);
-      showScore();
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
     }
-  }, 1000);
-}
+    const db = firebase.firestore();
 
-function showQuestion(){
-  const q = currentQuiz[currentQIndex];
-  questionText.innerText = q.q;
-  optionsButtons.innerHTML = "";
-  q.options.forEach((opt,i)=>{
-    const btn = document.createElement("button");
-    btn.innerText=opt;
-    btn.onclick = ()=>{ selectOption(i); };
-    optionsButtons.appendChild(btn);
-  });
-}
+    let selectedCourse = null;
+    let selectedQuiz = null;
+    let selectedAnswers = {};
+    let lastResult = null;
+    let allQuizzes = [];
+    let timerInterval = null;
+    let remainingSeconds = 0;
+    let quizSubmitted = false;
 
-function selectOption(index){
-  const q = currentQuiz[currentQIndex];
-  const btns = optionsButtons.querySelectorAll("button");
-  btns.forEach((b,i)=>{
-    b.disabled=true;
-    if(i===q.answer) b.classList.add("correct");
-    if(i===index && i!==q.answer) b.classList.add("wrong");
-  });
-  if(index===q.answer) score++;
-}
+    const backBtn = document.getElementById("backBtn");
 
-function nextQuestion(){
-  currentQIndex++;
-  if(currentQIndex<currentQuiz.length){
-    showQuestion();
-  } else {
-    clearInterval(quizTimer);
-    showScore();
-  }
-}
+    const coursesView = document.getElementById("coursesView");
+    const quizListView = document.getElementById("quizListView");
+    const quizTakeView = document.getElementById("quizTakeView");
+    const resultView = document.getElementById("resultView");
+    const reviewView = document.getElementById("reviewView");
+    const countdownEl = document.getElementById("quizCountdown");
 
-function showScore(){
-  questionText.innerText="";
-  optionsButtons.innerHTML="";
-  nextBtn.style.display="none";
-  scoreDisplay.style.display="block";
-  scoreDisplay.innerText=`Your Score: ${score} / ${currentQuiz.length}`;
-}
-</script>
+    function showView(viewName) {
+      coursesView.classList.add("hidden");
+      quizListView.classList.add("hidden");
+      quizTakeView.classList.add("hidden");
+      resultView.classList.add("hidden");
+      reviewView.classList.add("hidden");
 
+      if (viewName === "courses") {
+        coursesView.classList.remove("hidden");
+        backBtn.style.visibility = "hidden";
+        stopQuizTimer();
+        countdownEl.textContent = "Select a quiz";
+      }
+
+      if (viewName === "quizList") {
+        quizListView.classList.remove("hidden");
+        backBtn.style.visibility = "visible";
+        stopQuizTimer();
+        countdownEl.textContent = "Choose a quiz";
+      }
+
+      if (viewName === "quizTake") {
+        quizTakeView.classList.remove("hidden");
+        backBtn.style.visibility = "visible";
+      }
+
+      if (viewName === "result") {
+        resultView.classList.remove("hidden");
+        backBtn.style.visibility = "visible";
+        stopQuizTimer();
+        countdownEl.textContent = "Quiz finished";
+      }
+
+      if (viewName === "review") {
+        reviewView.classList.remove("hidden");
+        backBtn.style.visibility = "visible";
+        stopQuizTimer();
+        countdownEl.textContent = "Review corrections";
+      }
+    }
+
+    backBtn.onclick = () => {
+      if (!reviewView.classList.contains("hidden")) {
+        renderQuizList();
+        return;
+      }
+
+      if (!resultView.classList.contains("hidden")) {
+        renderQuizList();
+        return;
+      }
+
+      if (!quizTakeView.classList.contains("hidden")) {
+        if (confirm("Leave this quiz? Your progress will be lost.")) {
+          renderQuizList();
+        }
+        return;
+      }
+
+      if (!quizListView.classList.contains("hidden")) {
+        selectedCourse = null;
+        renderCourses();
+        return;
+      }
+    };
+
+    function normalizeCorrectAnswer(q) {
+      const options = Array.isArray(q.options) ? q.options : [];
+
+      let raw = q.answer;
+      if (raw === undefined || raw === null || raw === "") raw = q.correctAnswer;
+      if (raw === undefined || raw === null || raw === "") raw = q.correctOption;
+
+      if (raw === undefined || raw === null || raw === "") return -1;
+
+      if (typeof raw === "number" && !isNaN(raw)) {
+        return raw;
+      }
+
+      if (typeof raw === "string") {
+        const trimmed = raw.trim();
+
+        if (!isNaN(trimmed)) {
+          return Number(trimmed);
+        }
+
+        const upper = trimmed.toUpperCase();
+        const letterMap = { A: 0, B: 1, C: 2, D: 3, E: 4, F: 5 };
+
+        if (letterMap.hasOwnProperty(upper)) {
+          return letterMap[upper];
+        }
+
+        const textIndex = options.findIndex(opt =>
+          String(opt).trim().toLowerCase() === trimmed.toLowerCase()
+        );
+
+        if (textIndex !== -1) {
+          return textIndex;
+        }
+      }
+
+      return -1;
+    }
+
+    function formatSeconds(totalSeconds) {
+      const mins = Math.floor(totalSeconds / 60);
+      const secs = totalSeconds % 60;
+      return `Time Left: ${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+    }
+
+    function stopQuizTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+
+    function startQuizTimer(minutes) {
+      stopQuizTimer();
+
+      const safeMinutes = Number(minutes);
+      const finalMinutes = (!isNaN(safeMinutes) && safeMinutes > 0) ? safeMinutes : 10;
+
+      remainingSeconds = finalMinutes * 60;
+      countdownEl.textContent = formatSeconds(remainingSeconds);
+
+      timerInterval = setInterval(() => {
+        remainingSeconds--;
+
+        if (remainingSeconds <= 0) {
+          countdownEl.textContent = "Time is up!";
+          stopQuizTimer();
+
+          if (!quizSubmitted) {
+            alert("Time is up! Your quiz will be submitted automatically.");
+            submitQuiz(true);
+          }
+          return;
+        }
+
+        countdownEl.textContent = formatSeconds(remainingSeconds);
+      }, 1000);
+    }
+
+    async function loadAllQuizzes() {
+      showView("courses");
+
+      const coursesEmpty = document.getElementById("coursesEmpty");
+      coursesEmpty.classList.add("hidden");
+
+      try {
+        const snapshot = await db.collection("quizzes").get();
+
+        allQuizzes = snapshot.docs.map(doc => {
+          const data = doc.data();
+
+          const detectedCourse =
+            data.subject ||
+            data.course ||
+            data.courseName ||
+            "Uncategorized";
+
+          const detectedTime =
+            data.timeMinutes ||
+            data.timeLimitMinutes ||
+            data.duration ||
+            10;
+
+          return {
+            id: doc.id,
+            title: data.title || data.quizTitle || "Untitled Quiz",
+            description: data.description || "",
+            course: detectedCourse,
+            timeMinutes: Number(detectedTime) || 10,
+            questions: Array.isArray(data.questions) ? data.questions : [],
+            createdAt: data.createdAt?.toMillis ? data.createdAt.toMillis() : 0
+          };
+        });
+
+        if (allQuizzes.length === 0) {
+          coursesEmpty.classList.remove("hidden");
+          return;
+        }
+
+        renderCourses();
+
+      } catch (error) {
+        console.error("Error loading quizzes:", error);
+        coursesEmpty.classList.remove("hidden");
+        coursesEmpty.textContent = "Failed to load quizzes. Check collection name and Firestore rules.";
+      }
+    }
+
+    function renderCourses() {
+      showView("courses");
+
+      const coursesGrid = document.getElementById("coursesGrid");
+      const coursesEmpty = document.getElementById("coursesEmpty");
+      coursesGrid.innerHTML = "";
+      coursesEmpty.classList.add("hidden");
+
+      const uniqueCourses = [...new Set(allQuizzes.map(q => q.course))].sort();
+
+      if (uniqueCourses.length === 0) {
+        coursesEmpty.classList.remove("hidden");
+        return;
+      }
+
+      uniqueCourses.forEach(course => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.textContent = course;
+        card.onclick = () => {
+          selectedCourse = course;
+          renderQuizList();
+        };
+        coursesGrid.appendChild(card);
+      });
+    }
+
+    function renderQuizList() {
+      showView("quizList");
+
+      const quizList = document.getElementById("quizList");
+      const quizListEmpty = document.getElementById("quizListEmpty");
+      quizList.innerHTML = "";
+      quizListEmpty.classList.add("hidden");
+
+      let quizzes = allQuizzes.filter(q => q.course === selectedCourse);
+      quizzes.sort((a, b) => b.createdAt - a.createdAt);
+
+      if (quizzes.length === 0) {
+        quizListEmpty.classList.remove("hidden");
+        return;
+      }
+
+      quizzes.forEach(quiz => {
+        const card = document.createElement("div");
+        card.className = "quiz-card";
+        card.innerHTML = `
+          <div class="quiz-title">${quiz.title}</div>
+          <div class="quiz-meta">
+            ${quiz.questions.length} question${quiz.questions.length === 1 ? "" : "s"}<br>
+            Time limit: ${quiz.timeMinutes} minute${quiz.timeMinutes == 1 ? "" : "s"}
+            ${quiz.description ? "<br>" + quiz.description : ""}
+          </div>
+        `;
+        card.onclick = () => startQuiz(quiz);
+        quizList.appendChild(card);
+      });
+    }
+
+    function startQuiz(quiz) {
+      selectedQuiz = quiz;
+      selectedAnswers = {};
+      quizSubmitted = false;
+      showView("quizTake");
+
+      const quizQuestions = document.getElementById("quizQuestions");
+      quizQuestions.innerHTML = "";
+
+      if (!quiz.questions.length) {
+        quizQuestions.innerHTML = `<div class="empty">This quiz has no questions yet.</div>`;
+        document.getElementById("submitQuizBtn").style.display = "none";
+        countdownEl.textContent = "No questions";
+        return;
+      }
+
+      document.getElementById("submitQuizBtn").style.display = "block";
+
+      quiz.questions.forEach((q, index) => {
+        const qCard = document.createElement("div");
+        qCard.className = "question-card";
+
+        const options = Array.isArray(q.options) ? q.options : [];
+
+        qCard.innerHTML = `
+          <div class="question-title">${index + 1}. ${q.question || "No question text"}</div>
+          <div id="options-${index}"></div>
+        `;
+
+        const optionsWrap = qCard.querySelector(`#options-${index}`);
+
+        options.forEach((option, optIndex) => {
+          const label = document.createElement("label");
+          label.className = "option";
+          label.innerHTML = `
+            <input type="radio" name="question-${index}" value="${optIndex}">
+            ${option}
+          `;
+
+          label.querySelector("input").addEventListener("change", () => {
+            selectedAnswers[index] = optIndex;
+          });
+
+          optionsWrap.appendChild(label);
+        });
+
+        quizQuestions.appendChild(qCard);
+      });
+
+      startQuizTimer(quiz.timeMinutes);
+    }
+
+    function submitQuiz(autoSubmitted = false) {
+      if (!selectedQuiz || quizSubmitted) return;
+
+      quizSubmitted = true;
+      stopQuizTimer();
+
+      const questions = selectedQuiz.questions;
+      let score = 0;
+      let review = [];
+
+      questions.forEach((q, index) => {
+        const userAnswer = Object.prototype.hasOwnProperty.call(selectedAnswers, index)
+          ? selectedAnswers[index]
+          : null;
+
+        const correctAnswer = normalizeCorrectAnswer(q);
+
+        const isCorrect = userAnswer !== null && userAnswer === correctAnswer;
+        if (isCorrect) score++;
+
+        review.push({
+          question: q.question || "",
+          options: Array.isArray(q.options) ? q.options : [],
+          userAnswer,
+          correctAnswer,
+          explanation: q.explanation || "",
+          isCorrect
+        });
+      });
+
+      lastResult = {
+        score,
+        total: questions.length,
+        review
+      };
+
+      document.getElementById("scoreText").textContent = `${score}/${questions.length}`;
+      document.getElementById("scoreMessage").textContent =
+        autoSubmitted
+          ? `Time ended. You got ${score} out of ${questions.length} correct.`
+          : `You got ${score} out of ${questions.length} correct.`;
+
+      showView("result");
+    }
+
+    document.getElementById("submitQuizBtn").onclick = () => {
+      submitQuiz(false);
+    };
+
+    document.getElementById("reviewBtn").onclick = () => {
+      if (!lastResult) return;
+
+      const reviewContainer = document.getElementById("reviewContainer");
+      reviewContainer.innerHTML = "";
+
+      lastResult.review.forEach((item, index) => {
+        const wrap = document.createElement("div");
+        wrap.className = "review-item";
+
+        let optionsHtml = "";
+
+        item.options.forEach((opt, i) => {
+          let cls = "neutral";
+          let label = "";
+
+          if (item.userAnswer === i && item.correctAnswer === i) {
+            cls = "correct";
+            label = " ✅ Your answer (Correct)";
+          } else if (item.userAnswer === i && item.correctAnswer !== i) {
+            cls = "wrong";
+            label = " ❌ Your answer";
+          } else if (item.correctAnswer === i) {
+            cls = "correct";
+            label = " ✅ Correct answer";
+          }
+
+          optionsHtml += `<div class="review-line ${cls}">${opt}${label}</div>`;
+        });
+
+        const noAnswerHtml = item.userAnswer === null
+          ? `<div class="review-line wrong">❌ You did not answer this question.</div>`
+          : "";
+
+        const explanationHtml = item.explanation
+          ? `<div class="review-line neutral"><strong>Explanation:</strong> ${item.explanation}</div>`
+          : "";
+
+        wrap.innerHTML = `
+          <div class="review-q">${index + 1}. ${item.question}</div>
+          ${noAnswerHtml}
+          ${optionsHtml}
+          ${explanationHtml}
+        `;
+
+        reviewContainer.appendChild(wrap);
+      });
+
+      showView("review");
+    };
+
+    document.getElementById("backToQuizzesBtn").onclick = () => {
+      renderQuizList();
+    };
+
+    document.getElementById("reviewBackBtn").onclick = () => {
+      renderQuizList();
+    };
+
+    loadAllQuizzes();
+  </script>
 </body>
 </html>

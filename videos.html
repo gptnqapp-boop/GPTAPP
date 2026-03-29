@@ -2,305 +2,286 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Videos | Learn with GPT</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<title>Videos</title>
 
 <style>
-body{margin:0;font-family:Arial,sans-serif;background:#f4f6f8}
+body { margin:0; font-family: Arial,sans-serif; background:#f0f8ff; }
 
-/* HEADER */
-.header{
-  background:#0B3D91;
-  color:white;
-  padding:15px 20px 35px;
-  border-bottom-left-radius:22px;
-  border-bottom-right-radius:22px;
-  position:relative;
-  text-align:center;
+header {
+    background:#0B3D91;
+    color:white;
+    padding:15px 20px;
+    display:flex;
+    align-items:center;
+    box-shadow:0 2px 6px rgba(0,0,0,0.2);
 }
-.hamburger{position:absolute;left:20px;top:18px;font-size:22px;cursor:pointer}
-.logout{position:absolute;right:20px;top:18px;font-size:20px;cursor:pointer}
-.title{font-size:20px;font-weight:bold}
-.welcome{font-size:14px;margin-top:5px;opacity:.9}
-
-/* SEARCH */
-.search-box{
-  margin-top:12px;
-  display:flex;
-  justify-content:center;
+header h1 {
+    margin:0;
+    font-size:1.5em;
+    flex-grow:1;
+    text-align:center;
 }
-.search-box input{
-  width:80%;
-  max-width:350px;
-  padding:10px 14px;
-  border:none;
-  border-radius:20px;
-  outline:none;
-  font-size:14px;
+.back-symbol {
+    font-size:1.4em;
+    cursor:pointer;
+    margin-right:10px;
+    user-select:none;
 }
 
-/* SIDEBAR */
-.menu{
-  position:fixed;top:0;left:0;
-  width:260px;height:100%;
-  background:#fff;
-  box-shadow:2px 0 6px rgba(0,0,0,.2);
-  transform:translateX(-100%);
-  transition:.3s;
-  z-index:1000;
-}
-.menu.open{transform:translateX(0)}
-.menu-top{text-align:center;padding:20px;border-bottom:1px solid #e3ebf5}
-.menu-logo{width:90px;border-radius:50%}
-.menu a{
-  display:block;padding:15px 20px;
-  text-decoration:none;color:#333;
-}
-.menu a i{margin-right:10px;color:#0B3D91}
-.menu a:hover{background:#eef3fa}
-
-/* CONTENT */
-.content{padding:20px}
-
-/* GRID */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-  gap:15px;
+.container {
+    max-width:800px;
+    margin:20px auto;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
 }
 
-/* CARDS */
-.card{
-  background:#fff;
-  padding:30px 20px;
-  border-radius:14px;
-  text-align:center;
-  cursor:pointer;
-  box-shadow:0 2px 5px rgba(0,0,0,.08);
-  transition:.2s;
+.button {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:white;
+    color:#0B3D91;
+    padding:20px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
+    text-align:center;
+    box-shadow:0 3px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s, background 0.2s;
 }
-.card:hover{background:#eef3fa}
-.card i{font-size:30px;color:#0B3D91;margin-bottom:10px}
-.card span{display:block;font-weight:500}
+.button:hover {
+    transform:translateY(-3px);
+    background:#e6f2ff;
+}
 
-/* BACK */
-.back{
-  margin-bottom:15px;
-  cursor:pointer;
-  color:#0B3D91;
-  font-weight:bold;
+.file-card {
+    display:flex;
+    align-items:center;
+    background:white;
+    color:#0B3D91;
+    padding:15px 20px;
+    margin:6px 0;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
+    box-shadow:0 3px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s, background 0.2s;
+    grid-column:1 / -1;
+}
+.file-card:hover {
+    transform:translateY(-2px);
+    background:#e6f2ff;
 }
 
-/* VIDEO MODAL */
-.video-modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.8);
-  z-index:2000;
-  justify-content:center;
-  align-items:center;
+/* Half-screen popup */
+#previewContainer {
+    width: 100%;
+    height: 50vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: white;
+    display: none;
+    z-index: 1000;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
-.video-box{
-  width:90%;
-  max-width:900px;
-  background:black;
-  border-radius:10px;
-  position:relative;
+#previewContainer iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: inherit;
 }
-.video-box iframe{
-  width:100%;
-  height:480px;
-  border:none;
-  border-radius:10px;
+#closePreview {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #f44336;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    z-index: 1001;
 }
-.close-video{
-  position:absolute;
-  top:-35px;
-  right:0;
-  color:white;
-  font-size:24px;
-  cursor:pointer;
-}
-@media(max-width:600px){
-  .video-box iframe{height:240px}
+#closePreview:hover {
+    background:#d32f2f;
 }
 </style>
 </head>
+
 <body>
 
-<!-- SIDEBAR -->
-<div id="sideMenu" class="menu">
-  <div class="menu-top">
-    <img src="nqlogo.jpg" class="menu-logo">
-  </div>
-  <a href="dashboard.html"><i class="fa fa-house"></i>Dashboard</a>
-  <a href="contact.html"><i class="fa fa-phone"></i>Contact Us</a>
-  <a href="motivation.html"><i class="fa fa-lightbulb"></i>Motivation</a>
-  <a href="calculator.html"><i class="fa fa-calculator"></i>Calculator</a>
+<header>
+    <span id="backBtn" class="back-symbol" style="display:none;">←</span>
+    <h1>Videos</h1>
+</header>
+
+<div class="container" id="content"></div>
+
+<div id="previewContainer">
+    <button id="closePreview">Close ✖</button>
+    <iframe id="previewIframe" allowfullscreen></iframe>
 </div>
 
-<!-- HEADER -->
-<div class="header">
-  <div class="hamburger" id="hamburger"><i class="fa fa-bars"></i></div>
-  <div class="logout"><i class="fa fa-power-off"></i></div>
-  <div class="title">Learn with GPT</div>
-  <div class="welcome">Video Library</div>
-
-  <div class="search-box">
-    <input type="text" id="searchInput" placeholder="Search topics...">
-  </div>
-</div>
-
-<div class="content">
-
-<!-- COURSES -->
-<div id="coursesView">
-  <div class="grid">
-    <div class="card" onclick="openCourse('MA110')"><span>MA110 Mathematics</span></div>
-    <div class="card" onclick="openCourse('CH110')"><span>CH110 Chemistry</span></div>
-    <div class="card" onclick="openCourse('PH110')"><span>PH110 Physics</span></div>
-    <div class="card" onclick="openCourse('BI110')"><span>BI110 Biology</span></div>
-  </div>
-</div>
-
-<!-- TOPICS -->
-<div id="topicsView" style="display:none;">
-  <div class="back" onclick="goBack()">← Back to Courses</div>
-  <h3 id="courseTitle"></h3>
-  <div id="topicsGrid" class="grid"></div>
-</div>
-
-</div>
-
-<!-- VIDEO MODAL -->
-<div id="videoModal" class="video-modal">
-  <div class="video-box">
-    <div class="close-video" onclick="closeVideo()">✕</div>
-    <iframe id="videoFrame" allow="autoplay; fullscreen" allowfullscreen></iframe>
-  </div>
-</div>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
-/* COURSE DATA */
-const courseTopics={
-  MA110:[
-    {title:"GRAPHS OF MODULUS FUNCTIONS (BASICS)",link:"https://drive.google.com/file/d/1ehql4yAOH_9eab5YIDrZmMOElkAhAwyk/preview"},
-    {title: "Continuation 1(Graphs of Modulus Functions)",link:"https://drive.google.com/file/d/1jj4zGzIZgQinRiReRr738qgZb8L2g3Mf/preview"},
-    {title:"Graph of y=|x-2|+3 & y=|x-2|+1",link:"https://drive.google.com/file/d/1Q2FeflTvM8jSBttCb4RsBkvwKwJJPwzX/preview"},
-    {title: "Sketch of a Modulus Function y=|2x+1|+|x-2|", link:"https://drive.google.com/file/d/16XxwM6p2b3qoOn4M0vVwpEpTUzYt8yWv/preview"},
-    {title: "Continuation on sketching y=|2x+1|+|x-2|", link:"https://drive.google.com/file/d/1Q49CnOYvRNMS5AZl66PeMMqm-VnZbWHW/preview"},
-    {title:"GRAPHS OF RATIONAL FUNCTIONS (BASICS)",link:"https://drive.google.com/file/d/1soMXjrrrMi2iYYd_MckkIUcLnNxdABA2/preview"},
-    {title:"Graph of y=(x²-x-2)/(x-1)",link:"https://drive.google.com/file/d/1-F-Rxk58N4gJwUrd9_LBbULykz8CwX9n/preview"}
-  ],
-  CH110:[
-    {title:"REACTIONS IN AQUEOUS SOLUTIONS TUT 3 2026 (SOLUTIONS)",link:"https://drive.google.com/file/d/1D8yG0Q29-nCB_frwlKkXLFPwdUjt913_/preview"},
-    {title:"Dilution Law",link:"https://drive.google.com/file/d/1_3N9skfPV4Tdg4rFMg9BocpfC4kxRPwB/preview"},
-    {title:"Oxidation Numbers Examples",link:"https://drive.google.com/file/d/1ZdtfbjNMlJ07SiBAfDg305IgoKKnMuhD/preview"},
-    {title:"Molarity",link:"https://drive.google.com/file/d/1Tmm1XAOEekGRQtk5288RzB0s7bj7UnNr/preview"},
-    {title:"Balancing in Basic Media (1)",link:"https://drive.google.com/file/d/1uW1zXdjQrDKJ6SoMmdNYYRknHdoYgC2q/preview"},
-    {title:"Balancing in Basic Media (2)",link:"https://drive.google.com/file/d/1ccx4V3VKz2s3pQm6QB9uDk13b6cYpCwT/preview"},
-    {title:"INTRO TO CHEMISTRY(Types of Properties)",link:"https://drive.google.com/file/d/16WtKWig4cu1n1_SlPRtaG2LZcfWmraWR/preview"},
-    {title:"Temperature Conversions (K,°C & °F)", link:"https://drive.google.com/file/d/1B9tEdhSLha-VNIHMg_d847Chhu54kPVk/preview"},
-    {title:"Two(2) Significant Figure Rules ",link:"https://drive.google.com/file/d/16TYbTpwJYbx6_JkG8cfWzAQG8fQdIotC/preview"},
-    {title:"Examples on 2 Significant Figure Rules ",link:"https://drive.google.com/file/d/1giWK63GFoiKQXk8hHPnkvMJfyUdP_RK9/preview"}
-  ],
-  PH110:[
-    {title:"UNIT1-PHYSICAL QUANTITIES (Base & Derived Units)",link:"https://drive.google.com/file/d/1r1Sxk1YPHUvyb_qaJ9k7X2gYqQrp5PWC/preview"},
-    {title:"UNITS & MEASUREMENTS (Physical Quantities)",link:"https://drive.google.com/file/d/12R7H0bR7c3xwPdk1ZkCxk3HugHKcauqd/preview"},
-    {title:"International System of Units",link:"https://drive.google.com/file/d/1nQcQ9fUzkOn9WVzltvYnt37HqR5za5Cv/preview"},
-    {title:"Non-SI Unit Systems (The Cgs System)",link:"https://drive.google.com/file/d/1UvnXojqh4vKRyxN2OfMaj0_cJrW7WNlz/preview"},
-    {title:"Continuation 1 (British Measurement System)",link:"https://drive.google.com/file/d/1MRAK9kS7g7PscdP6KK3LWTFv2ONyp8fp/preview"},
-    {title:"Continuation 2 (Light Years Used in Astronomy)",link:"https://drive.google.com/file/d/1MYmIXPniDzREF66FhZsiR6ABNJp283cC/preview"},
-    {title:"Continuation 3 (Astronomical Unit)",link:"https://drive.google.com/file/d/1kYQ2oUV6crJ34JAp3xPNabfSnmomCOs1/preview"},
-    {title:"Common Prefixes ",link:"https://drive.google.com/file/d/1ToB3gAKfXTPQOZ_Mxk1wh-RGtBhLx-BG/preview"},
-    {title:"Examples on Prefixes ",link:"https://drive.google.com/file/d/11Glc8VBVdqDlVfSfEaFD8zihVBBGlOdj/preview"},
-    {title:"Conversation of Units ",link:"https://drive.google.com/file/d/1_iEfVnBz2DY_6ABxd0Y4VknIG_xdUYlB/preview"},
-    {title:"Example on Conversation of Units ",link:"https://drive.google.com/file/d/1aNLfrMkwz7FvHUid70nPW1bg589IRWhx/preview"},
-    {title:"Accuracy & Precision (ACCURACY)", link:"https://drive.google.com/file/d/15KOW6g9gqEpE8z2QKHvsv3pPv7ITot0y/preview"},
-    {title:"Accuracy and Precision (PRECISION)",link:"https://drive.google.com/file/d/17UTL9x6FzlRv6tRPgoV8GThzWjfLVuhg/preview"},
-    {title:"Uncertainty of Measurements(INTRO)",link:"https://drive.google.com/file/d/15p1O2fkcQ-MLHjYvP47cJNZ0B6pv5eLO/preview"},
-    {title:"Uncertainty of Measurements(MULTIPLICATION/DIVISION)",link:"https://drive.google.com/file/d/1vI8TySLRvItn7GRwx12AEh-2JXHfxtC4/preview"},
-    {title:"Uncertainty of Measurements(ADDITION/SUBTRACTION)",link:"https://drive.google.com/file/d/1EICWCuCgZAdcpzUYxaZ-diZ8xQ8onOA4/preview"},
-    {title:"Rules of Significant Figures ",link:"https://drive.google.com/file/d/1W1W-g0A9l8_ZxlJ_IPvAjhhslCS8_SUD/preview"},
-    {title:"Examples on Significant figures ",link:"https://drive.google.com/file/d/1FBEo1LZW0NlcWGHb61ogJud5Vf7_qriO/preview"},
-    {title:"Scientific Notation ",link:"https://drive.google.com/file/d/1vDbVIdVS8b_wzpjNRdWEjJ6kKaBLg9t9/preview"},
-    {title:"Principles of Homogeneity ",link:"https://drive.google.com/file/d/1oXOOF-HePvLOCiw7ym-uaUk7RcSSmEVO/preview"},
-    {title:"Applications of Dimensional Analysis ",link:"https://drive.google.com/file/d/1R1QkTL6C7X0tPzLsvG2DNEU3gqluDB8K/preview"},
-    {title:"Limitations of Dimensional Analysis ",link:"https://drive.google.com/file/d/1mqqazZntSKAF8UyQRFN_aSxCXhgCu3Fu/preview"},
-    {title:"Question 1 on Dimensional Analysis ",link:"https://drive.google.com/file/d/1rLOTCaLiU9NX0UquwpFrMorg4i-POkP0/preview"},
-    {title:"Question 2 on Dimensional Analysis ",link:"https://drive.google.com/file/d/1aS04rxR-AB4RdcQJ_PyF5TPR3MfDo2Rm/preview"},
-    {title:"Question 3 on Dimensional Analysis ",link:"https://drive.google.com/file/d/1xL_T-f_EsoUCkuM8nkeFMlPACRtO-86V/preview"},
-    {title:"Question 4 on Dimensional Analysis ",link:"https://drive.google.com/file/d/1rYHgq-2i39JZQoCRfr4Lo683616oZWfy/preview"},
-    {title:"Question 5 on Dimensional Analysis ",link:"https://drive.google.com/file/d/1UNgcybTEe234VWzHSXg7Ac6Ir-pA424N/preview"},
-    {title:"VECTORS & SCALARS (INTRO)",link:"https://drive.google.com/file/d/11LHXXKeYN5PGaBVbogC2rdXMjXdGX9Ld/preview"},
-    {title:"UNIT 10: ELECTROSTATICS (BASICS)/TERM 3 WORK",link:"https://drive.google.com/file/d/15iy-QDNeM2UXyAfzIb8U8u00IoX0JkUX/preview"}
-  ],
-  BI110:[
-    {title:"GENERAL INTRO TO BIOLOGY",link:"https://drive.google.com/file/d/1DR1SPUloBPYqFC4kMoNMh6tkHMpMj9wl/preview"},
-    {title:"THE CELL",link:"https://drive.google.com/file/d/1SomiPDeM2NemzGAPuJwiB3lGmi8fF8vK/preview"},
-    {title:"STRUCTURE OF A PROKARYOTIC CELL ", link:"https://drive.google.com/file/d/1KE3P9LQMqFdGExDeV8U8ivONpOej4z4W/preview"},
-    {title:"FUNCTIONS OF THE PARTS OF A PROKARYOTIC CELL ",link:"https://drive.google.com/file/d/1n492sx0yUB-U5Pd3KcUg98H835umTgQm/preview"},
-    {title:"CHARACTERISTICS OF PROKARYOTIC CELLS ", link:"https://drive.google.com/file/d/1LQWJ5brLhs8ZzkN_huqJngOYvpWrzuOT/preview"},
-    {title:" 3 STAGES OF PROKARYOTIC CELL DIVISION (BINARY FISSION)",link:"https://drive.google.com/file/d/1tfk2WvZK6AQkGKAwfA4s39A_ClA-Y4q0/preview"}
-  ]
+const firebaseConfig = {
+  apiKey: "AIzaSyClCl9tSlMfUNxBWym__WXj8FS_uBOA64M",
+  authDomain: "gptapp-fa2ff.firebaseapp.com",
+  projectId: "gptapp-fa2ff",
+  storageBucket: "gptapp-fa2ff.firebasestorage.app",
+  messagingSenderId: "834440426142",
+  appId: "1:834440426142:web:e01c200e13ee25bade818f",
+  measurementId: "G-GZZ28RMH36"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+let selectedSubject = null;
+let selectedGrade = null;
+let selectedMainTopic = null;
+
+const content = document.getElementById("content");
+const backBtn = document.getElementById("backBtn");
+const previewContainer = document.getElementById("previewContainer");
+const previewIframe = document.getElementById("previewIframe");
+const closePreview = document.getElementById("closePreview");
+
+closePreview.onclick = () => {
+    previewContainer.style.display = "none";
+    previewIframe.src = "";
 };
 
-/* OPEN COURSE */
-function openCourse(course){
-  coursesView.style.display="none";
-  topicsView.style.display="block";
-  courseTitle.innerText=course+" Topics";
-  topicsGrid.innerHTML="";
-  courseTopics[course].forEach(t=>{
-    topicsGrid.innerHTML+=`
-      <div class="card" onclick="playVideo('${t.link}')">
-        <i class="fa fa-play"></i>
-        <span>${t.title}</span>
-      </div>`;
-  });
+backBtn.onclick = () => {
+    if(selectedMainTopic){
+        selectedMainTopic = null;
+        loadVideos();
+    } else if(selectedGrade){
+        selectedGrade = null;
+        loadVideos();
+    } else {
+        selectedSubject = null;
+        loadSubjects();
+    }
+};
+
+// ---- SUBJECTS ----
+function loadSubjects(){
+    content.innerHTML = "";
+    backBtn.style.display = "none";
+
+    db.collection("videos").get().then(snapshot=>{
+        const subjects = [...new Set(snapshot.docs.map(d => d.data().subject))];
+        subjects.sort();
+
+        if(subjects.length === 0){
+            content.innerHTML = "<p>No videos uploaded yet.</p>";
+            return;
+        }
+
+        subjects.forEach(subject=>{
+            const btn = document.createElement("button");
+            btn.className = "button";
+            btn.textContent = subject;
+            btn.onclick = () => {
+                selectedSubject = subject;
+                loadVideos();
+            };
+            content.appendChild(btn);
+        });
+    });
 }
 
-/* BACK */
-function goBack(){
-  topicsView.style.display="none";
-  coursesView.style.display="block";
-  searchInput.value="";
-  showAllCards();
+// ---- VIDEOS ----
+function loadVideos(){
+    content.innerHTML = "";
+    backBtn.style.display = "inline-block";
+
+    db.collection("videos")
+      .where("subject","==",selectedSubject)
+      .get()
+      .then(snapshot=>{
+        if(snapshot.empty){
+            content.innerHTML = "<p>No videos found for this subject</p>";
+            return;
+        }
+
+        // Collect videos based on grades/main topics if available
+        let videos = snapshot.docs.map(doc=>{
+            const data = doc.data();
+            return {
+                id: doc.id,
+                title: data.title,
+                link: data.link,
+                order: data.order || 999,
+                grade: data.grade || "",
+                mainTopic: data.mainTopic || ""
+            };
+        });
+
+        // Filter by selected grade/topic
+        if(selectedGrade !== null) videos = videos.filter(v=>selectedGrade === "" || v.grade === selectedGrade);
+        if(selectedMainTopic !== null) videos = videos.filter(v=>selectedMainTopic === "" || v.mainTopic === selectedMainTopic);
+
+        // Sort by order
+        videos.sort((a,b)=>a.order - b.order);
+
+        if(videos.length === 0){
+            content.innerHTML = "<p>No videos found for this selection</p>";
+            return;
+        }
+
+        videos.forEach(video=>{
+            const card = document.createElement("div");
+            card.className = "file-card";
+            card.textContent = `${video.order !== 999 ? video.order + ". " : ""}${video.title}`;
+            card.onclick = () => openVideo(video.link);
+            content.appendChild(card);
+        });
+    });
 }
 
-/* VIDEO */
-function playVideo(link){
-  videoFrame.src=link;
-  videoModal.style.display="flex";
-}
-function closeVideo(){
-  videoFrame.src="";
-  videoModal.style.display="none";
+// ---- OPEN VIDEO POPUP (Drive or YouTube) ----
+function openVideo(link){
+    const youtubeEmbed = getYouTubeEmbed(link);
+    const driveId = extractDriveId(link);
+
+    if(youtubeEmbed){
+        previewIframe.src = youtubeEmbed;
+        previewContainer.style.display = "block";
+    } else if(driveId){
+        previewIframe.src = `https://drive.google.com/file/d/${driveId}/preview`;
+        previewContainer.style.display = "block";
+    } else {
+        alert("Invalid video link");
+    }
 }
 
-/* SEARCH – MAINLY FOR TOPICS */
-const searchInput=document.getElementById("searchInput");
-searchInput.addEventListener("keyup",()=>{
-  const q=searchInput.value.toLowerCase();
-  document.querySelectorAll(".card").forEach(card=>{
-    card.style.display=card.innerText.toLowerCase().includes(q)?"block":"none";
-  });
-});
-function showAllCards(){
-  document.querySelectorAll(".card").forEach(c=>c.style.display="block");
+// ---- Google Drive ID ----
+function extractDriveId(url){
+    const match = url.match(/[-\w]{25,}/);
+    return match ? match[0] : "";
 }
 
-/* HAMBURGER */
-const menu=document.getElementById("sideMenu");
-const hamburger=document.getElementById("hamburger");
-hamburger.onclick=()=>menu.classList.toggle("open");
-document.addEventListener("click",e=>{
-  if(!menu.contains(e.target)&&!hamburger.contains(e.target)){
-    menu.classList.remove("open");
-  }
-});
+// ---- YouTube ID ----
+function getYouTubeEmbed(url){
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/);
+    return match ? `https://www.youtube.com/embed/${match[1]}` : null;
+}
+
+// INIT
+loadSubjects();
 </script>
 
 </body>

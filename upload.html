@@ -119,10 +119,10 @@ button.cancel { background:#888; color:white; }
 <header>Admin - Upload Content</header>
 
 <div class="nav-tabs">
-    <button class="active" onclick="showTab(event,'videos')">Videos</button>
-    <button onclick="showTab(event,'documents')">Documents</button>
-    <button onclick="showTab(event,'pastpapers')">Past Papers</button>
-    <button onclick="showTab(event,'tasks')">Tasks</button>
+    <button class="active" onclick="showTab('videos')">Videos</button>
+    <button onclick="showTab('documents')">Documents</button>
+    <button onclick="showTab('pastpapers')">Past Papers</button>
+    <button onclick="showTab('tasks')">Tasks</button>
 </div>
 
 <!-- Videos -->
@@ -208,25 +208,26 @@ button.cancel { background:#888; color:white; }
 <script>
 // Firebase Config
 const firebaseConfig = {
-  apiKey: "AIzaSyClCl9tSlMfUNxBWym__WXj8FS_uBOA64M",
-  authDomain: "gptapp-fa2ff.firebaseapp.com",
-  projectId: "gptapp-fa2ff",
-  storageBucket: "gptapp-fa2ff.firebasestorage.app",
-  messagingSenderId: "834440426142",
-  appId: "1:834440426142:web:e01c200e13ee25bade818f",
-  measurementId: "G-GZZ28RMH36"
+  apiKey: "AIzaSyCvL_D8wRVC3hS0mEvTt2J_D-LG7wFFpx0",
+  authDomain: "environmentalgpt-4974a.firebaseapp.com",
+  projectId: "environmentalgpt-4974a",
+  storageBucket: "environmentalgpt-4974a.firebasestorage.app",
+  messagingSenderId: "947094029861",
+  appId: "1:947094029861:web:ffa5c1ad4abff06d6e21cc",
+  measurementId: "G-36T3Y37DS4"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+// Predefined Subjects for dropdown
 const subjectsList = ["BI210","CH210","PH210","MA210","EN211","ED211"];
 
 // --- Tabs ---
-function showTab(e, tabName){
+function showTab(tabName){
     document.querySelectorAll('.tab-section').forEach(sec => sec.style.display='none');
     document.getElementById(tabName).style.display='block';
     document.querySelectorAll('.nav-tabs button').forEach(btn => btn.classList.remove('active'));
-    e.currentTarget.classList.add('active');
+    event.currentTarget.classList.add('active');
 }
 
 // --- Modal ---
@@ -250,8 +251,7 @@ function openModal(collection){
                 <option value="">Select Subject</option>
                 ${subjectOptions}
             </select>
-            <label>Link (YouTube or Direct)</label>
-            <input type="text" id="modal-link" required placeholder="https://...">
+            <label>Link</label><input type="text" id="modal-link" required>
         `;
     } else if(collection==='pastpapers'){
         form.innerHTML = `
@@ -279,12 +279,6 @@ function closeModal(){
     document.getElementById('modal').style.display='none';
 }
 
-// --- YouTube Detection ---
-function getYouTubeEmbed(link){
-    const match = link.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/);
-    return match ? `https://www.youtube.com/embed/${match[1]}` : null;
-}
-
 // --- Load Collections ---
 function loadCollection(collection){
     const tbody = document.getElementById(`${collection}-body`);
@@ -298,10 +292,7 @@ function loadCollection(collection){
                     <td>${data.order || ''}</td>
                     <td>${data.title}</td>
                     <td>${data.subject}</td>
-                    <td>
-                        <a href="${data.link}" target="_blank">Link</a>
-                        ${collection==='videos' ? `<button onclick="previewVideo('${data.link}')">Preview</button>` : ''}
-                    </td>
+                    <td><a href="${data.link}" target="_blank">Link</a></td>
                     <td>
                         <button class="action-btn edit" onclick="editDoc('${collection}','${doc.id}')">Edit</button>
                         <button class="action-btn delete" onclick="deleteDoc('${collection}','${doc.id}')">Delete</button>
@@ -394,26 +385,6 @@ function deleteDoc(collection, docId){
     if(confirm("Are you sure you want to delete this record?")){
         db.collection(collection).doc(docId).delete().then(()=>{ loadCollection(collection); });
     }
-}
-
-// --- Video Preview Modal ---
-const previewContainer = document.createElement('div');
-previewContainer.id='previewContainer';
-previewContainer.style.cssText='display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:2000;justify-content:center;align-items:center;';
-previewContainer.innerHTML=`<iframe id="previewIframe" style="width:80%;height:80%;" allowfullscreen></iframe>
-<button onclick="closePreview()" style="position:absolute;top:20px;right:20px;padding:10px;background:#f44336;color:white;border:none;border-radius:5px;cursor:pointer;font-size:1em;">Close ✖</button>`;
-document.body.appendChild(previewContainer);
-
-function previewVideo(link){
-    const youtubeEmbed = getYouTubeEmbed(link);
-    const iframe = document.getElementById('previewIframe');
-    iframe.src = youtubeEmbed || link;
-    previewContainer.style.display='flex';
-}
-
-function closePreview(){
-    document.getElementById('previewIframe').src='';
-    previewContainer.style.display='none';
 }
 
 // --- Initial Load ---

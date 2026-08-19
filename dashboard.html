@@ -1,195 +1,903 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Dashboard | Learn with GPT</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>NQ gpt app</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 <style>
-/* General Reset */
-body { margin:0; font-family:Arial,sans-serif; background:#f4f6f8; }
+:root{
+  --navy:#081524;--navy2:#0f2740;--navy3:#183955;
+  --accent:#2f7fb8;--accent2:rgba(47,127,184,.12);
+  --ice:#eef3f8;--fog2:#e3ebf3;--fog3:#d6e1ec;
+  --white:#fff;--text:#0a1a2f;--text2:#3d5470;--text3:#88a0b8;
+  --red:#d1495b;--red2:rgba(209,73,91,.1);--green:#1c8a63;--green2:rgba(28,138,99,.1);
+  --amber:#b8862f;--amber2:rgba(184,134,47,.13);
+  --r:16px;--r2:12px;--r3:100px;
+  --sh:0 2px 14px rgba(8,21,36,.08);--nav:70px;--hdr:96px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--ice);color:var(--text);-webkit-font-smoothing:antialiased;overflow:hidden}
+.shell{width:100%;max-width:430px;height:100dvh;margin:0 auto;background:var(--ice);display:flex;flex-direction:column;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,.14)}
 
-/* Header */
-.header {
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    background:#0B3D91;
-    color:white;
-    padding:20px 20px 30px; /* increased top padding */
-    border-bottom-left-radius:22px;
-    border-bottom-right-radius:22px;
-    position:relative;
-}
+/* ═══ HEADER ═══ */
+.topbar{min-height:var(--hdr);background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);flex-shrink:0;display:flex;flex-direction:column;z-index:60;position:relative;border-radius:0 0 26px 26px;box-shadow:0 6px 20px rgba(8,21,36,.25)}
+.topbar::before{content:'';position:absolute;top:-30px;right:-30px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.06),transparent 70%)}
+.tb-row{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 0;position:relative}
+.tb-l{display:flex;align-items:center;gap:10px}
+.tb-ham{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer;font-size:1rem}
+.tb-ham:active{transform:scale(.92)}
+.logo-mark{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.06);border:1.5px dashed rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.55);font-size:.95rem;overflow:hidden;flex-shrink:0;cursor:pointer;position:relative}
+.logo-mark img{width:100%;height:100%;object-fit:cover}
+.tb-name{font-family:'Cormorant Garamond',serif;font-size:1.18rem;font-weight:700;color:#fff;line-height:1.15}
+.tb-name span{color:#9fc9e8}
+.tb-r{display:flex;align-items:center;gap:9px}
+.tb-btn{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.8);cursor:pointer;font-size:.88rem;position:relative}
+.tb-btn:active{transform:scale(.92)}
+.tb-notif-badge{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;background:var(--red);border-radius:9px;border:2px solid var(--navy);display:none;align-items:center;justify-content:center;font-size:.55rem;font-weight:800;color:#fff;padding:0 3px;line-height:1}
+.tb-notif-badge.on{display:flex}
+.tb-av{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:#fff;cursor:pointer;overflow:hidden;flex-shrink:0}
+.tb-av img{width:100%;height:100%;object-fit:cover}
 
-/* Hamburger and logout */
-.header .hamburger, .header .logout {
-    font-size:22px;
-    cursor:pointer;
-}
+/* SEARCH CAPSULE — floats half-tucked into the curved header edge */
+.search-wrap{position:relative;padding:0 16px;margin-top:14px;z-index:5}
+.search-cap{background:var(--white);border-radius:var(--r3);box-shadow:0 8px 22px rgba(8,21,36,.18);display:flex;align-items:center;gap:10px;padding:11px 16px;transform:translateY(20px);border:1px solid var(--fog3)}
+.search-ico{color:var(--accent);font-size:.92rem}
+.search-inp{flex:1;border:none;outline:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:.86rem;color:var(--text);caret-color:var(--accent)}
+.search-inp::placeholder{color:var(--text3)}
+.search-clear{color:var(--text3);font-size:.8rem;cursor:pointer;display:none}
+.search-clear.on{display:block}
+.search-results{position:absolute;left:16px;right:16px;top:66px;background:var(--white);border-radius:var(--r);box-shadow:0 14px 34px rgba(8,21,36,.22);border:1px solid var(--fog3);max-height:min(60vh,420px);overflow-y:auto;display:none;z-index:120}
+.search-results.on{display:block}
+.sr-item{display:flex;align-items:center;gap:11px;padding:12px 14px;border-bottom:1px solid var(--fog3);cursor:pointer}
+.sr-item:last-child{border-bottom:none}
+.sr-item:active{background:var(--ice)}
+.sr-ico{width:34px;height:34px;border-radius:9px;background:var(--accent2);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.sr-t{font-weight:700;font-size:.82rem;color:var(--text)}
+.sr-s{font-size:.68rem;color:var(--text3);margin-top:1px}
+.sr-empty{padding:1.4rem;text-align:center;color:var(--text3);font-size:.8rem}
 
-/* Center area: logo + title + welcome */
-.header-center {
-    flex:1;
-    text-align:center;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-}
+.body{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:calc(var(--nav)+12px);padding-top:30px}
+.body::-webkit-scrollbar{display:none}
+.pg{display:none;padding:0 15px;animation:pgIn .28s cubic-bezier(.4,0,.2,1) both}
+.pg.on{display:block}
+@keyframes pgIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
-.header-logo {
-    height:35px;
-    margin-bottom:5px;
-}
+.bnav{height:var(--nav);background:var(--white);border-top:1px solid var(--fog3);padding:0 4px;padding-bottom:max(env(safe-area-inset-bottom,0px),6px);display:flex;align-items:center;justify-content:space-around;flex-shrink:0;z-index:20}
+.ntab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:8px 4px;border-radius:12px;border:none;background:transparent}
+.ntab:active{transform:scale(.9)}
+.nico{font-size:1.15rem;color:var(--text3);transition:all .25s cubic-bezier(.34,1.56,.64,1)}
+.nlbl{font-size:.58rem;font-weight:600;color:var(--text3)}
+.nbar{width:20px;height:2.5px;background:var(--accent);border-radius:2px;transform:scaleX(0);transition:transform .25s cubic-bezier(.34,1.56,.64,1);margin-top:2px}
+.ntab.on .nico{color:var(--accent);transform:scale(1.2)}
+.ntab.on .nlbl{color:var(--accent);font-weight:700}
+.ntab.on .nbar{transform:scaleX(1)}
 
-.header .title {
-    font-size:20px;
-    font-weight:bold;
-}
+.stitle{font-family:'Cormorant Garamond',serif;font-size:1.28rem;font-style:italic;font-weight:600;color:var(--text);margin:18px 0 11px;display:flex;align-items:center;justify-content:space-between}
+.stitle a{font-size:.7rem;font-style:normal;font-family:'DM Sans',sans-serif;color:var(--accent);font-weight:600;cursor:pointer;text-decoration:none}
 
-.header .welcome {
-    font-size:14px;
-    margin-top:3px;
-    opacity:0.9;
-}
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy3) 100%);border-radius:20px;padding:20px;margin:4px 0 6px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(47,127,184,.35),transparent 70%)}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;margin-bottom:11px;background:rgba(47,127,184,.22);border:1px solid rgba(47,127,184,.4);color:#9fc9e8;padding:3px 10px;border-radius:var(--r3);font-size:.64rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.hpulse{width:5px;height:5px;background:#9fc9e8;border-radius:50%;animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.6)}}
+.hero-h{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-style:italic;line-height:1.2;color:#fff;margin-bottom:7px}
+.hero-h em{color:#9fc9e8}
+.hero-sub{font-size:.76rem;color:rgba(255,255,255,.55);line-height:1.65;margin-bottom:14px}
 
-/* Sidebar Menu */
-.menu {
-    position:fixed;
-    top:0; left:0;
-    width:260px; height:100%;
-    background:#fff;
-    box-shadow:2px 0 6px rgba(0,0,0,0.2);
-    padding-top:20px;
-    transform:translateX(-100%);
-    transition:transform 0.3s ease;
-    z-index:1000;
-    display:flex;
-    flex-direction:column;
-}
-.menu.open { transform:translateX(0); }
-.menu-top { text-align:center; padding:20px 0; border-bottom:1px solid #e3ebf5; }
-.menu-logo { width:100px; height:auto; border-radius:50%; }
-.menu a {
-    display:block;
-    padding:15px 20px;
-    text-decoration:none;
-    color:#333;
-    font-size:16px;
-}
-.menu a i { margin-right:10px; color:#0B3D91; }
-.menu a:hover { background:#e3ebf5; }
+.qgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 4px}
+.qcard{background:var(--white);border-radius:14px;padding:11px 4px;text-align:center;border:1px solid var(--fog3);cursor:pointer;box-shadow:var(--sh)}
+.qcard:active{transform:scale(.94);background:var(--ice)}
+.qico{font-size:1.25rem;margin-bottom:5px;color:var(--accent)}
+.qlbl{font-size:.55rem;font-weight:700;color:var(--text2);line-height:1.25}
 
-/* Grid Cards */
-.grid {
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-    gap:15px;
-    padding:20px;
-}
-.card {
-    background:white;
-    padding:30px 20px;
-    text-align:center;
-    border-radius:14px;
-    cursor:pointer;
-    box-shadow:0 2px 5px rgba(0,0,0,0.08);
-    transition:0.2s;
-}
-.card i { font-size:30px; color:#0B3D91; margin-bottom:10px; }
-.card span { display:block; font-size:16px; font-weight:500; }
-.card:hover { background:#eef3fa; }
+.ann-card{background:linear-gradient(135deg,var(--navy2),var(--navy3));border-radius:var(--r);padding:14px;margin-bottom:10px;border:1px solid rgba(47,127,184,.25)}
+.ann-t{font-weight:700;font-size:.88rem;color:#fff;margin-bottom:4px}
+.ann-b{font-size:.75rem;color:rgba(255,255,255,.62);line-height:1.6}
+.ann-meta{font-size:.62rem;color:rgba(255,255,255,.35);margin-top:6px}
+
+.empty{text-align:center;padding:2.4rem 1rem;color:var(--text3)}
+.empty i{font-size:2.3rem;display:block;margin-bottom:.7rem;opacity:.3}
+.empty p{font-size:.8rem;line-height:1.6}
+.shim{border-radius:12px;background:linear-gradient(90deg,var(--fog3) 25%,var(--fog2) 50%,var(--fog3) 75%);background-size:200% 100%;animation:shim 1.4s infinite}
+@keyframes shim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* COURSES */
+.csearch{display:flex;align-items:center;gap:9px;background:var(--white);border-radius:var(--r2);padding:11px 13px;border:1px solid var(--fog3);margin:6px 0 10px;box-shadow:var(--sh)}
+.csico{font-size:.9rem;color:var(--text3)}
+.csinput{flex:1;background:transparent;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--text)}
+.csinput::placeholder{color:var(--text3)}
+.ci{background:var(--white);border-radius:var(--r);border:1px solid var(--fog3);overflow:hidden;cursor:pointer;box-shadow:var(--sh);margin-bottom:9px}
+.ci-top{display:flex;align-items:center;gap:12px;padding:14px 15px}
+.ci-em{width:48px;height:48px;border-radius:12px;background:var(--accent2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.ci-nm{font-weight:700;font-size:.92rem;color:var(--text)}
+.ci-cd{font-size:.68rem;color:var(--text3);margin-top:2px}
+.ci-arr{margin-left:auto;color:var(--text3);transition:transform .25s cubic-bezier(.4,0,.2,1)}
+.ci.open .ci-arr{transform:rotate(90deg)}
+.ci-body{max-height:0;overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1)}
+.ci.open .ci-body{max-height:700px}
+.ci-chips{display:flex;flex-wrap:wrap;gap:7px;padding:12px 15px;border-top:1px solid var(--fog3)}
+.chip{padding:6px 12px;background:var(--accent2);border:1px solid rgba(47,127,184,.22);border-radius:var(--r3);font-size:.66rem;font-weight:600;color:var(--accent);cursor:pointer;display:flex;align-items:center;gap:5px}
+.chip:active{background:var(--accent);color:#fff}
+
+.viewer{position:fixed;inset:0;background:#000;z-index:999;display:none;flex-direction:column}
+.viewer.on{display:flex}
+.viewer-bar{height:56px;background:var(--navy);display:flex;align-items:center;justify-content:space-between;padding:0 16px;flex-shrink:0}
+.viewer-title{font-weight:600;font-size:.9rem;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:72%}
+.viewer-close{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.1);border:none;color:#fff;font-size:1rem;cursor:pointer}
+.viewer-frame{flex:1;border:none;background:#0f1f30}
+
+.ov{position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:50;display:none}
+.ov.on{display:block}
+.drw{position:absolute;bottom:0;left:0;right:0;background:var(--white);border-radius:22px 22px 0 0;z-index:60;transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);max-height:88vh;display:flex;flex-direction:column;box-shadow:0 -8px 40px rgba(8,21,36,.18)}
+.drw.on{transform:translateY(0)}
+.drw-handle{width:36px;height:4px;background:var(--fog3);border-radius:2px;margin:13px auto 0}
+.drw-hdr{padding:13px 18px 0;display:flex;align-items:center;justify-content:space-between}
+.drw-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-style:italic;font-weight:600;color:var(--text)}
+.drw-x{width:30px;height:30px;border-radius:8px;background:var(--ice);border:1px solid var(--fog3);color:var(--text2);cursor:pointer}
+.drw-body{flex:1;overflow-y:auto;padding:10px 18px 24px}
+.ri2{display:flex;align-items:center;gap:11px;padding:12px;background:var(--ice);border-radius:12px;margin-bottom:7px;border:1px solid var(--fog3);cursor:pointer}
+.ri2-ico{width:36px;height:36px;border-radius:9px;background:var(--accent2);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.ri2-nm{flex:1;font-weight:600;font-size:.82rem;color:var(--text)}
+.ri2-sub{font-size:.66rem;color:var(--text3);margin-top:1px}
+.obtn{padding:4px 11px;background:var(--accent2);border:1px solid rgba(47,127,184,.2);border-radius:var(--r3);font-size:.67rem;font-weight:700;color:var(--accent);cursor:pointer;flex-shrink:0}
+
+/* HAMBURGER SLIDE DRAWER */
+.ham-ov{position:absolute;inset:0;background:rgba(8,21,36,.5);z-index:250;display:none}
+.ham-ov.on{display:block}
+.ham-drw{position:absolute;top:0;left:0;bottom:0;width:78%;max-width:300px;background:var(--white);z-index:260;transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:8px 0 32px rgba(8,21,36,.25)}
+.ham-drw.on{transform:translateX(0)}
+.ham-hdr{background:linear-gradient(135deg,var(--navy),var(--navy2));padding:22px 18px;flex-shrink:0}
+.ham-logo{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.08);border:1.5px dashed rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);margin-bottom:10px;overflow:hidden}
+.ham-logo img{width:100%;height:100%;object-fit:cover}
+.ham-brand{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-style:italic;color:#fff}
+.ham-brand span{color:#9fc9e8}
+.ham-body{flex:1;overflow-y:auto;padding:10px 0}
+.ham-item{display:flex;align-items:center;gap:13px;padding:14px 18px;cursor:pointer;color:var(--text2);font-weight:600;font-size:.88rem;border:none;background:transparent;width:100%;text-align:left}
+.ham-item:active{background:var(--ice)}
+.ham-item i{width:20px;text-align:center;color:var(--accent)}
+.ham-foot{padding:16px 18px;border-top:1px solid var(--fog3);font-size:.68rem;color:var(--text3);flex-shrink:0}
+
+/* INFO MODAL (About / Contact / CA Calculator) */
+.info-ov{position:absolute;inset:0;background:rgba(8,21,36,.55);z-index:300;display:none;align-items:flex-end;backdrop-filter:blur(3px)}
+.info-ov.on{display:flex}
+.info-modal{background:var(--white);border-radius:22px 22px 0 0;width:100%;max-height:88vh;display:flex;flex-direction:column;animation:slideUp .3s cubic-bezier(.4,0,.2,1)}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.info-hdr{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--fog3)}
+.info-title{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-style:italic;font-weight:700;color:var(--text)}
+.info-x{width:30px;height:30px;border-radius:8px;background:var(--ice);border:1px solid var(--fog3);color:var(--text2);cursor:pointer}
+.info-body{flex:1;overflow-y:auto;padding:18px 20px 28px;font-size:.86rem;line-height:1.75;color:var(--text2)}
+.ca-row{display:grid;grid-template-columns:1fr 90px 32px;gap:8px;margin-bottom:8px;align-items:center}
+.ca-row input{padding:.65rem .8rem;border:1.5px solid var(--fog3);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.82rem;background:var(--ice);outline:none}
+.ca-row input:focus{border-color:var(--accent)}
+.ca-rm{color:var(--red);cursor:pointer;text-align:center}
+.ca-result{margin-top:14px;background:var(--accent2);border:1px solid rgba(47,127,184,.25);border-radius:12px;padding:14px;text-align:center}
+.ca-result-n{font-family:'Cormorant Garamond',serif;font-size:2.1rem;font-weight:700;color:var(--accent)}
+.ca-result-l{font-size:.7rem;color:var(--text3);margin-top:2px}
+.btn-line{width:100%;padding:12px;background:var(--ice);border:1.5px dashed var(--fog3);border-radius:12px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.82rem;color:var(--accent);cursor:pointer;margin:6px 0 4px}
+.btn-solid{width:100%;padding:13px;background:var(--navy);border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.88rem;color:#fff;cursor:pointer;margin-top:8px}
+
+/* PROFILE */
+.prof-hero{background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:20px;padding:22px;margin:4px 0 10px;text-align:center;position:relative;overflow:hidden}
+.pav-wrap{position:relative;width:78px;margin:0 auto 12px}
+.pav{width:78px;height:78px;border-radius:20px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.65rem;color:#fff;border:2px solid rgba(255,255,255,.25);overflow:hidden;cursor:pointer}
+.pav img{width:100%;height:100%;object-fit:cover}
+.pav-edit{position:absolute;bottom:-4px;right:-4px;width:24px;height:24px;border-radius:50%;background:var(--accent);border:2px solid var(--navy);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.6rem;cursor:pointer}
+#photoFileInput{display:none}
+.pname{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-style:italic;color:#fff}
+.ifields{display:flex;flex-direction:column;gap:8px;margin-bottom:6px}
+.irow{background:var(--white);border-radius:13px;padding:12px 14px;border:1px solid var(--fog3);display:flex;align-items:center;gap:11px;box-shadow:var(--sh)}
+.irow.locked{opacity:.7}
+.iico{font-size:.95rem;width:24px;text-align:center;flex-shrink:0;color:var(--accent)}
+.ilbl{font-size:.6rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.iinput{width:100%;background:transparent;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;color:var(--text)}
+.lock-note{font-size:.68rem;color:var(--text3);margin-top:5px;display:flex;align-items:center;gap:.3rem}
+.btn-save{width:100%;padding:13px;background:var(--navy);border:none;border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-weight:700;font-size:.9rem;color:#fff;cursor:pointer;box-shadow:0 4px 16px rgba(8,21,36,.2);margin-bottom:9px}
+.btn-out{width:100%;padding:13px;background:var(--red2);border:1px solid rgba(209,73,91,.2);border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-weight:700;font-size:.9rem;color:var(--red);cursor:pointer}
+.btn-admin{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--navy3));border:none;border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-weight:800;font-size:.9rem;color:#fff;cursor:pointer;margin-bottom:9px;text-decoration:none}
+
+.splash{position:absolute;inset:0;background:var(--navy);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .5s}
+.splash.off{opacity:0;pointer-events:none}
+.sl{width:70px;height:70px;border-radius:20px;background:rgba(255,255,255,.08);border:2px dashed rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.55);font-size:1.7rem}
+.sn{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-style:italic;color:#fff}
+.sn span{color:#9fc9e8}
+.sdots{display:flex;gap:6px}
+.sd{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:bop .6s ease infinite alternate}
+.sd:nth-child(2){animation-delay:.15s}.sd:nth-child(3){animation-delay:.3s}
+@keyframes bop{to{transform:translateY(-7px);opacity:.35}}
+
+.notif-ov{position:absolute;inset:0;background:rgba(8,21,36,.5);z-index:350;display:none}
+.notif-ov.on{display:block}
+.notif-drw{position:absolute;top:0;left:0;right:0;background:var(--white);z-index:360;transform:translateY(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:70vh;display:flex;flex-direction:column;border-radius:0 0 22px 22px;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.notif-drw.on{transform:translateY(0)}
+.notif-hdr{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--fog3);background:var(--navy)}
+.notif-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:.5rem}
+.notif-close{width:32px;height:32px;border-radius:9px;background:rgba(255,255,255,.12);border:none;color:#fff;cursor:pointer}
+.notif-body{flex:1;overflow-y:auto;padding:10px 16px 16px}
+.notif-item{padding:12px;background:var(--ice);border-radius:12px;margin-bottom:8px;border-left:3px solid var(--accent)}
+.notif-t{font-weight:700;font-size:.84rem;color:var(--text);margin-bottom:3px}
+.notif-b{font-size:.74rem;color:var(--text2);line-height:1.5}
+.notif-meta{font-size:.62rem;color:var(--text3);margin-top:5px}
+.notif-empty{text-align:center;padding:2rem;color:var(--text3);font-size:.82rem}
+.toast{position:absolute;bottom:calc(var(--nav)+14px);left:14px;right:14px;background:var(--navy);border-radius:13px;padding:11px 16px;font-size:.79rem;font-weight:600;color:#fff;text-align:center;z-index:400;transform:translateY(16px);opacity:0;transition:all .27s;pointer-events:none}
+.toast.on{transform:translateY(0);opacity:1}
+
+/* ═══ ACCESS GATE / SUBSCRIBE ═══ */
+.lock-screen{text-align:center;padding:30px 10px}
+.lock-icon{width:80px;height:80px;border-radius:22px;background:linear-gradient(135deg,var(--navy),var(--navy2));display:flex;align-items:center;justify-content:center;font-size:2rem;color:#9fc9e8;margin:0 auto 1.3rem;box-shadow:0 8px 24px rgba(8,21,36,.2)}
+.lock-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-style:italic;font-weight:700;color:var(--text);margin-bottom:.6rem}
+.lock-sub{font-size:.85rem;color:var(--text3);line-height:1.7;margin-bottom:1.6rem;padding:0 8px}
+.lock-status-card{background:var(--white);border-radius:var(--r);padding:1.2rem;border:1px solid var(--fog3);box-shadow:var(--sh);margin-bottom:1.4rem;text-align:left}
+.lock-status-row{display:flex;align-items:center;gap:.6rem;padding:.5rem 0;border-bottom:1px solid var(--fog3)}
+.lock-status-row:last-child{border-bottom:none}
+.lock-status-row i{width:20px;text-align:center;color:var(--accent)}
+.lock-status-label{font-size:.82rem;color:var(--text2);flex:1}
+.lock-status-val{font-size:.82rem;font-weight:700;color:var(--text)}
+.btn-subscribe{width:100%;padding:15px;background:linear-gradient(135deg,var(--navy),var(--accent));border:none;border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-weight:800;font-size:.95rem;color:#fff;cursor:pointer;box-shadow:0 6px 20px rgba(8,21,36,.3)}
+.price-pill{display:inline-flex;align-items:center;gap:6px;background:var(--amber2);border:1px solid rgba(184,134,47,.3);color:#7a5c1f;padding:.4rem 1rem;border-radius:var(--r3);font-size:.78rem;font-weight:700;margin-bottom:1.2rem}
+.pending-badge{display:inline-flex;align-items:center;gap:6px;background:var(--amber2);border:1px solid rgba(184,134,47,.3);color:#7a5c1f;padding:.5rem 1.1rem;border-radius:var(--r3);font-size:.8rem;font-weight:700;margin-bottom:1.4rem}
+.sub-ov{position:absolute;inset:0;background:rgba(8,21,36,.55);z-index:300;display:none;align-items:flex-end;backdrop-filter:blur(4px)}
+.sub-ov.on{display:flex}
+.sub-modal{background:var(--white);border-radius:24px 24px 0 0;width:100%;max-height:90vh;display:flex;flex-direction:column;animation:slideUp .3s cubic-bezier(.4,0,.2,1)}
+.sub-modal-hdr{padding:16px 20px 6px;display:flex;align-items:center;justify-content:space-between}
+.sub-modal-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-style:italic;font-weight:700;color:var(--text)}
+.sub-modal-x{width:30px;height:30px;border-radius:8px;background:var(--ice);border:1px solid var(--fog3);color:var(--text2);cursor:pointer}
+.sub-modal-body{flex:1;overflow-y:auto;padding:10px 20px 24px}
+.sub-fg{margin-bottom:1rem}
+.sub-fg label{display:block;font-weight:600;font-size:.74rem;color:var(--text2);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.04em}
+.sub-fg input,.sub-fg textarea{width:100%;padding:.78rem 1rem;border:1.5px solid var(--fog3);border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-size:.86rem;background:var(--ice);color:var(--text);outline:none}
+.sub-fg textarea{resize:vertical;min-height:80px}
+.sub-fg input:focus,.sub-fg textarea:focus{border-color:var(--accent);background:var(--white)}
+.course-pick-list{display:flex;flex-direction:column;gap:.5rem;max-height:180px;overflow-y:auto;border:1.5px solid var(--fog3);border-radius:var(--r2);padding:.6rem;background:var(--ice)}
+.course-pick-item{display:flex;align-items:center;gap:.6rem;padding:.4rem .5rem;border-radius:8px}
+.course-pick-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
+.course-pick-item label{font-size:.83rem;color:var(--text);cursor:pointer;flex:1}
+.price-summary{background:var(--amber2);border:1px solid rgba(184,134,47,.25);border-radius:var(--r2);padding:.8rem 1rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between}
+.price-summary-label{font-size:.78rem;color:#7a5c1f;font-weight:600}
+.price-summary-val{font-size:1.1rem;color:#5c4517;font-weight:800}
+.txn-note{background:var(--accent2);border:1px solid rgba(47,127,184,.2);border-radius:var(--r2);padding:.8rem 1rem;font-size:.76rem;color:var(--navy3);line-height:1.6;margin-bottom:1rem}
+.whatsapp-note{display:flex;align-items:center;gap:.6rem;justify-content:center;padding:.85rem;background:var(--green2);border:1px solid rgba(28,138,99,.2);border-radius:var(--r2);text-decoration:none}
+.whatsapp-note i{font-size:1.2rem;color:#25d366}
+.whatsapp-note span{font-size:.78rem;color:var(--green);font-weight:600}
+.sub-alert{padding:.75rem 1rem;border-radius:var(--r2);font-size:.8rem;font-weight:500;margin-bottom:1rem;display:none;line-height:1.5}
+.sub-alert.err{background:#fdf0f1;border:1px solid rgba(209,73,91,.2);color:var(--red);display:block}
+.sub-alert.ok{background:#eefaf5;border:1px solid rgba(28,138,99,.25);color:var(--green);display:block}
+.spinner-sm{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:.4rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.countdown-card{background:linear-gradient(135deg,#0f3d2a,#091e38);border-radius:20px;padding:18px;margin:4px 0 14px;text-align:center;position:relative;overflow:hidden;border:1px solid rgba(28,138,99,.25)}
+.countdown-card.expiring{background:linear-gradient(135deg,#3d2c0f,#380e09);border-color:rgba(184,134,47,.3)}
+.countdown-card.expired{background:linear-gradient(135deg,#3d0f0f,#380909);border-color:rgba(209,73,91,.4)}
+.countdown-label{font-size:.68rem;color:rgba(255,255,255,.5);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
+.countdown-num{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;color:#9fc9e8;line-height:1}
+.countdown-card.expiring .countdown-num{color:#e8c88a}
+.countdown-card.expired .countdown-num{color:#ff8f8f}
+.countdown-unit{font-size:.78rem;color:rgba(255,255,255,.6);margin-top:.3rem}
+.countdown-date{font-size:.7rem;color:rgba(255,255,255,.4);margin-top:.6rem}
 </style>
 </head>
-
 <body>
+<div class="shell" id="shell">
+  <div class="splash" id="splash"><div class="sl"><i class="fas fa-image"></i></div><div class="sn">First Year <span>Hub</span></div><div class="sdots"><div class="sd"></div><div class="sd"></div><div class="sd"></div></div></div>
 
-<!-- Sidebar -->
-<div id="sideMenu" class="menu">
-    <div class="menu-top"><img src="nqlogo.jpg" alt="Logo" class="menu-logo"></div>
-    <a href="about.html"><i class="fa-solid fa-phone"></i>Contact Us</a>
-    <a href="motivation.html"><i class="fa-solid fa-lightbulb"></i>Motivation</a>
-    <a href="calculator.html"><i class="fa-solid fa-calculator"></i>Calculator</a>
-    <a href="ca_calculator.html"><i class="fa-solid fa-calculator"></i>CA-Calculator</a>
-<a href="home.html"><i class="fa-solid"></I>Admin</a>
-</div>
+  <header class="topbar">
+    <div class="tb-row">
+      <div class="tb-l">
+        <div class="tb-ham" onclick="openHam()"><i class="fas fa-bars"></i></div>
+        <div class="logo-mark" id="logoMark"><i class="fas fa-image"></i></div>
+        <div class="tb-name">First Year <span>Hub</span></div>
+      </div>
+      <div class="tb-r">
+        <div class="tb-btn" onclick="openNotifDrawer()"><i class="fas fa-bell"></i><div class="tb-notif-badge" id="notifBadge"></div></div>
+        <div class="tb-av" id="tbAv" onclick="goPage('profile')"><span id="tbAvInitials">?</span></div>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <div class="search-cap">
+        <span class="search-ico"><i class="fas fa-search"></i></span>
+        <input class="search-inp" id="globalSearch" placeholder="Search notes, papers, videos, quizzes…" oninput="doGlobalSearch(this.value)" onfocus="doGlobalSearch(this.value)"/>
+        <span class="search-clear" id="searchClearBtn" onclick="clearGlobalSearch()"><i class="fas fa-times-circle"></i></span>
+      </div>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+  </header>
 
-<!-- Header -->
-<div class="header">
-    <div class="hamburger"><i class="fa-solid fa-bars"></i></div>
+  <div class="body" id="appBody">
 
-    <!-- Centered logo + title + welcome -->
-    <div class="header-center">
-        <img src="nqlogo.jpg" alt="Logo" class="header-logo">
-        <div class="title">Learn with GPT</div>
-        <div class="welcome">Learn New Things Today<strong id=""></strong></div>
+    <!-- HOME (access-gated) -->
+    <div class="pg on" id="pg-home">
+      <div id="lockScreenWrap"></div>
+      <div id="homeContentWrap" style="display:none">
+        <div class="hero">
+          <div class="hero-badge"><div class="hpulse"></div><span>First Year Hub</span></div>
+          <div class="hero-h">Study Smart,<br><em>Score Higher.</em></div>
+          <div class="hero-sub">Lecturer notes, tutorials, past papers and revision tools — organised by course.</div>
+        </div>
+        <div class="stitle">Browse by Category</div>
+        <div class="qgrid" id="catGrid"></div>
+        <div class="stitle">Announcements</div>
+        <div id="annList"><div class="shim" style="height:80px;margin-bottom:8px"></div></div>
+        <div class="stitle">Recently Added <a onclick="goPage('courses')">See all</a></div>
+        <div id="recentList"><div class="shim" style="height:65px;margin-bottom:8px"></div><div class="shim" style="height:65px;margin-bottom:8px"></div></div>
+      </div>
     </div>
 
-    <div class="logout"><i class="fa-solid fa-power-off"></i></div>
-</div>
+    <!-- COURSES -->
+    <div class="pg" id="pg-courses">
+      <div class="csearch" style="margin-top:14px"><span class="csico"><i class="fas fa-search"></i></span><input class="csinput" id="csInput" placeholder="Search courses…" oninput="filterCourses(this.value)"/></div>
+      <div id="clist"><div class="shim" style="height:80px;margin-bottom:9px"></div></div>
+    </div>
 
-<!-- Main Grid -->
-<div class="grid">
-    <div class="card" onclick="location.href='videos.html'"><i class="fa-solid fa-play"></i><span>Videos</span></div>
-    <div class="card" onclick="location.href='documents.html'"><i class="fa-solid fa-folder-open"></i><span>Documents</span></div>
-    <div class="card" onclick="location.href='quiz.html'"><i class="fa-solid fa-circle-question"></i><span>Quiz</span></div>
-    <div class="card" onclick="location.href='pastpapers.html'"><i class="fa-solid fa-box-archive"></i><span>Past Papers</span></div>
+    <!-- PAST PAPERS -->
+    <div class="pg" id="pg-papers">
+      <div class="stitle" style="margin-top:14px">Past Papers</div>
+      <div id="pcards"><div class="shim" style="height:120px;margin-bottom:9px"></div></div>
+    </div>
+
+    <!-- QUIZZES -->
+    <div class="pg" id="pg-quizzes">
+      <div class="stitle" style="margin-top:14px">Online Quizzes</div>
+      <div id="quizList"><div class="shim" style="height:70px;margin-bottom:9px"></div></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="pg" id="pg-profile">
+      <div class="prof-hero">
+        <div class="pav-wrap">
+          <div class="pav" id="profAv" onclick="triggerPhotoUpload()"><span id="profAvInitials">?</span></div>
+          <div class="pav-edit" onclick="triggerPhotoUpload()"><i class="fas fa-camera"></i></div>
+        </div>
+        <input type="file" id="photoFileInput" accept="image/*" onchange="uploadProfilePhoto(this)"/>
+        <div class="pname" id="profName">Loading…</div>
+      </div>
+      <div id="countdownWrap"></div>
+      <div class="stitle" style="margin-top:4px">My Information</div>
+      <div class="ifields">
+        <div class="irow"><span class="iico"><i class="fas fa-user"></i></span><div style="flex:1"><div class="ilbl">Full Name</div><input class="iinput" id="pName" type="text"/></div></div>
+        <div class="irow"><span class="iico"><i class="fas fa-envelope"></i></span><div style="flex:1"><div class="ilbl">Email</div><input class="iinput" id="pEmail" type="email" readonly/></div></div>
+        <div class="irow"><span class="iico"><i class="fas fa-phone"></i></span><div style="flex:1"><div class="ilbl">Phone</div><input class="iinput" id="pPhone" type="tel" placeholder="+260 97x xxx xxx"/></div></div>
+        <div class="irow"><span class="iico"><i class="fas fa-id-card"></i></span><div style="flex:1"><div class="ilbl">Student ID</div><input class="iinput" id="pSid" type="text"/></div></div>
+      </div>
+      <div id="subscribeBtnWrap" style="margin-top:14px"></div>
+      <div style="height:6px"></div>
+      <div id="adminBtnWrap"></div>
+      <button class="btn-save" onclick="saveProfile()"><i class="fas fa-save"></i>&nbsp; Save Changes</button>
+      <button class="btn-out" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i>&nbsp; Sign Out</button>
+      <div style="height:10px"></div>
+    </div>
+
+  </div>
+
+  <nav class="bnav">
+    <button class="ntab on" id="nt-home" onclick="goPage('home')"><div class="nico"><i class="fas fa-house"></i></div><div class="nlbl">Home</div><div class="nbar"></div></button>
+    <button class="ntab" id="nt-courses" onclick="goPage('courses')"><div class="nico"><i class="fas fa-book-open"></i></div><div class="nlbl">Courses</div><div class="nbar"></div></button>
+    <button class="ntab" id="nt-papers" onclick="goPage('papers')"><div class="nico"><i class="fas fa-scroll"></i></div><div class="nlbl">Papers</div><div class="nbar"></div></button>
+    <button class="ntab" id="nt-quizzes" onclick="goPage('quizzes')"><div class="nico"><i class="fas fa-puzzle-piece"></i></div><div class="nlbl">Quizzes</div><div class="nbar"></div></button>
+    <button class="ntab" id="nt-profile" onclick="goPage('profile')"><div class="nico"><i class="fas fa-user-circle"></i></div><div class="nlbl">Profile</div><div class="nbar"></div></button>
+  </nav>
+
+  <!-- HAMBURGER DRAWER -->
+  <div class="ham-ov" id="hamOv" onclick="closeHam()"></div>
+  <div class="ham-drw" id="hamDrw">
+    <div class="ham-hdr">
+      <div class="ham-logo" id="hamLogo"><i class="fas fa-image"></i></div>
+      <div class="ham-brand">First Year <span>Hub</span></div>
+    </div>
+    <div class="ham-body">
+      <button class="ham-item" onclick="openInfo('about')"><i class="fas fa-info-circle"></i> About</button>
+      <button class="ham-item" onclick="openInfo('contact')"><i class="fas fa-envelope-open-text"></i> Contact</button>
+      <button class="ham-item" onclick="openInfo('ca')"><i class="fas fa-calculator"></i> CA Calculator</button>
+    </div>
+    <div class="ham-foot">First Year Hub · Learning made simple</div>
+  </div>
+
+  <!-- INFO MODAL: About / Contact / CA Calculator -->
+  <div class="info-ov" id="infoOv" onclick="if(event.target===this)closeInfo()">
+    <div class="info-modal">
+      <div class="info-hdr"><div class="info-title" id="infoTitle">About</div><button class="info-x" onclick="closeInfo()"><i class="fas fa-times"></i></button></div>
+      <div class="info-body" id="infoBody"></div>
+    </div>
+  </div>
+
+  <div class="ov" id="ov" onclick="closeDrawer()"></div>
+  <div class="drw" id="drw">
+    <div class="drw-handle"></div>
+    <div class="drw-hdr"><div class="drw-title" id="drwTitle">Resources</div><button class="drw-x" onclick="closeDrawer()"><i class="fas fa-times"></i></button></div>
+    <div class="drw-body" id="drwBody"></div>
+  </div>
+
+  <div class="viewer" id="viewer">
+    <div class="viewer-bar"><div class="viewer-title" id="viewerTitle">Document</div><button class="viewer-close" onclick="closeViewer()"><i class="fas fa-times"></i></button></div>
+    <iframe class="viewer-frame" id="viewerFrame" allowfullscreen></iframe>
+  </div>
+
+  <div class="notif-ov" id="notifOv" onclick="closeNotifDrawer()"></div>
+  <div class="notif-drw" id="notifDrw">
+    <div class="notif-hdr"><div class="notif-title"><i class="fas fa-bell"></i> Notifications</div><button class="notif-close" onclick="closeNotifDrawer()"><i class="fas fa-times"></i></button></div>
+    <div class="notif-body" id="notifBody"></div>
+  </div>
+
+  <!-- SUBSCRIBE MODAL -->
+  <div class="sub-ov" id="subOv" onclick="if(event.target===this)closeSubModal()">
+    <div class="sub-modal">
+      <div class="sub-modal-hdr"><div class="sub-modal-title">Subscribe</div><button class="sub-modal-x" onclick="closeSubModal()"><i class="fas fa-times"></i></button></div>
+      <div class="sub-modal-body">
+        <div class="sub-alert" id="subAlert"></div>
+        <div id="subPickWrap"></div>
+        <div class="price-summary"><div class="price-summary-label" id="priceLabel">Plan</div><div class="price-summary-val" id="priceVal">—</div></div>
+        <div class="sub-fg"><label>Transaction ID</label><input type="text" id="txnId" placeholder="e.g. MTN12345678 or paste reference"/></div>
+        <div class="sub-fg"><label>Additional Note (optional)</label><textarea id="subNote" placeholder="Any extra info for the admin…"></textarea></div>
+        <div class="txn-note" id="paymentInstructions"><i class="fas fa-info-circle"></i> Pay via Mobile Money, then paste your Transaction ID above. Access is activated once the admin verifies payment.</div>
+        <button class="btn-subscribe" id="submitSubBtn" onclick="submitSubscription()"><i class="fas fa-paper-plane"></i> Submit Payment Request</button>
+        <a href="#" id="whatsappNote" target="_blank" rel="noopener" class="whatsapp-note" style="margin-top:.7rem"><i class="fab fa-whatsapp"></i><span>For quick response, text the admin on WhatsApp</span></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toastEl"></div>
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, addDoc, collection, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
+// ── Firebase config — paste this client's project config here ──
 const firebaseConfig = {
-    apiKey: "AIzaSyClCl9tSlMfUNxBWym__WXj8FS_uBOA64M",
-    authDomain: "gptapp-fa2ff.firebaseapp.com",
-    projectId: "gptapp-fa2ff"
+
+
+
+
+    
 };
+const CLOUDINARY_CLOUD="dpm7avyrl", CLOUDINARY_PRESET="Unplug";
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const fapp=initializeApp(firebaseConfig),auth=getAuth(fapp),db=getFirestore(fapp);
+let CU=null,PROF=null;
+let COURSES=[],RESOURCES=[],PAPERS=[],QUIZZES=[],VIDEOS=[],ANNOUNCEMENTS=[];
+let PAYMENT={mode:'per_month',amount:0,paymentNumber:'',paymentName:'',note:'',whatsapp:''};
+let ACCESS={trialEnabled:true,trialDays:5};
+let IS_SUBSCRIBED=false,DAYS_LEFT=null;
+const $=id=>document.getElementById(id);
+const ini=n=>(n||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
 
-/* Sidebar toggle */
-const sideMenu = document.getElementById("sideMenu");
-const hamburger = document.querySelector('.hamburger');
-hamburger.onclick = () => sideMenu.classList.toggle("open");
+// The resource categories for this program
+const CATS=[
+  {key:'lecturernotes',label:'Lecturer Notes',icon:'📘',col:'resources'},
+  {key:'tutorialsheets',label:'Tutorial Sheets',icon:'📝',col:'resources'},
+  {key:'workedsolutions',label:'Worked Solutions',icon:'✅',col:'resources'},
+  {key:'videos',label:'Videos',icon:'🎥',col:'videos'},
+  {key:'pastpapers',label:'Past Papers',icon:'📜',col:'pastpapers'},
+  {key:'quiz',label:'Online Quiz',icon:'🧩',col:'quizzes'}
+];
+const catByKey=k=>CATS.find(c=>c.key===k);
 
-/* Click outside closes sidebar */
-document.addEventListener('click', e=>{
-    if(!sideMenu.contains(e.target) && !hamburger.contains(e.target)){
-        sideMenu.classList.remove("open");
-    }
+function gdrivePrev(url){
+  if(!url)return '';
+  const m1=url.match(/\/d\/([a-zA-Z0-9_-]+)/),m2=url.match(/id=([a-zA-Z0-9_-]+)/);
+  const id=(m1&&m1[1])||(m2&&m2[1]);
+  if(id)return `https://drive.google.com/file/d/${id}/preview`;
+  const yt=url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if(yt)return `https://www.youtube.com/embed/${yt[1]}`;
+  return url;
+}
+window.openViewer=function(title,url){$('viewerTitle').textContent=title;$('viewerFrame').src=gdrivePrev(url);$('viewer').classList.add('on');};
+window.closeViewer=function(){$('viewer').classList.remove('on');$('viewerFrame').src='';};
+
+onAuthStateChanged(auth,async u=>{
+  if(!u){location.href='login.html';return;}
+  CU=u;
+  const s=await getDoc(doc(db,'users',u.uid));
+  PROF=s.exists()?s.data():{fullName:u.displayName||'Student',studentId:'—',email:u.email,profilePhoto:'',phone:''};
+  if(PROF.canLogin===false){await signOut(auth);location.href='login.html';return;}
+  fillUI(PROF);
+  await loadBranding();
+  await loadSettings();
+  checkAccessStatus();
+  await loadAllData();
+  renderAccessGate();renderCountdown();renderSubscribeButton();
+  setTimeout(()=>$('splash').classList.add('off'),600);
 });
 
-/* Close sidebar on link click */
-sideMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', ()=>{
-    sideMenu.classList.remove("open");
-}));
+async function loadBranding(){
+  try{
+    const s=await getDoc(doc(db,'settings','branding'));
+    const url=s.exists()?s.data().logoUrl:'';
+    if(url){
+      $('logoMark').innerHTML=`<img src="${url}"/>`;
+      $('hamLogo').innerHTML=`<img src="${url}"/>`;
+    }
+  }catch(e){/* no branding doc yet */}
+}
+async function loadSettings(){
+  try{const s=await getDoc(doc(db,'settings','payment'));if(s.exists())Object.assign(PAYMENT,s.data());}catch(e){}
+  try{const s=await getDoc(doc(db,'settings','access'));if(s.exists())Object.assign(ACCESS,s.data());}catch(e){}
+  if(PAYMENT.whatsapp)$('whatsappNote').href='https://wa.me/'+PAYMENT.whatsapp.replace(/[^0-9]/g,'');
+  if(PAYMENT.note)$('paymentInstructions').innerHTML=`<i class="fas fa-info-circle"></i> ${PAYMENT.note}`;
+}
 
-/* Logout */
-document.querySelector('.logout').onclick = async ()=>{
-    await signOut(auth);
-    localStorage.removeItem("name");
-    window.location.href = "login.html";
+// ── ACCESS STATUS: free trial vs restricted vs subscribed ──
+function checkAccessStatus(){
+  if(PROF.isSubscribed===true){
+    IS_SUBSCRIBED=true;
+    if(PROF.dueDate){
+      const due=new Date(PROF.dueDate);
+      DAYS_LEFT=Math.ceil((due-new Date())/(1000*60*60*24));
+      if(DAYS_LEFT<=0){IS_SUBSCRIBED=false;}
+    }else{DAYS_LEFT=null;}
+    if(IS_SUBSCRIBED){PROF._onTrial=false;return;}
+  }
+  // Not (or no longer) subscribed — check free trial
+  if(ACCESS.trialEnabled){
+    const trialStart=PROF.trialStart?.toDate?PROF.trialStart.toDate():(PROF.trialStart?new Date(PROF.trialStart):null);
+    if(trialStart){
+      const msLeft=(trialStart.getTime()+(ACCESS.trialDays*24*60*60*1000))-Date.now();
+      const daysLeft=Math.ceil(msLeft/(1000*60*60*24));
+      if(daysLeft>0){IS_SUBSCRIBED=true;PROF._onTrial=true;PROF._trialDaysLeft=daysLeft;return;}
+    }
+  }
+  PROF._onTrial=false;IS_SUBSCRIBED=false;
+}
+
+function fillUI(p){
+  const nm=p.fullName||'Student';const initials=ini(nm);
+  $('tbAvInitials').textContent=initials;
+  if(p.profilePhoto){const img=document.createElement('img');img.src=p.profilePhoto;$('tbAv').innerHTML='';$('tbAv').appendChild(img);}
+  $('profAvInitials').textContent=initials;
+  if(p.profilePhoto){const img=document.createElement('img');img.src=p.profilePhoto;$('profAv').innerHTML='';$('profAv').appendChild(img);}
+  $('profName').textContent=nm;
+  $('pName').value=nm;$('pEmail').value=p.email||CU.email;$('pPhone').value=p.phone||'';
+  $('pSid').value=p.studentId||'';
+  renderAdminButton(p);
+}
+function renderAdminButton(p){
+  const wrap=$('adminBtnWrap');
+  wrap.innerHTML = p.role==='admin' ? `<a href="admin.html" class="btn-admin"><i class="fas fa-user-shield"></i> Open Admin Panel</a>` : '';
+}
+
+function renderAccessGate(){
+  const lockWrap=$('lockScreenWrap'), homeWrap=$('homeContentWrap');
+  ['nt-courses','nt-papers','nt-quizzes'].forEach(id=>{
+    const el=$(id);
+    if(!IS_SUBSCRIBED){el.style.opacity='.4';}else{el.style.opacity='1';}
+  });
+  if(IS_SUBSCRIBED){lockWrap.style.display='none';homeWrap.style.display='block';return;}
+  homeWrap.style.display='none';lockWrap.style.display='block';
+  let statusHtml='';
+  if(PROF.subscriptionStatus==='pending')statusHtml=`<div class="pending-badge"><i class="fas fa-clock"></i> Payment Pending Approval</div>`;
+  const priceTxt=PAYMENT.mode==='per_course'?`K${PAYMENT.amount||0} per course / month`:`K${PAYMENT.amount||0} per month`;
+  lockWrap.innerHTML=`
+    <div class="lock-screen">
+      <div class="lock-icon"><i class="fas fa-lock"></i></div>
+      <div class="lock-title">Unlock Full Access</div>
+      <div class="lock-sub">${ACCESS.trialEnabled?'Your free trial has ended.':'Full access is by subscription.'} Subscribe to continue accessing notes, tutorials, videos, past papers and revision tools.</div>
+      ${statusHtml}
+      <div class="price-pill"><i class="fas fa-tag"></i> ${priceTxt}</div>
+      <div class="lock-status-card">
+        <div class="lock-status-row"><i class="fas fa-user-circle"></i><div class="lock-status-label">Account Status</div><div class="lock-status-val" style="color:var(--amber)">Not subscribed</div></div>
+      </div>
+      <button class="btn-subscribe" onclick="openSubModal()"><i class="fas fa-credit-card"></i> Subscribe Now</button>
+    </div>`;
+}
+
+function renderCountdown(){
+  const wrap=$('countdownWrap');
+  if(PROF._onTrial){
+    const d=PROF._trialDaysLeft;const cls=d<=1?'expiring':'';
+    wrap.innerHTML=`<div class="countdown-card ${cls}"><div class="countdown-label">🎁 Free Trial Active</div><div class="countdown-num">${d}</div><div class="countdown-unit">${d===1?'day remaining':'days remaining'}</div><div class="countdown-date">Full access — no subscription needed yet</div></div>`;
+    return;
+  }
+  if(!PROF.dueDate||!PROF.isSubscribed){wrap.innerHTML='';return;}
+  const due=new Date(PROF.dueDate);
+  const dateStr=due.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  let cls='',label='',num=DAYS_LEFT,unit='days remaining';
+  if(DAYS_LEFT<=0){cls='expired';label='Subscription Status';num='Expired';unit='Please renew your subscription';}
+  else if(DAYS_LEFT<=5){cls='expiring';label='Access Expiring Soon';unit=DAYS_LEFT===1?'day remaining':'days remaining';}
+  else{label='Access Valid For';unit=DAYS_LEFT===1?'day remaining':'days remaining';}
+  wrap.innerHTML=`<div class="countdown-card ${cls}"><div class="countdown-label">${label}</div><div class="countdown-num">${num}</div><div class="countdown-unit">${unit}</div><div class="countdown-date">Expires on ${dateStr}</div></div>`;
+}
+
+function renderSubscribeButton(){
+  const wrap=$('subscribeBtnWrap');
+  wrap.innerHTML = IS_SUBSCRIBED
+    ? `<button class="btn-subscribe" style="background:linear-gradient(135deg,var(--green),#0f7a52)" onclick="openSubModal()"><i class="fas fa-redo"></i> Renew / Manage Subscription</button>`
+    : `<button class="btn-subscribe" onclick="openSubModal()"><i class="fas fa-credit-card"></i> Subscribe Now</button>`;
+}
+
+// ── SUBSCRIBE MODAL ──
+window.openSubModal=function(){
+  clrSubAlert();$('txnId').value='';$('subNote').value='';
+  const pickWrap=$('subPickWrap');
+  if(PAYMENT.mode==='per_course'){
+    pickWrap.innerHTML=`<div class="sub-fg"><label>Select Courses to Subscribe</label><div class="course-pick-list" id="coursePickList"></div></div>`;
+    const list=COURSES;
+    $('coursePickList').innerHTML=list.length?list.map(c=>`<div class="course-pick-item"><input type="checkbox" id="pick-${c.id}" onchange="updatePriceSummary()"/><label for="pick-${c.id}">${c.icon||'📚'} ${c.name}</label></div>`).join(''):'<div style="font-size:.8rem;color:var(--text3)">No courses available yet.</div>';
+  }else{
+    pickWrap.innerHTML='';
+  }
+  updatePriceSummary();
+  $('subOv').classList.add('on');
+};
+window.closeSubModal=()=>$('subOv').classList.remove('on');
+function clrSubAlert(){$('subAlert').className='sub-alert';}
+function setSubAlert(msg,type){const el=$('subAlert');el.textContent=msg;el.className='sub-alert '+type;}
+window.updatePriceSummary=function(){
+  if(PAYMENT.mode==='per_course'){
+    const checked=COURSES.filter(c=>$('pick-'+c.id)?.checked);
+    $('priceLabel').textContent=checked.length+' course'+(checked.length!==1?'s':'')+' selected';
+    $('priceVal').textContent='K'+(checked.length*(PAYMENT.amount||0));
+  }else{
+    $('priceLabel').textContent='Monthly access';
+    $('priceVal').textContent='K'+(PAYMENT.amount||0);
+  }
+};
+window.submitSubscription=async function(){
+  clrSubAlert();
+  const txnId=$('txnId').value.trim();
+  let requestedCourses=[];
+  if(PAYMENT.mode==='per_course'){
+    requestedCourses=COURSES.filter(c=>$('pick-'+c.id)?.checked).map(c=>c.name);
+    if(!requestedCourses.length){setSubAlert('Please select at least one course','err');return;}
+  }
+  if(!txnId){setSubAlert('Please enter your transaction ID','err');return;}
+  const btn=$('submitSubBtn');btn.disabled=true;btn.innerHTML='<span class="spinner-sm"></span>Submitting…';
+  try{
+    await addDoc(collection(db,'subscriptions'),{
+      uid:CU.uid,fullName:PROF.fullName,email:PROF.email||CU.email,phone:PROF.phone||'',
+      studentId:PROF.studentId||'',requestedCourses,transactionId:txnId,note:$('subNote').value.trim(),
+      planMode:PAYMENT.mode,amount:PAYMENT.mode==='per_course'?requestedCourses.length*(PAYMENT.amount||0):(PAYMENT.amount||0),
+      status:'pending',submittedAt:serverTimestamp(),
+    });
+    await updateDoc(doc(db,'users',CU.uid),{subscriptionStatus:'pending'});
+    PROF.subscriptionStatus='pending';
+    setSubAlert('✅ Request submitted! You will be notified once approved.','ok');
+    showToast('✅ Request submitted!');
+    setTimeout(()=>{closeSubModal();renderAccessGate();},1500);
+  }catch(e){setSubAlert('Error: '+e.message,'err');}
+  btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> Submit Payment Request';
 };
 
-/* Show username */
-onAuthStateChanged(auth, async user=>{
-    if(!user) return window.location.href="login.html";
-    try{
-        const snap = await getDoc(doc(db,"users",user.uid));
-        const name = snap.exists()? snap.data().name : "User";
-        document.getElementById("username").innerText = name;
-        localStorage.setItem("name", name);
-    }catch(e){
-        document.getElementById("username").innerText = localStorage.getItem("name") || "User";
-    }
+// ── PROFILE PHOTO ──
+window.triggerPhotoUpload=()=>$('photoFileInput').click();
+window.uploadProfilePhoto=async function(input){
+  if(!input.files||!input.files[0])return;
+  const file=input.files[0];showToast('Uploading photo…');
+  try{
+    const fd=new FormData();fd.append('file',file);fd.append('upload_preset',CLOUDINARY_PRESET);
+    const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,{method:'POST',body:fd});
+    const data=await res.json();
+    if(data.secure_url){await updateDoc(doc(db,'users',CU.uid),{profilePhoto:data.secure_url});PROF.profilePhoto=data.secure_url;fillUI(PROF);showToast('✅ Profile photo updated!');}
+    else{showToast('Upload failed. Try again.');}
+  }catch(e){showToast('Upload error: '+e.message);}
+};
+window.saveProfile=async()=>{
+  if(!CU)return;
+  const d={fullName:$('pName').value.trim(),phone:$('pPhone').value.trim(),studentId:$('pSid').value.trim()};
+  await updateDoc(doc(db,'users',CU.uid),d);
+  Object.assign(PROF,d);fillUI(PROF);showToast('✅ Profile saved!');
+};
+window.doLogout=async()=>{await signOut(auth);location.href='index.html';};
+
+// ── LOAD DATA ──
+async function loadAllData(){
+  try{
+    const [cS,rS,pS,vS,qS,aS]=await Promise.all([
+      getDocs(query(collection(db,'courses'),orderBy('name'))),
+      getDocs(query(collection(db,'resources'),orderBy('createdAt','desc'))),
+      getDocs(query(collection(db,'pastpapers'),orderBy('createdAt','desc'))),
+      getDocs(query(collection(db,'videos'),orderBy('createdAt','desc'))),
+      getDocs(query(collection(db,'quizzes'),orderBy('createdAt','desc'))),
+      getDocs(query(collection(db,'announcements'),orderBy('createdAt','desc'))),
+    ]);
+    COURSES=cS.docs.map(d=>({id:d.id,...d.data()}));
+    RESOURCES=rS.docs.map(d=>({id:d.id,...d.data()}));
+    PAPERS=pS.docs.map(d=>({id:d.id,...d.data()}));
+    VIDEOS=vS.docs.map(d=>({id:d.id,...d.data()}));
+    QUIZZES=qS.docs.map(d=>({id:d.id,...d.data()}));
+    ANNOUNCEMENTS=aS.docs.map(d=>({id:d.id,...d.data()}));
+  }catch(e){console.warn(e);}
+  const unread=ANNOUNCEMENTS.length;
+  const badge=$('notifBadge');
+  if(unread>0){badge.textContent=unread>9?'9+':String(unread);badge.classList.add('on');}else{badge.classList.remove('on');}
+  renderCatGrid();renderAnnouncements();renderRecent();renderCourses();renderPapers();renderQuizzes();
+}
+
+// ── CATEGORY GRID (home) ──
+function renderCatGrid(){
+  const el=$('catGrid');
+  el.innerHTML=CATS.map(c=>{
+    return `<div class="qcard" onclick="openCategory('${c.key}')"><div class="qico">${c.icon}</div><div class="qlbl">${c.label}</div></div>`;
+  }).join('');
+}
+window.openCategory=key=>{
+  const cat=catByKey(key);
+  if(cat.col==='pastpapers'){goPage('papers');return;}
+  if(cat.col==='quizzes'){goPage('quizzes');return;}
+  goPage('courses');
+};
+
+function renderAnnouncements(){
+  const el=$('annList');
+  if(!ANNOUNCEMENTS.length){el.innerHTML='<div class="empty"><i class="fas fa-bullhorn"></i><p>No announcements yet</p></div>';return;}
+  el.innerHTML=ANNOUNCEMENTS.slice(0,4).map(a=>`<div class="ann-card"><div class="ann-t">${a.title||''}</div><div class="ann-b">${a.body||''}</div><div class="ann-meta">${a.priority||''}</div></div>`).join('');
+}
+function renderRecent(){
+  const el=$('recentList');
+  if(!RESOURCES.length){el.innerHTML='<div class="empty"><i class="fas fa-folder-open"></i><p>No resources uploaded yet</p></div>';return;}
+  el.innerHTML=RESOURCES.slice(0,5).map(r=>`<div class="ri2" onclick="openViewer('${(r.title||'').replace(/'/g,"\\'")}','${r.driveLink||''}')"><div class="ri2-ico">${catByKey(r.category)?.icon||'📁'}</div><div><div class="ri2-nm">${r.title||'Untitled'}</div><div class="ri2-sub">${r.course||''} · ${catByKey(r.category)?.label||''}</div></div></div>`).join('');
+}
+
+// ── COURSES ──
+function renderCourses(){
+  const list=COURSES;
+  const el=$('clist');
+  if(!list.length){el.innerHTML='<div class="empty"><i class="fas fa-book-open"></i><p>No courses available yet</p></div>';return;}
+  el.innerHTML=list.map(c=>{
+    const cRes=RESOURCES.filter(r=>r.courseId===c.id||r.course===c.name);
+    const cVid=VIDEOS.filter(v=>v.courseId===c.id||v.course===c.name);
+    const cPap=PAPERS.filter(p=>p.courseId===c.id||p.course===c.name);
+    const cQuiz=QUIZZES.filter(q=>q.courseId===c.id||q.course===c.name);
+    const chips=CATS.map(cat=>{
+      let n=0;
+      if(cat.col==='resources')n=cRes.filter(r=>r.category===cat.key).length;
+      else if(cat.col==='videos')n=cVid.length;
+      else if(cat.col==='pastpapers')n=cPap.length;
+      else if(cat.col==='quizzes')n=cQuiz.length;
+      if(!n)return '';
+      return `<div class="chip" onclick="openCourseCat('${c.id}','${cat.key}')">${cat.icon} ${cat.label} <span style="opacity:.6">(${n})</span></div>`;
+    }).join('');
+    return `<div class="ci" id="ci-${c.id}"><div class="ci-top" onclick="toggleC('${c.id}')"><div class="ci-em">${c.icon||'📚'}</div><div><div class="ci-nm">${c.name}</div><div class="ci-cd">${c.code||''}</div></div><div class="ci-arr"><i class="fas fa-chevron-right"></i></div></div><div class="ci-body"><div class="ci-chips">${chips||'<span style="font-size:.74rem;color:var(--text3)">No resources yet</span>'}</div></div></div>`;
+  }).join('');
+}
+window.toggleC=id=>{document.querySelectorAll('.ci').forEach(el=>{if(el.id!=='ci-'+id)el.classList.remove('open');});document.getElementById('ci-'+id).classList.toggle('open');};
+window.filterCourses=q=>{
+  const n=q.toLowerCase().replace(/\s+/g,'');
+  const filtered=!n?COURSES:COURSES.filter(c=>c.name.toLowerCase().replace(/\s+/g,'').includes(n));
+  const el=$('clist');
+  if(!filtered.length){el.innerHTML='<div class="empty"><i class="fas fa-book-open"></i><p>No matching courses</p></div>';return;}
+  el.innerHTML=filtered.map(c=>{
+    const cRes=RESOURCES.filter(r=>r.courseId===c.id||r.course===c.name);
+    return `<div class="ci" id="ci-${c.id}"><div class="ci-top" onclick="toggleC('${c.id}')"><div class="ci-em">${c.icon||'📚'}</div><div><div class="ci-nm">${c.name}</div><div class="ci-cd">${c.code||''}</div></div><div class="ci-arr"><i class="fas fa-chevron-right"></i></div></div><div class="ci-body"><div class="ci-chips">${cRes.length?'<span style="font-size:.74rem;color:var(--text3)">Tap to view</span>':'<span style="font-size:.74rem;color:var(--text3)">No resources yet</span>'}</div></div></div>`;
+  }).join('');
+};
+
+let DC=null,DCAT=null;
+window.openCourseCat=(cid,catKey)=>{
+  DC=COURSES.find(c=>c.id===cid);DCAT=catByKey(catKey);if(!DC||!DCAT)return;
+  $('drwTitle').textContent=`${DCAT.icon} ${DCAT.label} — ${DC.name}`;
+  let items=[];
+  if(DCAT.col==='resources')items=RESOURCES.filter(r=>(r.courseId===DC.id||r.course===DC.name)&&r.category===DCAT.key);
+  else if(DCAT.col==='videos')items=VIDEOS.filter(v=>v.courseId===DC.id||v.course===DC.name);
+  else if(DCAT.col==='pastpapers')items=PAPERS.filter(p=>p.courseId===DC.id||p.course===DC.name);
+  else if(DCAT.col==='quizzes')items=QUIZZES.filter(q=>q.courseId===DC.id||q.course===DC.name);
+  renderDrw(items);
+  $('ov').classList.add('on');$('drw').classList.add('on');
+};
+window.closeDrawer=()=>{$('ov').classList.remove('on');$('drw').classList.remove('on');};
+function renderDrw(items){
+  if(!items.length){$('drwBody').innerHTML=`<div class="empty"><i class="fas fa-folder-open"></i><p>Nothing uploaded here yet</p></div>`;return;}
+  $('drwBody').innerHTML=items.map(it=>{
+    const link=it.driveLink||it.quizLink||it.paperLink||'';
+    return `<div class="ri2" onclick="openViewer('${(it.title||'').replace(/'/g,"\\'")}','${link}')"><div class="ri2-ico">${DCAT.icon}</div><div><div class="ri2-nm">${it.title||'Untitled'}</div><div class="ri2-sub">${it.description||''}</div></div><button class="obtn">Open</button></div>`;
+  }).join('');
+}
+
+// ── PAST PAPERS ──
+function renderPapers(){
+  const list=PAPERS;
+  const el=$('pcards');
+  if(!list.length){el.innerHTML='<div class="empty"><i class="fas fa-scroll"></i><p>No past papers yet</p></div>';return;}
+  el.innerHTML=list.map(p=>`<div class="ci"><div class="ci-top" style="cursor:default"><div class="ci-em">📜</div><div><div class="ci-nm">${p.title||'Past Paper'}</div><div class="ci-cd">${p.course||''} ${p.examYear?'· '+p.examYear:''} ${p.duration?'· '+p.duration:''} ${p.marks?'· '+p.marks:''}</div></div></div><div class="ci-chips" style="border-top:1px solid var(--fog3)">${p.paperLink?`<div class="chip" onclick="openViewer('${(p.title||'').replace(/'/g,"\\'")}','${p.paperLink}')">📄 Paper</div>`:''}${p.schemeLink?`<div class="chip" onclick="openViewer('${(p.title||'').replace(/'/g,"\\'")} — Scheme','${p.schemeLink}')">✅ Scheme</div>`:''}${p.modelLink?`<div class="chip" onclick="openViewer('${(p.title||'').replace(/'/g,"\\'")} — Answers','${p.modelLink}')">💡 Answers</div>`:''}</div></div>`).join('');
+}
+
+// ── QUIZZES ──
+function renderQuizzes(){
+  const list=QUIZZES;
+  const el=$('quizList');
+  if(!list.length){el.innerHTML='<div class="empty"><i class="fas fa-puzzle-piece"></i><p>No quizzes yet</p></div>';return;}
+  el.innerHTML=list.map(q=>`<div class="ri2" onclick="openViewer('${(q.title||'').replace(/'/g,"\\'")}','${q.quizLink||''}')"><div class="ri2-ico">🧩</div><div><div class="ri2-nm">${q.title||'Untitled Quiz'}</div><div class="ri2-sub">${q.course||''}</div></div><button class="obtn">Start</button></div>`).join('');
+}
+
+// ── GLOBAL SEARCH ──
+let searchTimer=null;
+window.doGlobalSearch=function(q){
+  clearTimeout(searchTimer);
+  $('searchClearBtn').classList.toggle('on',!!q);
+  searchTimer=setTimeout(()=>{
+    const term=q.trim().toLowerCase();
+    const box=$('searchResults');
+    if(!term){box.classList.remove('on');box.innerHTML='';return;}
+    const results=[];
+    RESOURCES.forEach(r=>{if((r.title||'').toLowerCase().includes(term)||(r.course||'').toLowerCase().includes(term))results.push({title:r.title,sub:`${r.course||''} · ${catByKey(r.category)?.label||'Document'}`,icon:catByKey(r.category)?.icon||'📄',link:r.driveLink});});
+    VIDEOS.forEach(v=>{if((v.title||'').toLowerCase().includes(term)||(v.course||'').toLowerCase().includes(term))results.push({title:v.title,sub:`${v.course||''} · Video`,icon:'🎥',link:v.driveLink});});
+    PAPERS.forEach(p=>{if((p.title||'').toLowerCase().includes(term)||(p.course||'').toLowerCase().includes(term))results.push({title:p.title,sub:`${p.course||''} · Past Paper`,icon:'📜',link:p.paperLink});});
+    QUIZZES.forEach(qz=>{if((qz.title||'').toLowerCase().includes(term)||(qz.course||'').toLowerCase().includes(term))results.push({title:qz.title,sub:`${qz.course||''} · Quiz`,icon:'🧩',link:qz.quizLink});});
+    COURSES.forEach(c=>{if((c.name||'').toLowerCase().includes(term))results.push({title:c.name,sub:'Course',icon:c.icon||'📚',link:''});});
+    if(!results.length){box.innerHTML='<div class="sr-empty">No results for "'+q+'"</div>';box.classList.add('on');return;}
+    box.innerHTML=results.slice(0,20).map(r=>`<div class="sr-item" onclick='${r.link?`openViewer("${(r.title||'').replace(/'/g,"\\'")}","${r.link}")`:'void(0)'}'><div class="sr-ico">${r.icon}</div><div><div class="sr-t">${r.title}</div><div class="sr-s">${r.sub}</div></div></div>`).join('');
+    box.classList.add('on');
+  },220);
+};
+window.clearGlobalSearch=()=>{$('globalSearch').value='';$('searchResults').classList.remove('on');$('searchClearBtn').classList.remove('on');};
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.search-wrap')){$('searchResults').classList.remove('on');}
 });
+
+// ── HAMBURGER DRAWER ──
+window.openHam=()=>{$('hamOv').classList.add('on');$('hamDrw').classList.add('on');};
+window.closeHam=()=>{$('hamOv').classList.remove('on');$('hamDrw').classList.remove('on');};
+
+// ── INFO MODAL: About / Contact / CA Calculator ──
+window.openInfo=function(kind){
+  closeHam();
+  const titles={about:'About',contact:'Contact',ca:'CA Calculator'};
+  $('infoTitle').textContent=titles[kind]||'Info';
+  if(kind==='about'){
+    $('infoBody').innerHTML=`<p>First Year Hub brings together lecturer notes, tutorial sheets, worked solutions, past papers and revision tools in one place — organised by course, so you always know exactly where to look.</p><p style="margin-top:.9rem">Everything on this platform is curated to match your program's syllabus.</p>`;
+  }else if(kind==='contact'){
+    $('infoBody').innerHTML=`<p>Have a question, found an error in a resource, or want to request material for a course?</p><div style="margin-top:1rem;display:flex;flex-direction:column;gap:.6rem">
+      <a href="https://wa.me/260000000000" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.6rem;padding:.8rem 1rem;background:var(--green2);border:1px solid rgba(28,138,99,.2);border-radius:12px;text-decoration:none;color:var(--green);font-weight:600;font-size:.85rem"><i class="fab fa-whatsapp"></i> WhatsApp Support</a>
+      <a href="mailto:support@example.com" style="display:flex;align-items:center;gap:.6rem;padding:.8rem 1rem;background:var(--accent2);border:1px solid rgba(47,127,184,.2);border-radius:12px;text-decoration:none;color:var(--accent);font-weight:600;font-size:.85rem"><i class="fas fa-envelope"></i> Email Support</a>
+    </div>`;
+  }else if(kind==='ca'){
+    renderCaCalc();
+  }
+  $('infoOv').classList.add('on');
+};
+window.closeInfo=()=>$('infoOv').classList.remove('on');
+
+let caRowId=0;
+function renderCaCalc(){
+  $('infoBody').innerHTML=`
+    <p style="margin-bottom:10px">Enter each assessment's score, out of, and its weight (%). The calculator works out your weighted Continuous Assessment total.</p>
+    <div id="caRows"></div>
+    <button class="btn-line" onclick="addCaRow()"><i class="fas fa-plus"></i> Add Assessment</button>
+    <button class="btn-solid" onclick="computeCa()"><i class="fas fa-calculator"></i> Calculate CA</button>
+    <div id="caResultWrap"></div>
+  `;
+  $('caRows').innerHTML='';caRowId=0;
+  addCaRow();addCaRow();
+}
+window.addCaRow=function(){
+  caRowId++;
+  const div=document.createElement('div');div.className='ca-row';div.id='car-'+caRowId;
+  div.innerHTML=`<input type="number" placeholder="Score (e.g. 18/25)" id="cas-${caRowId}"/><input type="number" placeholder="Weight %" id="caw-${caRowId}"/><div class="ca-rm" onclick="document.getElementById('car-${caRowId}').remove()"><i class="fas fa-times-circle"></i></div>`;
+  $('caRows').appendChild(div);
+};
+window.computeCa=function(){
+  const rows=[...document.querySelectorAll('.ca-row')];
+  let totalWeight=0,weightedSum=0;
+  rows.forEach(r=>{
+    const id=r.id.split('-')[1];
+    const score=parseFloat($('cas-'+id).value);
+    const w=parseFloat($('caw-'+id).value);
+    if(!isNaN(score)&&!isNaN(w)){weightedSum+=(score/100)*w;totalWeight+=w;}
+  });
+  const el=$('caResultWrap');
+  if(!totalWeight){el.innerHTML=`<div class="ca-result"><div class="ca-result-l">Enter at least one score and weight (as % out of 100) to calculate</div></div>`;return;}
+  el.innerHTML=`<div class="ca-result"><div class="ca-result-n">${weightedSum.toFixed(1)}%</div><div class="ca-result-l">Weighted CA total across ${totalWeight}% of assessed weight</div></div>`;
+};
+
+// ── NAV ──
+window.goPage=tab=>{
+  if((tab==='courses'||tab==='papers'||tab==='quizzes')&&!IS_SUBSCRIBED){openSubModal();return;}
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));document.getElementById('pg-'+tab).classList.add('on');
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('on'));const nt=document.getElementById('nt-'+tab);if(nt)nt.classList.add('on');
+  $('appBody').scrollTop=0;
+};
+window.showToast=function(msg){const t=$('toastEl');t.textContent=msg;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2400);};
+setTimeout(()=>$('splash').classList.add('off'),4000);
+
+// ── NOTIFICATIONS ──
+window.openNotifDrawer=function(){
+  const body=$('notifBody');
+  if(!ANNOUNCEMENTS.length){body.innerHTML='<div class="notif-empty"><i class="fas fa-bell-slash" style="font-size:2rem;opacity:.3;display:block;margin-bottom:.6rem"></i>No notifications yet</div>';}
+  else{body.innerHTML=ANNOUNCEMENTS.map(a=>`<div class="notif-item"><div class="notif-t">${a.title||''}</div><div class="notif-b">${a.body||''}</div><div class="notif-meta">${a.priority&&a.priority!=='Normal'?a.priority:''}</div></div>`).join('');}
+  $('notifOv').classList.add('on');$('notifDrw').classList.add('on');
+};
+window.closeNotifDrawer=function(){$('notifOv').classList.remove('on');$('notifDrw').classList.remove('on');$('notifBadge').classList.remove('on');};
 </script>
-
 </body>
 </html>

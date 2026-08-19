@@ -1,169 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sign Up - Finceptuitions</title>
-
-<meta name="theme-color" content="#2575fc">
-
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<title>First Year Hub — Sign Up</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 <style>
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f7fa;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+:root{
+  --navy:#081524;--navy2:#0f2740;--navy3:#183955;
+  --accent:#2f7fb8;--accent2:rgba(47,127,184,.1);
+  --ice:#eef3f8;--fog3:#d6e1ec;--white:#fff;
+  --text:#0a1a2f;--text2:#3d5470;--text3:#88a0b8;
+  --red:#d1495b;--red2:rgba(209,73,91,.1);
+  --green:#1c8a63;--green2:rgba(28,138,99,.1);
+  --r:16px;--r2:12px;--r3:100px;
 }
-.signup-container {
-    background-color: white;
-    padding: 30px 40px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    width: 100%;
-    max-width: 400px;
-}
-.signup-container h2 {
-    text-align: center;
-    color: #1e3a8a;
-}
-.signup-container form {
-    display: flex;
-    flex-direction: column;
-}
-.signup-container label {
-    margin-top: 15px;
-    margin-bottom: 5px;
-    color: #1e3a8a;
-    font-weight: bold;
-}
-.signup-container input {
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    width: 100%;
-}
-.password-box {
-    position: relative;
-}
-.password-box span {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    font-size: 18px;
-    user-select: none;
-}
-.signup-container button {
-    margin-top: 20px;
-    padding: 12px;
-    background-color: #1e3a8a;
-    color: white;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-.signup-container p {
-    text-align: center;
-    margin-top: 15px;
-}
-.signup-container a {
-    color: #1e3a8a;
-    text-decoration: none;
-    font-weight: bold;
-}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--ice);color:var(--text)}
+.wrap{width:100%;max-width:430px;min-height:100dvh;margin:0 auto;display:flex;flex-direction:column;position:relative}
+.top{background:linear-gradient(135deg,var(--navy),var(--navy2));padding:44px 28px 38px;border-radius:0 0 32px 32px;position:relative;overflow:hidden;text-align:center}
+.top::before{content:'';position:absolute;top:-40px;right:-40px;width:170px;height:170px;border-radius:50%;background:radial-gradient(circle,rgba(47,127,184,.32),transparent 70%)}
+.logo-mark{width:56px;height:56px;border-radius:16px;background:rgba(255,255,255,.08);border:1.5px dashed rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.55);font-size:1.4rem;margin:0 auto 14px;overflow:hidden}
+.logo-mark img{width:100%;height:100%;object-fit:cover}
+.brand{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-style:italic;color:#fff}
+.brand span{color:#9fc9e8}
+.tagline{font-size:.76rem;color:rgba(255,255,255,.55);margin-top:5px}
+.body{flex:1;padding:26px 26px 40px}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-weight:600;font-size:.72rem;color:var(--text2);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.04em}
+.fg input,.fg select{width:100%;padding:.8rem 1rem;border:1.5px solid var(--fog3);border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-size:.88rem;background:var(--white);color:var(--text);outline:none;transition:border-color .2s;appearance:none}
+.fg input:focus,.fg select:focus{border-color:var(--accent)}
+.pw-wrap{position:relative}
+.pw-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--text3);cursor:pointer;background:none;border:none;font-size:.9rem}
+.alert{padding:.75rem 1rem;border-radius:var(--r2);font-size:.8rem;font-weight:500;margin-bottom:1rem;display:none;line-height:1.5}
+.alert.err{background:#fdf0f1;border:1px solid rgba(209,73,91,.2);color:var(--red);display:block}
+.alert.ok{background:#eefaf5;border:1px solid rgba(28,138,99,.25);color:var(--green);display:block}
+.btn-main{width:100%;padding:15px;background:linear-gradient(135deg,var(--navy),var(--accent));border:none;border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-weight:800;font-size:.95rem;color:#fff;cursor:pointer;box-shadow:0 6px 20px rgba(8,21,36,.25);margin-top:6px}
+.btn-main:active{transform:scale(.98)}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:.4rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.foot{text-align:center;margin-top:20px;font-size:.84rem;color:var(--text2)}
+.foot a{color:var(--accent);font-weight:700;text-decoration:none}
 </style>
 </head>
-
 <body>
-
-<div class="signup-container">
-    <h2>Create Account</h2>
-
-    <!-- Warning for first-time users -->
-    <p id="trial-warning" style="font-size:0.85em; color: #ff5733; text-align:center; margin-top:5px;">
-  
-    </p>
-
-    <form id="signup-form">
-        <label>Full Name</label>
-        <input type="text" id="name" required>
-
-        <label>Email</label>
-        <input type="email" id="email" required>
-
-        <label>Password</label>
-        <div class="password-box">
-            <input type="password" id="password" required>
-            <span onclick="togglePassword()">👁</span>
-        </div>
-
-        <button type="submit">Sign Up</button>
-    </form>
-
-    <p>Already have an account? <a href="login.html">Login</a></p>
+<div class="wrap">
+  <div class="top">
+    <div class="logo-mark" id="logoMark"><i class="fas fa-image"></i></div>
+    <div class="brand">First Year <span>Hub</span></div>
+    <div class="tagline">Create your student account</div>
+  </div>
+  <div class="body">
+    <div class="alert" id="signupAlert"></div>
+    <div class="fg"><label>Full Name</label><input type="text" id="fullName" placeholder="e.g. Jane Mwansa"/></div>
+    <div class="fg"><label>Email</label><input type="email" id="email" placeholder="you@example.com"/></div>
+    <div class="fg"><label>Phone</label><input type="tel" id="phone" placeholder="+260 97x xxx xxx"/></div>
+    <div class="fg"><label>Student ID (optional)</label><input type="text" id="studentId" placeholder="e.g. 2023123456"/></div>
+    <div class="fg">
+      <label>Password</label>
+      <div class="pw-wrap">
+        <input type="password" id="password" placeholder="At least 6 characters"/>
+        <button class="pw-toggle" type="button" onclick="togglePw()"><i class="fas fa-eye" id="pwIcon"></i></button>
+      </div>
+    </div>
+    <button class="btn-main" id="signupBtn" onclick="doSignup()"><i class="fas fa-user-plus"></i>&nbsp; Create Account</button>
+    <div class="foot">Already have an account? <a href="index.html">Log In</a></div>
+  </div>
 </div>
 
-<!-- Firebase v8 (stable everywhere) -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-<script>
-var firebaseConfig = {
-   apiKey: "AIzaSyClCl9tSlMfUNxBWym__WXj8FS_uBOA64M",
-  authDomain: "gptapp-fa2ff.firebaseapp.com",
-  projectId: "gptapp-fa2ff",
-  storageBucket: "gptapp-fa2ff.firebasestorage.app",
-  messagingSenderId: "834440426142",
-  appId: "1:834440426142:web:e01c200e13ee25bade818f",
-  measurementId: "G-GZZ28RMH36"
+// ── Firebase config — paste this client's project config here ──
+const firebaseConfig = {
+
+
+
+
+    
 };
+const fapp=initializeApp(firebaseConfig),auth=getAuth(fapp),db=getFirestore(fapp);
+const $=id=>document.getElementById(id);
 
-firebase.initializeApp(firebaseConfig);
+(async()=>{
+  try{const s=await getDoc(doc(db,'settings','branding'));const url=s.exists()?s.data().logoUrl:'';if(url)$('logoMark').innerHTML=`<img src="${url}"/>`;}catch(e){}
+})();
 
-var auth = firebase.auth();
-var db = firebase.firestore();
+window.togglePw=()=>{
+  const inp=$('password');const ic=$('pwIcon');
+  if(inp.type==='password'){inp.type='text';ic.className='fas fa-eye-slash';}else{inp.type='password';ic.className='fas fa-eye';}
+};
+function setAlert(msg,type='err'){const el=$('signupAlert');el.textContent=msg;el.className='alert '+type;}
+function clrAlert(){$('signupAlert').className='alert';}
 
-/* 👁 Toggle password */
-function togglePassword() {
-    var input = document.getElementById("password");
-    input.type = input.type === "password" ? "text" : "password";
-}
+window.doSignup=async()=>{
+  clrAlert();
+  const fullName=$('fullName').value.trim(),email=$('email').value.trim(),phone=$('phone').value.trim(),studentId=$('studentId').value.trim(),pw=$('password').value;
+  if(!fullName||!email||!pw){setAlert('Please fill in your name, email and password');return;}
+  if(pw.length<6){setAlert('Password must be at least 6 characters');return;}
+  const btn=$('signupBtn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Creating account…';
+  try{
+    // Check whether new sign-ups get a free trial (admin-configurable)
+    let trialEnabled=true;
+    try{const s=await getDoc(doc(db,'settings','access'));if(s.exists())trialEnabled=s.data().trialEnabled!==false;}catch(e){}
 
-/* ✅ Signup runs ONLY on submit */
-document.getElementById("signup-form").addEventListener("submit", function(e) {
-    e.preventDefault();
+    const cred=await createUserWithEmailAndPassword(auth,email,pw);
+    await updateProfile(cred.user,{displayName:fullName});
 
-    var name = document.getElementById("name").value.trim();
-    var email = document.getElementById("email").value.trim();
-    var password = document.getElementById("password").value;
+    const userDoc={
+      fullName,email,phone,studentId,
+      role:'student',canLogin:true,isSubscribed:false,subscriptionStatus:'none',
+      dueDate:'',profilePhoto:'',createdAt:serverTimestamp()
+    };
+    if(trialEnabled)userDoc.trialStart=serverTimestamp();
 
-    auth.createUserWithEmailAndPassword(email, password)
-    .then(function(cred) {
-
-        db.collection("users").doc(cred.user.uid).set({
-            name: name,
-            email: email,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        }).catch(function(){});
-
-        // ✅ Alert AFTER clicking Sign Up
-        alert("Welcome " + name + "! Your account has been created successfully.");
-
-        // ✅ Redirect
-        window.location.replace("dashboard.html");
-
-    })
-    .catch(function(error) {
-        alert(error.message);
-    });
-});
+    await setDoc(doc(db,'users',cred.user.uid),userDoc);
+    setAlert('✅ Account created! Redirecting…','ok');
+    setTimeout(()=>location.href='dashboard.html',900);
+  }catch(e){
+    let msg='Could not create account. Please try again.';
+    if(e.code==='auth/email-already-in-use')msg='An account with this email already exists.';
+    else if(e.code==='auth/invalid-email')msg='Please enter a valid email address.';
+    else if(e.code==='auth/weak-password')msg='Password must be at least 6 characters.';
+    setAlert(msg);
+    btn.disabled=false;btn.innerHTML='<i class="fas fa-user-plus"></i>&nbsp; Create Account';
+  }
+};
 </script>
-
 </body>
 </html>

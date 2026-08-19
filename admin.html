@@ -1,661 +1,945 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quiz Admin</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>First Year Hub — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+:root{
+  --navy:#081524;--navy2:#0f2740;--navy3:#183955;
+  --accent:#2f7fb8;--accent2:rgba(47,127,184,.1);
+  --ice:#eef3f8;--fog2:#e3ebf3;--fog3:#d6e1ec;
+  --white:#fff;--text:#0a1a2f;--text2:#3d5470;--text3:#88a0b8;
+  --red:#d1495b;--red2:rgba(209,73,91,.1);
+  --green:#1c8a63;--green2:rgba(28,138,99,.1);
+  --purple:#7c3aed;--purple2:rgba(124,58,237,.1);
+  --amber:#b8862f;--amber2:rgba(184,134,47,.12);
+  --sb:264px;--top:62px;
+  --r:14px;--r2:10px;--r3:100px;
+  --sh:0 2px 16px rgba(8,21,36,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--ice);color:var(--text);-webkit-font-smoothing:antialiased}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:var(--sb);background:var(--navy);position:fixed;top:0;left:0;height:100vh;display:flex;flex-direction:column;z-index:200;overflow-y:auto;flex-shrink:0;transition:transform .3s}
+.sb-logo{padding:1.3rem 1.4rem;display:flex;align-items:center;gap:11px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.sb-mark{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.08);border:1.5px dashed rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);flex-shrink:0;overflow:hidden}
+.sb-mark img{width:100%;height:100%;object-fit:cover}
+.sb-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:700;color:#fff;line-height:1.2}
+.sb-name span{color:#9fc9e8}
+.sb-badge{font-size:.57rem;background:rgba(47,127,184,.22);color:#9fc9e8;padding:.15rem .55rem;border-radius:4px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-top:2px;display:inline-block}
+.sb-nav{flex:1;padding:.8rem 0;overflow-y:auto}
+.sb-group{font-size:.6rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.22);padding:.7rem 1.4rem .35rem}
+.sb-btn{display:flex;align-items:center;gap:.8rem;padding:.7rem 1.4rem;color:rgba(255,255,255,.48);border:none;background:transparent;font-family:'DM Sans',sans-serif;font-weight:500;font-size:.86rem;cursor:pointer;transition:all .18s;width:100%;text-align:left;position:relative}
+.sb-btn i{font-size:.9rem;width:17px;text-align:center;flex-shrink:0}
+.sb-btn:hover{color:#fff;background:rgba(255,255,255,.06)}
+.sb-btn.on{color:#fff;background:rgba(47,127,184,.22);font-weight:600}
+.sb-btn.on::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:3px;background:var(--accent);border-radius:0 3px 3px 0}
+.sb-cnt{margin-left:auto;background:rgba(47,127,184,.28);color:#9fc9e8;font-size:.6rem;font-weight:700;padding:.14rem .5rem;border-radius:var(--r3);min-width:20px;text-align:center}
+.sb-cnt.red{background:rgba(209,73,91,.3);color:#ffb0b0}
+.sb-footer{padding:1rem 1.4rem;border-top:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.sb-user{display:flex;align-items:center;gap:.75rem}
+.sb-av{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.78rem;color:#fff;flex-shrink:0}
+.sb-uname{font-weight:600;font-size:.82rem;color:#fff;line-height:1.25}
+.sb-urole{font-size:.64rem;color:#9fc9e8}
+.main{margin-left:var(--sb);flex:1;display:flex;flex-direction:column;min-height:100vh;max-width:calc(100vw - var(--sb))}
+.topbar{height:var(--top);background:var(--white);border-bottom:1px solid var(--fog3);display:flex;align-items:center;padding:0 1.8rem;position:sticky;top:0;z-index:100;box-shadow:var(--sh);gap:1rem;flex-shrink:0}
+.tb-ham{display:none;background:none;border:none;font-size:1.3rem;color:var(--text);cursor:pointer;padding:.4rem;border-radius:8px}
+.tb-title{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:700;color:var(--text)}
+.tb-right{display:flex;align-items:center;gap:.7rem;margin-left:auto}
+.live-badge{font-size:.73rem;padding:.38rem .85rem;background:var(--green2);border:1px solid rgba(28,138,99,.2);border-radius:var(--r3);color:var(--green);font-weight:600;white-space:nowrap}
+.btn-exit{padding:.42rem 1rem;background:var(--red2);border:1.5px solid rgba(209,73,91,.2);border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-weight:700;font-size:.78rem;color:var(--red);cursor:pointer}
+.content{flex:1;padding:1.8rem;overflow-x:hidden}
+.sec{display:none}
+.sec.on{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.pg-hdr{margin-bottom:1.6rem}
+.pg-hdr h1{font-family:'Cormorant Garamond',serif;font-size:1.85rem;font-weight:700;color:var(--text);margin-bottom:.32rem}
+.pg-hdr p{font-size:.82rem;color:var(--text3);line-height:1.6}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.8rem}
+.stat{background:var(--white);border-radius:var(--r);padding:1.2rem 1.3rem;border:1px solid var(--fog3);box-shadow:var(--sh);position:relative;overflow:hidden}
+.stat-bar{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r) var(--r) 0 0}
+.stat-ico{font-size:1.4rem;margin-bottom:.5rem}
+.stat-n{font-weight:800;font-size:1.9rem;color:var(--text);line-height:1;margin-bottom:.25rem}
+.stat-l{font-size:.73rem;color:var(--text3);font-weight:500}
+.two-col{display:grid;grid-template-columns:400px 1fr;gap:1.4rem;align-items:start}
+.form-card{background:var(--white);border-radius:var(--r);padding:1.6rem;border:1px solid var(--fog3);box-shadow:var(--sh);margin-bottom:1.2rem}
+.form-card:last-child{margin-bottom:0}
+.form-card h3{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:700;color:var(--text);margin-bottom:1.2rem;padding-bottom:.7rem;border-bottom:1px solid var(--fog3);display:flex;align-items:center;gap:.55rem}
+.list-card{background:var(--white);border-radius:var(--r);border:1px solid var(--fog3);box-shadow:var(--sh);overflow:hidden}
+.lc-hdr{padding:1rem 1.4rem;border-bottom:1px solid var(--fog3);display:flex;align-items:center;justify-content:space-between;background:var(--ice)}
+.lc-hdr h3{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:.5rem}
+.lc-body{max-height:680px;overflow-y:auto}
+.fg{margin-bottom:.9rem}
+.fg label{display:block;font-weight:600;font-size:.72rem;color:var(--text2);margin-bottom:.38rem;text-transform:uppercase;letter-spacing:.04em}
+.fg input,.fg select,.fg textarea{width:100%;padding:.72rem .95rem;border:1.5px solid var(--fog3);border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-size:.87rem;background:var(--ice);color:var(--text);outline:none;transition:border-color .2s;appearance:none}
+.fg textarea{resize:vertical;min-height:78px;line-height:1.5}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--accent);background:var(--white);box-shadow:0 0 0 3px rgba(47,127,184,.08)}
+.sel-w{position:relative}
+.sel-w::after{content:'▾';position:absolute;right:.85rem;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;font-size:.78rem}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.req{color:var(--red);margin-left:1px}
+.upload-toggle{display:flex;gap:.5rem;margin-bottom:.9rem;background:var(--ice);border-radius:var(--r2);padding:4px}
+.utog{flex:1;padding:.55rem;border-radius:8px;border:none;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;color:var(--text3);background:transparent;text-align:center}
+.utog.on{background:var(--white);color:var(--accent);box-shadow:var(--sh)}
+.upload-section{display:none}
+.upload-section.on{display:block}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;padding:.78rem 1.3rem;border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-weight:700;font-size:.86rem;cursor:pointer;transition:all .2s;border:none}
+.btn:active{transform:scale(.97)}
+.btn-full{width:100%}
+.btn-ink{background:var(--navy);color:#fff;box-shadow:0 3px 14px rgba(8,21,36,.18)}
+.btn-ink:hover{background:var(--navy2)}
+.btn-sky{background:var(--accent);color:#fff;box-shadow:0 3px 14px rgba(47,127,184,.22)}
+.btn-green{background:var(--green);color:#fff;box-shadow:0 3px 14px rgba(28,138,99,.22)}
+.btn-purple{background:var(--purple);color:#fff;box-shadow:0 3px 14px rgba(124,58,237,.22)}
+.btn-amber{background:var(--amber);color:#fff;box-shadow:0 3px 14px rgba(184,134,47,.22)}
+.btn-sm{padding:.28rem .7rem;border-radius:6px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.7rem;cursor:pointer;border:none;transition:all .18s;display:inline-flex;align-items:center;gap:.3rem}
+.btn-sm:active{transform:scale(.94)}
+.btn-del{background:var(--red2);color:var(--red)}
+.btn-del:hover{background:var(--red);color:#fff}
+.btn-edit{background:var(--accent2);color:var(--accent)}
+.btn-edit:hover{background:var(--accent);color:#fff}
+.btn-approve{background:var(--green2);color:var(--green);border:1px solid rgba(28,138,99,.25)}
+.btn-approve:hover{background:var(--green);color:#fff}
+.btn-reject{background:var(--red2);color:var(--red);border:1px solid rgba(209,73,91,.2)}
+.btn-reject:hover{background:var(--red);color:#fff}
+.btn-ban{background:var(--amber2);color:var(--amber)}
+.btn-ban:hover{background:var(--amber);color:#fff}
+.btn-unban{background:var(--green2);color:var(--green)}
+.btn-refresh{padding:.5rem .9rem;border-radius:var(--r2);background:var(--green2);color:var(--green);border:1px solid rgba(28,138,99,.2);font-family:'DM Sans',sans-serif;font-weight:700;font-size:.78rem;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem}
+.alert{padding:.75rem 1rem;border-radius:var(--r2);font-size:.8rem;font-weight:500;margin-bottom:.9rem;display:none;line-height:1.5}
+.alert.ok{background:#eefaf5;border:1px solid rgba(28,138,99,.25);color:var(--green);display:block}
+.alert.err{background:#fdf0f1;border:1px solid rgba(209,73,91,.2);color:var(--red);display:block}
+.li-item{padding:.95rem 1.3rem;border-bottom:1px solid var(--fog3);display:flex;align-items:flex-start;gap:1rem;transition:background .15s}
+.li-item:last-child{border-bottom:none}
+.li-item:hover{background:var(--ice)}
+.li-ico{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;background:var(--accent2)}
+.li-body{flex:1;min-width:0}
+.li-title{font-weight:700;font-size:.86rem;color:var(--text);margin-bottom:2px}
+.li-sub{font-size:.72rem;color:var(--text3);line-height:1.6}
+.li-actions{display:flex;gap:.35rem;align-items:center;flex-shrink:0;flex-wrap:wrap}
+.toolbar{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;padding:.9rem 1.3rem;border-bottom:1px solid var(--fog3);background:var(--ice)}
+.t-search{flex:1;min-width:160px;max-width:280px;padding:.62rem .95rem;border:1.5px solid var(--fog3);border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-size:.84rem;background:var(--white);outline:none}
+.t-sel{padding:.6rem .95rem;border:1.5px solid var(--fog3);border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-size:.8rem;background:var(--white);outline:none;cursor:pointer;color:var(--text)}
+.t-count{font-size:.76rem;color:var(--text3);margin-left:auto;white-space:nowrap}
+.tag{display:inline-block;padding:.2rem .65rem;border-radius:var(--r3);font-size:.68rem;font-weight:700}
+.tag-ok{background:var(--green2);color:var(--green)}
+.tag-red{background:var(--red2);color:var(--red)}
+.tag-amber{background:var(--amber2);color:#7a5c1f}
+.tag-sky{background:var(--accent2);color:var(--accent)}
+.tag-pend{background:rgba(124,58,237,.12);color:var(--purple)}
+.empty{text-align:center;padding:2.5rem 1.5rem;color:var(--text3)}
+.empty i{font-size:2.2rem;display:block;margin-bottom:.7rem;opacity:.28}
+.empty p{font-size:.82rem;line-height:1.6}
+.loading-row{padding:1.8rem;text-align:center;color:var(--text3);font-size:.82rem}
+.sub-card{background:var(--white);border-radius:var(--r);border:1px solid var(--fog3);margin-bottom:1rem;overflow:hidden;box-shadow:var(--sh)}
+.sub-card-hdr{padding:1rem 1.3rem;background:linear-gradient(135deg,var(--navy),var(--navy2));display:flex;align-items:center;justify-content:space-between;gap:.75rem}
+.sub-card-name{font-weight:700;font-size:.92rem;color:#fff}
+.sub-card-uni{font-size:.72rem;color:rgba(255,255,255,.5);margin-top:2px}
+.sub-card-body{padding:1.1rem 1.3rem}
+.sub-info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-bottom:1rem}
+.sub-info-item{background:var(--ice);border-radius:9px;padding:.65rem .8rem;border:1px solid var(--fog3)}
+.sub-info-label{font-size:.62rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.sub-info-val{font-size:.83rem;font-weight:700;color:var(--text)}
+.sub-courses{margin-bottom:1rem}
+.sub-courses-title{font-size:.72rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.45rem}
+.sub-courses-list{display:flex;flex-wrap:wrap;gap:.4rem}
+.sub-course-chip{padding:.25rem .75rem;background:var(--accent2);border:1px solid rgba(47,127,184,.2);border-radius:var(--r3);font-size:.72rem;font-weight:600;color:var(--accent)}
+.sub-txn{background:var(--amber2);border:1px solid rgba(184,134,47,.25);border-radius:var(--r2);padding:.7rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+.sub-txn-label{font-size:.7rem;font-weight:700;color:#7a5c1f;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+.sub-txn-val{font-size:.9rem;font-weight:800;color:#5c4517;font-family:monospace}
+.sub-note{font-size:.74rem;color:var(--text3);margin-bottom:1rem;padding:.6rem .8rem;background:var(--ice);border-radius:8px;line-height:1.55}
+.approve-form{border-top:1px solid var(--fog3);padding-top:1rem;display:flex;gap:.75rem;align-items:flex-end;flex-wrap:wrap}
+.af-field{flex:1;min-width:160px}
+.af-field label{display:block;font-size:.7rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.35rem}
+.af-field input{width:100%;padding:.68rem .9rem;border:1.5px solid var(--fog3);border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-size:.85rem;background:var(--ice);color:var(--text);outline:none}
+.af-field input:focus{border-color:var(--green);background:var(--white)}
+.modal-ov{position:fixed;inset:0;background:rgba(8,21,36,.55);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:2rem;overflow-y:auto;backdrop-filter:blur(4px)}
+.modal-ov.on{display:flex}
+.modal{background:var(--white);border-radius:var(--r);width:100%;max-width:700px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.2);margin:auto}
+.modal-hdr{background:var(--navy);padding:1.4rem 1.6rem;display:flex;align-items:center;justify-content:space-between}
+.modal-hdr h3{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:.6rem}
+.modal-x{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.1);border:none;color:#fff;cursor:pointer;font-size:1rem}
+.modal-body{padding:1.6rem}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.modal-section{margin-bottom:1.2rem}
+.modal-section-title{font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:.75rem;display:flex;align-items:center;gap:.4rem}
+.modal-field{margin-bottom:.8rem}
+.modal-field label{display:block;font-size:.7rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.3rem}
+.modal-field input,.modal-field select{width:100%;padding:.68rem .95rem;border:1.5px solid var(--fog3);border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-size:.86rem;background:var(--ice);color:var(--text);outline:none;appearance:none}
+.modal-field input:focus,.modal-field select:focus{border-color:var(--accent);background:var(--white)}
+.msel-w{position:relative}
+.msel-w::after{content:'▾';position:absolute;right:.85rem;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;font-size:.76rem}
+.perms-box{background:var(--ice);border-radius:var(--r2);padding:1rem;border:1px solid var(--fog3)}
+.perm-row{display:flex;align-items:center;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--fog3)}
+.perm-row:last-child{border-bottom:none}
+.perm-label{font-size:.83rem;font-weight:500;color:var(--text)}
+.perm-sub{font-size:.68rem;color:var(--text3)}
+.toggle-sw{position:relative;width:42px;height:24px;flex-shrink:0}
+.toggle-sw input{opacity:0;width:0;height:0;position:absolute}
+.toggle-sw .slider{position:absolute;cursor:pointer;inset:0;background:var(--fog3);border-radius:12px;transition:.3s}
+.toggle-sw .slider::before{content:'';position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.toggle-sw input:checked + .slider{background:var(--accent)}
+.toggle-sw input:checked + .slider::before{transform:translateX(18px)}
+.modal-footer{display:flex;gap:.75rem;padding:1.2rem 1.6rem;border-top:1px solid var(--fog3);background:var(--ice)}
+.user-avatar-big{width:54px;height:54px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--navy2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.2rem;flex-shrink:0;overflow:hidden}
+.user-avatar-big img{width:100%;height:100%;object-fit:cover}
+.ann-item{padding:1rem 1.3rem;border-bottom:1px solid var(--fog3)}
+.ann-item:last-child{border-bottom:none}
+.ann-item:hover{background:var(--ice)}
+.ann-t{font-weight:700;font-size:.86rem;color:var(--text);margin-bottom:4px}
+.ann-b{font-size:.78rem;color:var(--text2);line-height:1.55;margin-bottom:7px}
+.ann-foot{display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap}
+.ov-recent{background:var(--white);border-radius:var(--r);border:1px solid var(--fog3);box-shadow:var(--sh);overflow:hidden;margin-top:1.4rem}
+.ov-rec-hdr{padding:.9rem 1.3rem;border-bottom:1px solid var(--fog3);background:var(--fog2);font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:.5rem}
+.sb-ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;display:none}
+.sb-ov.on{display:block}
+.logo-upload-row{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
+.logo-preview{width:64px;height:64px;border-radius:14px;background:var(--ice);border:1.5px dashed var(--fog3);display:flex;align-items:center;justify-content:center;color:var(--text3);overflow:hidden;flex-shrink:0}
+.logo-preview img{width:100%;height:100%;object-fit:cover}
+.plan-toggle{display:flex;gap:.5rem;margin-bottom:1rem;background:var(--ice);border-radius:var(--r2);padding:4px}
+.ptog{flex:1;padding:.6rem;border-radius:8px;border:none;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;color:var(--text3);background:transparent}
+.ptog.on{background:var(--white);color:var(--accent);box-shadow:var(--sh)}
+@media(max-width:1200px){.stat-row{grid-template-columns:repeat(2,1fr)}.two-col{grid-template-columns:1fr}}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0;max-width:100vw}.tb-ham{display:block}.stat-row{grid-template-columns:repeat(2,1fr)}.content{padding:1.2rem}.two-col{grid-template-columns:1fr}.fg-row{grid-template-columns:1fr}.modal-grid{grid-template-columns:1fr}.sub-info-grid{grid-template-columns:1fr 1fr}}
+.toast{position:fixed;bottom:1.4rem;right:1.4rem;background:var(--navy);color:#fff;padding:.8rem 1.4rem;border-radius:13px;font-size:.82rem;font-weight:600;box-shadow:0 6px 24px rgba(0,0,0,.22);z-index:999;transform:translateY(20px);opacity:0;transition:all .28s;pointer-events:none;max-width:320px}
+.toast.on{transform:translateY(0);opacity:1}
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:.3rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
 </head>
 <body>
-  <style>
-  body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f0f8ff;
-  color: #0B3D91;
-}
-header {
-  background: #0B3D91;
-  color: white;
-  padding: 15px 20px;
-  text-align: center;
-  font-size: 1.5em;
-  font-weight: bold;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-}
-.container {
-  max-width: 900px;
-  margin: 20px auto;
-  padding: 16px;
-}
-.card {
-  background: white;
-  border-radius: 14px;
-  padding: 18px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.12);
-  margin-bottom: 18px;
-}
-h2,h3 { margin-top:0; color:#0B3D91; }
-label { display:block; margin:10px 0 6px; font-weight:bold; }
-input, select, textarea {
-  width: 100%; box-sizing:border-box; padding:12px; border:1px solid #c7d8f5;
-  border-radius:10px; font-size:15px; outline:none;
-}
-textarea { resize:vertical; min-height:70px; }
-.row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-.btn { border:none; border-radius:10px; padding:12px 16px; font-size:15px; font-weight:bold; cursor:pointer; margin-top:12px; margin-right:8px; }
-.btn-primary { background:#0B3D91; color:white; }
-.btn-primary:hover { background:#082f72; }
-.btn-secondary { background:#e6f2ff; color:#0B3D91; }
-.btn-secondary:hover { background:#d7ebff; }
-.btn-danger { background:#f44336; color:white; }
-.btn-danger:hover { background:#d32f2f; }
-.btn-warning { background:#ff9800; color:white; }
-.btn-warning:hover { background:#e68900; }
-.question-card { border:2px solid #e6f2ff; border-radius:12px; padding:14px; margin-top:14px; background:#fbfdff; }
-.question-title { font-weight:bold; margin-bottom:10px; font-size:1.05em; }
-.status { margin-top:14px; padding:12px; border-radius:10px; font-weight:bold; display:none; }
-.status.success { display:block; background:#e8f5e9; color:#2e7d32; }
-.status.error { display:block; background:#ffebee; color:#c62828; }
-.saved-list { margin-top:10px; }
-.saved-item { background:#fff; border:1px solid #dce9ff; border-radius:12px; padding:12px; margin-bottom:10px; box-shadow:0 2px 6px rgba(0,0,0,0.06); }
-.saved-item-title { font-weight:bold; color:#0B3D91; margin-bottom:6px; }
-.small { color:#555; font-size:14px; }
-.loading { text-align:center; padding:20px; color:#0B3D91; font-weight:bold; }
-.edit-banner { display:none; margin-bottom:12px; padding:12px; border-radius:10px; background:#fff3cd; color:#856404; font-weight:bold; border:1px solid #ffe08a; }
-.button-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
-@media(max-width:700px){.row{grid-template-columns:1fr;}}
-  </style>
-  <script src="quiz.js"></script>
+<div class="sb-ov" id="sbOv" onclick="closeSb()"></div>
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <div class="sb-logo"><div class="sb-mark" id="sbMark"><i class="fas fa-image"></i></div><div><div class="sb-name">First Year <span>Hub</span></div><div class="sb-badge">Admin Panel</div></div></div>
+  <nav class="sb-nav">
+    <div class="sb-group">Dashboard</div>
+    <button class="sb-btn on" onclick="showSec('overview',this)"><i class="fas fa-chart-pie"></i>Overview<span class="sb-cnt" id="cnt-ov">—</span></button>
+    <div class="sb-group" style="margin-top:.4rem">⚠️ Payments</div>
+    <button class="sb-btn" onclick="showSec('pending',this)"><i class="fas fa-clock"></i>Pending Payments<span class="sb-cnt red" id="cnt-pend">0</span></button>
+    <div class="sb-group" style="margin-top:.4rem">Curriculum</div>
+    <button class="sb-btn" onclick="showSec('courses',this)"><i class="fas fa-book-open"></i>Courses<span class="sb-cnt" id="cnt-c">0</span></button>
+    <div class="sb-group" style="margin-top:.4rem">Content</div>
+    <button class="sb-btn" onclick="showSec('resources',this)"><i class="fas fa-folder-open"></i>Resources<span class="sb-cnt" id="cnt-r">0</span></button>
+    <button class="sb-btn" onclick="showSec('videos',this)"><i class="fas fa-video"></i>Videos<span class="sb-cnt" id="cnt-v">0</span></button>
+    <button class="sb-btn" onclick="showSec('pastpapers',this)"><i class="fas fa-scroll"></i>Past Papers<span class="sb-cnt" id="cnt-pp">0</span></button>
+    <button class="sb-btn" onclick="showSec('quizzes',this)"><i class="fas fa-puzzle-piece"></i>Online Quizzes<span class="sb-cnt" id="cnt-qz">0</span></button>
+    <div class="sb-group" style="margin-top:.4rem">Communication</div>
+    <button class="sb-btn" onclick="showSec('announcements',this)"><i class="fas fa-bullhorn"></i>Announcements<span class="sb-cnt" id="cnt-an">0</span></button>
+    <div class="sb-group" style="margin-top:.4rem">Students</div>
+    <button class="sb-btn" onclick="showSec('users',this)"><i class="fas fa-users"></i>All Students<span class="sb-cnt" id="cnt-u">0</span></button>
+    <div class="sb-group" style="margin-top:.4rem">Configuration</div>
+    <button class="sb-btn" onclick="showSec('settings',this)"><i class="fas fa-sliders-h"></i>Branding &amp; Payments</button>
+  </nav>
+  <div class="sb-footer"><div class="sb-user"><div class="sb-av">A</div><div><div class="sb-uname">Administrator</div><div class="sb-urole">Full Access Mode</div></div></div></div>
+</aside>
+<div class="main">
+  <header class="topbar">
+    <button class="tb-ham" onclick="openSb()"><i class="fas fa-bars"></i></button>
+    <div class="tb-title" id="topTitle">Overview</div>
+    <div class="tb-right">
+      <span class="live-badge"><i class="fas fa-circle" style="font-size:.45rem;margin-right:.3rem"></i>Firebase Live</span>
+      <button class="btn-exit" onclick="location.href='login.html'"><i class="fas fa-sign-out-alt"></i> Exit</button>
+    </div>
+  </header>
+  <div class="content">
 
-  <div id="adminContent" style="display:none">
-    <header>Fincep Quiz Admin</header>
-    <div class="container">
-      <div class="card">
-        <h2 id="formTitle">Create Quiz</h2>
-        <div id="editBanner" class="edit-banner">You are editing an existing quiz.</div>
-
-        <label for="subject">Course / Subject</label>
-        <select id="subject">
-          <option value="">-- Select Course --</option>
-          <option value="BI110">BI110</option>
-          <option value="CH110">CH110</option>
-          <option value="PH110">PH110</option>
-          <option value="MA110">MA110</option>
-          <option value="CS110">CS110</option>
-          <option value="LA111">LA111</option>
-        </select>
-
-        <label for="quizTitle">Quiz Title</label>
-        <input type="text" id="quizTitle" placeholder="e.g. Term 1 Quiz 1" />
-
-        <label for="timeMinutes">Time (minutes)</label>
-        <input type="number" id="timeMinutes" min="1" value="10" />
-
-        <button class="btn btn-secondary" onclick="addQuestion()">+ Add Question</button>
-        <div id="questionsContainer"></div>
-
-        <div class="button-row">
-          <button class="btn btn-primary" id="saveBtn" onclick="saveQuiz()">Save Quiz</button>
-          <button class="btn btn-warning" id="updateBtn" onclick="updateQuiz()" style="display:none;">Update Quiz</button>
-          <button class="btn btn-secondary" onclick="resetForm()">Clear Form</button>
-          <button class="btn btn-danger" id="cancelEditBtn" onclick="cancelEdit()" style="display:none;">Cancel Edit</button>
-        </div>
-        <div id="statusBox" class="status"></div>
+    <!-- OVERVIEW -->
+    <div class="sec on" id="sec-overview">
+      <div class="pg-hdr"><h1>Platform Overview</h1><p>Live data from Firebase. All changes reflect instantly in the student app.</p></div>
+      <div class="stat-row">
+        <div class="stat" style="cursor:pointer" onclick="showSec('pending',document.querySelector('[onclick*=pending]'))"><div class="stat-bar" style="background:var(--purple)"></div><div class="stat-ico">⏳</div><div class="stat-n" id="ov-pend" style="color:var(--purple)">—</div><div class="stat-l">Pending Payments</div></div>
+        <div class="stat"><div class="stat-bar" style="background:var(--accent)"></div><div class="stat-ico">📚</div><div class="stat-n" id="ov-c">—</div><div class="stat-l">Courses</div></div>
+        <div class="stat"><div class="stat-bar" style="background:var(--green)"></div><div class="stat-ico">👥</div><div class="stat-n" id="ov-u">—</div><div class="stat-l">Students</div></div>
+        <div class="stat"><div class="stat-bar" style="background:var(--red)"></div><div class="stat-ico">📁</div><div class="stat-n" id="ov-r">—</div><div class="stat-l">Resources</div></div>
+        <div class="stat"><div class="stat-bar" style="background:var(--amber)"></div><div class="stat-ico">🎥</div><div class="stat-n" id="ov-v">—</div><div class="stat-l">Videos</div></div>
+        <div class="stat"><div class="stat-bar" style="background:var(--amber)"></div><div class="stat-ico">📝</div><div class="stat-n" id="ov-pp">—</div><div class="stat-l">Past Papers</div></div>
+        <div class="stat"><div class="stat-bar" style="background:var(--purple)"></div><div class="stat-ico">🧩</div><div class="stat-n" id="ov-qz">—</div><div class="stat-l">Quizzes</div></div>
+        <div class="stat"><div class="stat-bar" style="background:var(--accent)"></div><div class="stat-ico">📢</div><div class="stat-n" id="ov-an">—</div><div class="stat-l">Announcements</div></div>
       </div>
+      <div class="ov-recent">
+        <div class="ov-rec-hdr"><i class="fas fa-clock" style="color:var(--accent)"></i>Recently Uploaded Resources</div>
+        <div id="ov-rec-list"><div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
+      </div>
+    </div>
 
-      <div class="card">
-        <h2>Uploaded Quizzes</h2>
-        <div id="quizList" class="saved-list">
-          <div class="loading">Loading quizzes...</div>
+    <!-- PENDING PAYMENTS -->
+    <div class="sec" id="sec-pending">
+      <div class="pg-hdr"><h1>Pending Payments</h1><p>Students who have submitted a payment. Verify the transaction ID, set the due date, and approve or reject.</p></div>
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.2rem;flex-wrap:wrap">
+        <button class="btn-refresh" onclick="loadPending()"><i class="fas fa-sync"></i> Refresh</button>
+        <span class="t-count" id="pend-count" style="margin-left:0">Loading…</span>
+        <div style="margin-left:auto;display:flex;gap:.5rem">
+          <button class="btn-sm btn-edit" onclick="filterPend('pending',this)">⏳ Pending</button>
+          <button class="btn-sm btn-approve" onclick="filterPend('approved',this)">✅ Approved</button>
+          <button class="btn-sm btn-reject" onclick="filterPend('rejected',this)">❌ Rejected</button>
+          <button class="btn-sm btn-edit" onclick="filterPend('all',this)">All</button>
+        </div>
+      </div>
+      <div id="pendingList"><div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
+    </div>
+
+    <!-- COURSES -->
+    <div class="sec" id="sec-courses">
+      <div class="pg-hdr"><h1>Manage Courses</h1><p>Add the courses for this program. Every student sees the full course list.</p></div>
+      <div class="two-col">
+        <div class="form-card">
+          <h3><i class="fas fa-plus-circle" style="color:var(--accent)"></i> Add Course</h3>
+          <div class="alert" id="courseAlert"></div>
+          <div class="fg"><label>Course Name <span class="req">*</span></label><input type="text" id="cName" placeholder="e.g. Organic Chemistry I"/></div>
+          <div class="fg-row">
+            <div class="fg"><label>Course Code</label><input type="text" id="cCode" placeholder="CHM 101"/></div>
+            <div class="fg"><label>Icon (emoji)</label><input type="text" id="cIcon" placeholder="🧪" maxlength="4"/></div>
+          </div>
+          <div class="fg"><label>Description</label><textarea id="cDesc" placeholder="Brief course description…"></textarea></div>
+          <button class="btn btn-ink btn-full" onclick="addCourse()"><i class="fas fa-plus"></i> Add Course</button>
+        </div>
+        <div class="list-card">
+          <div class="lc-hdr"><h3><i class="fas fa-list" style="color:var(--accent)"></i> All Courses</h3><button class="btn-refresh" onclick="loadCourses()"><i class="fas fa-sync"></i></button></div>
+          <div class="toolbar">
+            <span class="t-count" id="course-count">—</span>
+          </div>
+          <div class="lc-body" id="coursesList"><div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
         </div>
       </div>
     </div>
+
+    <!-- RESOURCES -->
+    <div class="sec" id="sec-resources">
+      <div class="pg-hdr"><h1>Upload Resources</h1><p>Lecturer notes, tutorial sheets and worked solutions — via Drive link or device upload.</p></div>
+      <div class="two-col">
+        <div class="form-card">
+          <h3><i class="fas fa-upload" style="color:var(--accent)"></i> Add Resource</h3>
+          <div class="alert" id="resAlert"></div>
+          <div class="fg"><label>Title <span class="req">*</span></label><input type="text" id="rTitle" placeholder="e.g. Enzyme Kinetics Notes — Week 4"/></div>
+          <div class="fg"><label>Course <span class="req">*</span></label><div class="sel-w"><select id="rCourse"><option value="">— Select course —</option></select></div></div>
+          <div class="fg"><label>Category <span class="req">*</span></label><div class="sel-w"><select id="rType">
+            <option value="">— Select —</option>
+            <option value="lecturernotes">📘 Lecturer Notes</option>
+            <option value="tutorialsheets">📝 Tutorial Sheets</option>
+            <option value="workedsolutions">✅ Worked Solutions</option>
+          </select></div></div>
+          <div class="fg">
+            <label>Upload Method</label>
+            <div class="upload-toggle"><button class="utog on" id="togDrive" onclick="setUploadMethod('drive')"><i class="fab fa-google-drive"></i> Drive Link</button><button class="utog" id="togCloud" onclick="setUploadMethod('cloudinary')"><i class="fas fa-cloud-upload-alt"></i> Device Upload</button></div>
+            <div class="upload-section on" id="driveSection"><input type="url" id="rLink" placeholder="https://drive.google.com/file/d/…"/></div>
+            <div class="upload-section" id="cloudSection">
+              <input type="file" id="rFile" accept=".pdf,.docx,.pptx,.png,.jpg,.jpeg" style="background:var(--white);cursor:pointer"/>
+              <div id="rProg" style="display:none;margin-top:.5rem"><div style="height:5px;background:var(--fog3);border-radius:3px;overflow:hidden"><div id="rProgBar" style="height:100%;background:var(--accent);width:0%;transition:width .3s;border-radius:3px"></div></div><div style="font-size:.7rem;color:var(--text3);margin-top:.25rem" id="rProgTxt">Uploading…</div></div>
+            </div>
+          </div>
+          <div class="fg"><label>Description</label><input type="text" id="rDesc" placeholder="e.g. Week 4 — Covers reaction mechanisms"/></div>
+          <button class="btn btn-sky btn-full" id="resBtn" onclick="addResource()"><i class="fas fa-cloud-upload-alt"></i> Upload Resource</button>
+        </div>
+        <div class="list-card">
+          <div class="lc-hdr"><h3><i class="fas fa-folder-open" style="color:var(--accent)"></i> All Resources</h3><button class="btn-refresh" onclick="loadResources()"><i class="fas fa-sync"></i></button></div>
+          <div class="toolbar"><input class="t-search" placeholder="Search…" oninput="filterRes(this.value)"/><select class="t-sel" onchange="filterResByType(this.value)"><option value="">All categories</option><option value="lecturernotes">Lecturer Notes</option><option value="tutorialsheets">Tutorial Sheets</option><option value="workedsolutions">Worked Solutions</option></select><span class="t-count" id="res-count">—</span></div>
+          <div class="lc-body" id="resList"><div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIDEOS -->
+    <div class="sec" id="sec-videos">
+      <div class="pg-hdr"><h1>Video Lessons</h1><p>Add video lectures via Google Drive, YouTube, or direct device upload.</p></div>
+      <div class="two-col">
+        <div class="form-card">
+          <h3><i class="fas fa-video" style="color:var(--red)"></i> Add Video</h3>
+          <div class="alert" id="vidAlert"></div>
+          <div class="fg"><label>Title <span class="req">*</span></label><input type="text" id="vTitle" placeholder="e.g. Titration Techniques — Full Lecture"/></div>
+          <div class="fg"><label>Course</label><div class="sel-w"><select id="vCourse"><option value="">— Select course —</option></select></div></div>
+          <div class="fg">
+            <label>Upload Method</label>
+            <div class="upload-toggle"><button class="utog on" id="togVDrive" onclick="setVidMethod('drive')"><i class="fab fa-google-drive"></i> Drive / YouTube</button><button class="utog" id="togVCloud" onclick="setVidMethod('cloudinary')"><i class="fas fa-cloud-upload-alt"></i> Device Upload</button></div>
+            <div class="upload-section on" id="vDriveSection"><input type="url" id="vLink" placeholder="https://drive.google.com/… or https://youtube.com/…"/></div>
+            <div class="upload-section" id="vCloudSection">
+              <input type="file" id="vFile" accept="video/*" style="background:var(--white);cursor:pointer"/>
+              <div id="vProg" style="display:none;margin-top:.5rem"><div style="height:5px;background:var(--fog3);border-radius:3px;overflow:hidden"><div id="vProgBar" style="height:100%;background:var(--red);width:0%;transition:width .3s;border-radius:3px"></div></div><div style="font-size:.7rem;color:var(--text3);margin-top:.25rem" id="vProgTxt">Uploading…</div></div>
+            </div>
+          </div>
+          <div class="fg"><label>Description</label><input type="text" id="vDesc" placeholder="e.g. Week 3 Lecture — 47 mins"/></div>
+          <button class="btn btn-green btn-full" id="vidBtn" onclick="addVideo()"><i class="fas fa-plus-circle"></i> Add Video</button>
+        </div>
+        <div class="list-card">
+          <div class="lc-hdr"><h3><i class="fas fa-video" style="color:var(--red)"></i> All Videos</h3><button class="btn-refresh" onclick="loadVideos()"><i class="fas fa-sync"></i></button></div>
+          <div class="lc-body" id="vidList"><div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAST PAPERS -->
+    <div class="sec" id="sec-pastpapers">
+      <div class="pg-hdr"><h1>Past Papers</h1><p>Upload exam papers, marking schemes and model answers via Drive links.</p></div>
+      <div class="two-col">
+        <div class="form-card">
+          <h3><i class="fas fa-scroll" style="color:var(--amber)"></i> Add Past Paper</h3>
+          <div class="alert" id="ppAlert"></div>
+          <div class="fg"><label>Exam Title <span class="req">*</span></label><input type="text" id="ppTitle" placeholder="e.g. Organic Chemistry Final Exam 2024"/></div>
+          <div class="fg"><label>Course <span class="req">*</span></label><div class="sel-w"><select id="ppCourse"><option value="">— Select course —</option></select></div></div>
+          <div class="fg-row">
+            <div class="fg"><label>Exam Year <span class="req">*</span></label><input type="number" id="ppYear" placeholder="2024" min="2000" max="2035"/></div>
+            <div class="fg"><label>Duration</label><input type="text" id="ppDuration" placeholder="3 Hours"/></div>
+          </div>
+          <div class="fg"><label>Total Marks</label><input type="text" id="ppMarks" placeholder="100 marks"/></div>
+          <div class="fg"><label>📄 Paper Drive Link</label><input type="url" id="ppPaper" placeholder="https://drive.google.com/…"/></div>
+          <div class="fg"><label>✅ Marking Scheme Link</label><input type="url" id="ppScheme" placeholder="https://drive.google.com/…"/></div>
+          <div class="fg"><label>💡 Model Answers Link</label><input type="url" id="ppModel" placeholder="https://drive.google.com/…"/></div>
+          <button class="btn btn-amber btn-full" onclick="addPaper()"><i class="fas fa-save"></i> Save Past Paper</button>
+        </div>
+        <div class="list-card">
+          <div class="lc-hdr"><h3><i class="fas fa-scroll" style="color:var(--amber)"></i> All Past Papers</h3><button class="btn-refresh" onclick="loadPapers()"><i class="fas fa-sync"></i></button></div>
+          <div class="lc-body" id="ppList"><div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZZES -->
+    <div class="sec" id="sec-quizzes">
+      <div class="pg-hdr"><h1>Online Quizzes</h1><p>Link out to a quiz (e.g. a Google Form) for a specific course.</p></div>
+      <div class="two-col">
+        <div class="form-card">
+          <h3><i class="fas fa-puzzle-piece" style="color:var(--purple)"></i> Add Quiz</h3>
+          <div class="alert" id="qzAlert"></div>
+          <div class="fg"><label>Quiz Title <span class="req">*</span></label><input type="text" id="qzTitle" placeholder="e.g. Chapter 3 Quick Quiz"/></div>
+          <div class="fg"><label>Course</label><div class="sel-w"><select id="qzCourse"><option value="">— Select course —</option></select></div></div>
+          <div class="fg"><label>Quiz Link <span class="req">*</span></label><input type="url" id="qzLink" placeholder="https://forms.gle/…"/></div>
+          <div class="fg"><label>Description</label><input type="text" id="qzDesc" placeholder="e.g. 10 questions, 15 minutes"/></div>
+          <button class="btn btn-purple btn-full" onclick="addQuiz()"><i class="fas fa-plus"></i> Add Quiz</button>
+        </div>
+        <div class="list-card">
+          <div class="lc-hdr"><h3><i class="fas fa-puzzle-piece" style="color:var(--purple)"></i> All Quizzes</h3><button class="btn-refresh" onclick="loadQuizzes()"><i class="fas fa-sync"></i></button></div>
+          <div class="lc-body" id="qzList"><div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANNOUNCEMENTS -->
+    <div class="sec" id="sec-announcements">
+      <div class="pg-hdr"><h1>Announcements</h1><p>Post notices that appear on students' home screens instantly.</p></div>
+      <div class="two-col">
+        <div class="form-card">
+          <h3><i class="fas fa-bullhorn" style="color:var(--accent)"></i> Post Announcement</h3>
+          <div class="alert" id="annAlert"></div>
+          <div class="fg"><label>Title <span class="req">*</span></label><input type="text" id="annTitle" placeholder="e.g. Exam Timetable — Semester 2 2025"/></div>
+          <div class="fg"><label>Message <span class="req">*</span></label><textarea id="annBody" placeholder="Write your announcement…" style="min-height:110px"></textarea></div>
+          <div class="fg"><label>Priority</label><div class="sel-w"><select id="annPriority"><option>Normal</option><option>High</option><option>Urgent</option></select></div></div>
+          <button class="btn btn-sky btn-full" onclick="addAnnouncement()"><i class="fas fa-paper-plane"></i> Post Announcement</button>
+        </div>
+        <div class="list-card">
+          <div class="lc-hdr"><h3><i class="fas fa-bullhorn" style="color:var(--accent)"></i> Posted</h3><button class="btn-refresh" onclick="loadAnnouncements()"><i class="fas fa-sync"></i></button></div>
+          <div class="lc-body" id="annList"><div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div class="sec" id="sec-users">
+      <div class="pg-hdr"><h1>Student Management</h1><p>Click any student row to edit details, set due date, manage access and permissions.</p></div>
+      <div class="list-card">
+        <div class="toolbar">
+          <input class="t-search" placeholder="Search name, email…" oninput="filterUsers(this.value)"/>
+          <select class="t-sel" onchange="filterByStatus(this.value)"><option value="">All Status</option><option value="active">Active</option><option value="banned">Suspended</option></select>
+          <button class="btn-refresh" onclick="loadUsers()"><i class="fas fa-sync"></i></button>
+          <span class="t-count" id="u-count">—</span>
+        </div>
+        <div id="usersList"><div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading students…</div></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS: BRANDING + PAYMENT + ACCESS -->
+    <div class="sec" id="sec-settings">
+      <div class="pg-hdr"><h1>Branding &amp; Payments</h1><p>Control the logo shown in the student app, your pricing plan, and whether new sign-ups get a free trial or must pay immediately.</p></div>
+      <div class="two-col">
+        <div>
+          <div class="form-card">
+            <h3><i class="fas fa-image" style="color:var(--accent)"></i> Branding</h3>
+            <div class="alert" id="brandAlert"></div>
+            <div class="logo-upload-row">
+              <div class="logo-preview" id="logoPreview"><i class="fas fa-image"></i></div>
+              <div style="flex:1">
+                <input type="file" id="logoFile" accept="image/*" style="background:var(--ice);cursor:pointer;width:100%;padding:.6rem;border:1.5px solid var(--fog3);border-radius:var(--r2)"/>
+              </div>
+            </div>
+            <button class="btn btn-ink btn-full" onclick="uploadLogo()" id="logoBtn"><i class="fas fa-upload"></i> Upload &amp; Save Logo</button>
+          </div>
+          <div class="form-card">
+            <h3><i class="fas fa-hourglass-half" style="color:var(--purple)"></i> New Sign-Up Access</h3>
+            <div class="alert" id="accessAlert"></div>
+            <div class="perms-box" style="margin-bottom:1rem">
+              <div class="perm-row"><div><div class="perm-label">Give new sign-ups a free trial</div><div class="perm-sub">If off, new students are restricted until they pay</div></div><label class="toggle-sw"><input type="checkbox" id="trialToggle"/><span class="slider"></span></label></div>
+            </div>
+            <div class="fg"><label>Free Trial Length (days)</label><input type="number" id="trialDays" min="1" max="60" placeholder="5"/></div>
+            <button class="btn btn-purple btn-full" onclick="saveAccessSettings()"><i class="fas fa-save"></i> Save Access Settings</button>
+          </div>
+        </div>
+        <div class="form-card">
+          <h3><i class="fas fa-credit-card" style="color:var(--green)"></i> Payment Plan</h3>
+          <div class="alert" id="planAlert"></div>
+          <div class="plan-toggle">
+            <button class="ptog on" id="ptogMonth" onclick="setPlanMode('per_month')">Per Month (all courses)</button>
+            <button class="ptog" id="ptogCourse" onclick="setPlanMode('per_course')">Per Course / Month</button>
+          </div>
+          <div class="fg"><label>Amount (ZMW) <span class="req">*</span></label><input type="number" id="planAmount" min="0" placeholder="e.g. 30"/></div>
+          <div class="fg"><label>Payment Number</label><input type="text" id="planNumber" placeholder="e.g. 0977 000 000"/></div>
+          <div class="fg"><label>Payment Method Name</label><input type="text" id="planName" placeholder="e.g. MTN Mobile Money"/></div>
+          <div class="fg"><label>Admin WhatsApp Number</label><input type="text" id="planWhatsapp" placeholder="260977000000"/></div>
+          <div class="fg"><label>Instructions shown to students</label><textarea id="planNote" placeholder="e.g. Pay to the number above, then paste your transaction ID."></textarea></div>
+          <button class="btn btn-green btn-full" onclick="savePaymentPlan()"><i class="fas fa-save"></i> Save Payment Plan</button>
+        </div>
+      </div>
+    </div>
+
   </div>
+</div>
+</div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
-  // 🔑 Password protection and quiz logic all in one
-const adminPassword = "123"; // change this
-
-document.addEventListener("DOMContentLoaded", () => {
-  let entered = prompt("Enter admin password:");
-  if (entered === adminPassword) {
-    document.getElementById("adminContent").style.display = "block";
-  } else {
-    document.body.innerHTML = "<h1 style='text-align:center; margin-top:50px; color:red;'>Access Denied</h1>";
-    return; // stop script
-  }
-
-  // 🔥 Firebase setup
-  firebase.initializeApp({
-    apiKey: "AIzaSyClCl9tSlMfUNxBWym__WXj8FS_uBOA64M",
-    authDomain: "gptapp-fa2ff.firebaseapp.com",
-    projectId: "gptapp-fa2ff",
-    storageBucket: "gptapp-fa2ff.firebasestorage.app",
-    messagingSenderId: "834440426142",
-    appId: "1:834440426142:web:e01c200e13ee25bade818f",
-    measurementId: "G-GZZ28RMH36"
-  });
-  const db = firebase.firestore();
-
-  // =====================
-  // DOM Elements
-  // =====================
-  const questionsContainer = document.getElementById("questionsContainer");
-  const statusBox = document.getElementById("statusBox");
-  const quizList = document.getElementById("quizList");
-
-  let questionCount = 0;
-  let editingQuizId = null;
-
-  // =====================
-  // Status Functions
-  // =====================
-  function showStatus(message, type = "success") {
-    statusBox.className = "status " + type;
-    statusBox.textContent = message;
-  }
-
-  function clearStatus() {
-    statusBox.className = "status";
-    statusBox.textContent = "";
-  }
-
-  // =====================
-  // Quiz Functions
-  // =====================
-  function addQuestion(data = null) {
-    questionCount++;
-    const qId = "q_" + questionCount;
-    const answerValue = data?.answer ?? data?.correctAnswer ?? data?.correctOption ?? "";
-
-    const div = document.createElement("div");
-    div.className = "question-card";
-    div.id = qId;
-
-    div.innerHTML = `
-      <div class="question-title">Question ${questionCount}</div>
-
-      <label>Question Text</label>
-      <textarea class="question-text" placeholder="Enter question here...">${data?.question || ""}</textarea>
-
-      <div class="row">
+<!-- USER MANAGEMENT MODAL -->
+<div class="modal-ov" id="userModal">
+  <div class="modal">
+    <div class="modal-hdr"><h3><i class="fas fa-user-cog"></i> Manage Student</h3><button class="modal-x" onclick="closeUserModal()"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.4rem;padding-bottom:1.2rem;border-bottom:1px solid var(--fog3)">
+        <div class="user-avatar-big" id="modalAvatar">?</div>
+        <div><div style="font-weight:700;font-size:1.05rem;color:var(--text)" id="modalUserName">—</div><div style="font-size:.78rem;color:var(--text3)" id="modalUserEmail">—</div><div style="margin-top:5px" id="modalStatusBadge"></div></div>
+      </div>
+      <div class="alert" id="modalAlert"></div>
+      <div class="modal-grid">
         <div>
-          <label>Option A</label>
-          <input type="text" class="opt-a" value="${data?.options?.[0] || ""}" />
+          <div class="modal-section">
+            <div class="modal-section-title"><i class="fas fa-user" style="color:var(--accent)"></i> Personal Information</div>
+            <div class="modal-field"><label>Full Name</label><input type="text" id="mName"/></div>
+            <div class="modal-field"><label>Phone</label><input type="tel" id="mPhone" placeholder="+260 97x xxx xxx"/></div>
+            <div class="modal-field"><label>Student ID</label><input type="text" id="mSid"/></div>
+            <div class="modal-field"><label>Email</label><input type="email" id="mEmail" readonly style="opacity:.6;cursor:default"/></div>
+            <div class="modal-field"><label>Signed Up</label><input type="text" id="mSignupDate" readonly style="opacity:.6;cursor:default"/></div>
+          </div>
         </div>
         <div>
-          <label>Option B</label>
-          <input type="text" class="opt-b" value="${data?.options?.[1] || ""}" />
+          <div class="modal-section">
+            <div class="modal-section-title"><i class="fas fa-calendar-check" style="color:var(--purple)"></i> Access</div>
+            <div class="modal-field"><label>Access Due Date</label><input type="date" id="mDueDate"/><div style="font-size:.7rem;color:var(--text3);margin-top:.25rem">Access expires on this date.</div></div>
+          </div>
+          <div class="modal-section">
+            <div class="modal-section-title"><i class="fas fa-shield-alt" style="color:var(--red)"></i> Permissions</div>
+            <div class="perms-box">
+              <div class="perm-row"><div><div class="perm-label">Can Log In</div><div class="perm-sub">Block access to the entire platform</div></div><label class="toggle-sw"><input type="checkbox" id="mCanLogin" checked/><span class="slider"></span></label></div>
+              <div class="perm-row"><div><div class="perm-label">Subscription Active</div><div class="perm-sub">Grants access to all content</div></div><label class="toggle-sw"><input type="checkbox" id="mIsSubscribed"/><span class="slider"></span></label></div>
+            </div>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ink" onclick="saveUserChanges()" style="flex:1"><i class="fas fa-save"></i> Save All Changes</button>
+      <button class="btn" id="modalBanBtn" onclick="toggleBanUser()" style="padding:.78rem 1.2rem"><i class="fas fa-ban"></i> <span id="modalBanLabel">Suspend</span></button>
+      <button class="btn btn-del" onclick="deleteUser()" style="padding:.78rem 1.2rem;background:var(--red2);color:var(--red)"><i class="fas fa-trash"></i></button>
+    </div>
+  </div>
+</div>
 
-      <div class="row">
-        <div>
-          <label>Option C</label>
-          <input type="text" class="opt-c" value="${data?.options?.[2] || ""}" />
-        </div>
-        <div>
-          <label>Option D</label>
-          <input type="text" class="opt-d" value="${data?.options?.[3] || ""}" />
-        </div>
-      </div>
+<div class="toast" id="toast"></div>
 
-      <label>Correct Answer</label>
-      <select class="correct-answer">
-        <option value="">-- Select Correct Option --</option>
-        <option value="0" ${Number(answerValue) === 0 ? "selected" : ""}>A</option>
-        <option value="1" ${Number(answerValue) === 1 ? "selected" : ""}>B</option>
-        <option value="2" ${Number(answerValue) === 2 ? "selected" : ""}>C</option>
-        <option value="3" ${Number(answerValue) === 3 ? "selected" : ""}>D</option>
-      </select>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+import { getFirestore, doc, addDoc, getDoc, setDoc, updateDoc, getDocs, deleteDoc, collection, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-      <label>Explanation / Correction</label>
-      <textarea class="explanation" placeholder="Why is this answer correct?">${data?.explanation || ""}</textarea>
+// ── Firebase config — paste this client's project config here ──
+const firebaseConfig = {
 
-      <button class="btn btn-danger" onclick="removeQuestion('${qId}')">Remove Question</button>
-    `;
 
-    questionsContainer.appendChild(div);
-  }
 
-  window.addQuestion = addQuestion; // make button clickable globally
 
-  function removeQuestion(id) {
-    const el = document.getElementById(id);
-    if (el) el.remove();
-  }
-  window.removeQuestion = removeQuestion;
-
-  function setEditMode(isEditing) {
-    document.getElementById("formTitle").textContent = isEditing ? "Edit Quiz" : "Create Quiz";
-    document.getElementById("editBanner").style.display = isEditing ? "block" : "none";
-    document.getElementById("saveBtn").style.display = isEditing ? "none" : "inline-block";
-    document.getElementById("updateBtn").style.display = isEditing ? "inline-block" : "none";
-    document.getElementById("cancelEditBtn").style.display = isEditing ? "inline-block" : "none";
-  }
-
-  function resetForm() {
-    document.getElementById("subject").value = "";
-    document.getElementById("quizTitle").value = "";
-    document.getElementById("timeMinutes").value = 10;
-    questionsContainer.innerHTML = "";
-    questionCount = 0;
-    editingQuizId = null;
-    clearStatus();
-    setEditMode(false);
-    addQuestion();
-  }
-
-  window.resetForm = resetForm;
-  window.cancelEdit = () => { resetForm(); showStatus("Edit cancelled.", "success"); };
-
-  // =====================
-  // Collect Data
-  // =====================
-  function collectQuizData() {
-    const subject = document.getElementById("subject").value.trim();
-    const title = document.getElementById("quizTitle").value.trim();
-    const timeMinutes = parseInt(document.getElementById("timeMinutes").value);
-
-    if (!subject) { showStatus("Please select a course.", "error"); return null; }
-    if (!title) { showStatus("Please enter quiz title.", "error"); return null; }
-    if (!timeMinutes || timeMinutes < 1) { showStatus("Please enter a valid time in minutes.", "error"); return null; }
-
-    const questionCards = document.querySelectorAll(".question-card");
-    if (questionCards.length === 0) { showStatus("Please add at least one question.", "error"); return null; }
-
-    const questions = [];
-    for (let card of questionCards) {
-      const question = card.querySelector(".question-text").value.trim();
-      const a = card.querySelector(".opt-a").value.trim();
-      const b = card.querySelector(".opt-b").value.trim();
-      const c = card.querySelector(".opt-c").value.trim();
-      const d = card.querySelector(".opt-d").value.trim();
-      const answer = card.querySelector(".correct-answer").value;
-      const explanation = card.querySelector(".explanation").value.trim();
-
-      if (!question || !a || !b || !c || !d || answer === "") {
-        showStatus("Please complete all fields for every question.", "error");
-        return null;
-      }
-
-      questions.push({ question, options: [a, b, c, d], answer: parseInt(answer), explanation: explanation || "No explanation provided." });
-    }
-
-    return { subject, title, timeMinutes, questions };
-  }
-
-  // =====================
-  // Firebase CRUD
-  // =====================
-  async function saveQuiz() {
-    clearStatus();
-    const data = collectQuizData();
-    if (!data) return;
-    try {
-      showStatus("Saving quiz...", "success");
-      await db.collection("quizzes").add({ ...data, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-      showStatus("Quiz saved successfully! ✅", "success");
-      resetForm();
-      loadUploadedQuizzes();
-    } catch (error) { console.error(error); showStatus("Failed to save quiz: " + error.message, "error"); }
-  }
-  window.saveQuiz = saveQuiz;
-
-  async function loadUploadedQuizzes() {
-    quizList.innerHTML = `<div class="loading">Loading quizzes...</div>`;
-    try {
-      const snapshot = await db.collection("quizzes").get();
-      if (snapshot.empty) { quizList.innerHTML = `<div class="small">No quizzes uploaded yet.</div>`; return; }
-      let items = [];
-      snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
-      items.sort((a,b)=> (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
-      quizList.innerHTML = "";
-      items.forEach(item => {
-        const div = document.createElement("div");
-        div.className = "saved-item";
-        div.innerHTML = `
-          <div class="saved-item-title">${item.title}</div>
-          <div class="small"><strong>Course:</strong> ${item.subject || "N/A"}</div>
-          <div class="small"><strong>Time:</strong> ${item.timeMinutes || 0} min</div>
-          <div class="small"><strong>Questions:</strong> ${item.questions?.length || 0}</div>
-          <div class="button-row">
-            <button class="btn btn-warning" onclick="editQuiz('${item.id}')">Edit Quiz</button>
-            <button class="btn btn-danger" onclick="deleteQuiz('${item.id}')">Delete Quiz</button>
-          </div>`;
-        quizList.appendChild(div);
-      });
-    } catch (error) { console.error(error); quizList.innerHTML = `<div class="small" style="color:red;">Failed to load quizzes: ${error.message}</div>`; }
-  }
-  window.loadUploadedQuizzes = loadUploadedQuizzes;
-
-  async function deleteQuiz(id) {
-    if (!confirm("Delete this quiz?")) return;
-    try {
-      await db.collection("quizzes").doc(id).delete();
-      if (editingQuizId === id) resetForm();
-      showStatus("Quiz deleted successfully.", "success");
-      loadUploadedQuizzes();
-    } catch (error) { console.error(error); showStatus("Failed to delete quiz: " + error.message, "error"); }
-  }
-  window.deleteQuiz = deleteQuiz;
-
-  async function editQuiz(id) {
-    clearStatus();
-    try {
-      const doc = await db.collection("quizzes").doc(id).get();
-      if (!doc.exists) { showStatus("Quiz not found.", "error"); return; }
-      const data = doc.data();
-      editingQuizId = id;
-      document.getElementById("subject").value = data.subject || "";
-      document.getElementById("quizTitle").value = data.title || "";
-      document.getElementById("timeMinutes").value = data.timeMinutes || 10;
-      questionsContainer.innerHTML = "";
-      questionCount = 0;
-      (Array.isArray(data.questions)?data.questions:[]).forEach(q=>addQuestion(q));
-      if (!data.questions?.length) addQuestion();
-      setEditMode(true);
-      showStatus("Quiz loaded for editing.", "success");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } catch (error) { console.error(error); showStatus("Failed to load quiz for editing: " + error.message, "error"); }
-  }
-  window.editQuiz = editQuiz;
-
-  async function updateQuiz() {
-    clearStatus();
-    if (!editingQuizId) { showStatus("No quiz selected for editing.", "error"); return; }
-    const data = collectQuizData();
-    if (!data) return;
-    try {
-      showStatus("Updating quiz...", "success");
-      await db.collection("quizzes").doc(editingQuizId).update({ ...data, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
-      showStatus("Quiz updated successfully! ✏️", "success");
-      resetForm();
-      loadUploadedQuizzes();
-    } catch (error) { console.error(error); showStatus("Failed to update quiz: " + error.message, "error"); }
-  }
-  window.updateQuiz = updateQuiz;
-
-  // =====================
-  // Init
-  // =====================
-  addQuestion();
-  loadUploadedQuizzes();
-});
-  </script>
-  <script>
-  // 🔑 Password protection and quiz logic all in one
-const adminPassword = "123"; // change this
-
-document.addEventListener("DOMContentLoaded", () => {
-  let entered = prompt("Enter admin password:");
-  if (entered === adminPassword) {
-    document.getElementById("adminContent").style.display = "block";
-  } else {
-    document.body.innerHTML = "<h1 style='text-align:center; margin-top:50px; color:red;'>Access Denied</h1>";
-    return; // stop script
-  }
-
-  // 🔥 Firebase setup
-  firebase.initializeApp({
-    apiKey: "AIzaSyClCl9tSlMfUNxBWym__WXj8FS_uBOA64M",
-    authDomain: "gptapp-fa2ff.firebaseapp.com",
-    projectId: "gptapp-fa2ff",
-    storageBucket: "gptapp-fa2ff.firebasestorage.app",
-    messagingSenderId: "834440426142",
-    appId: "1:834440426142:web:e01c200e13ee25bade818f",
-    measurementId: "G-GZZ28RMH36"
-  });
-  const db = firebase.firestore();
-
-  // =====================
-  // DOM Elements
-  // =====================
-  const questionsContainer = document.getElementById("questionsContainer");
-  const statusBox = document.getElementById("statusBox");
-  const quizList = document.getElementById("quizList");
-
-  let questionCount = 0;
-  let editingQuizId = null;
-
-  // =====================
-  // Status Functions
-  // =====================
-  function showStatus(message, type = "success") {
-    statusBox.className = "status " + type;
-    statusBox.textContent = message;
-  }
-
-  function clearStatus() {
-    statusBox.className = "status";
-    statusBox.textContent = "";
-  }
-
-  // =====================
-  // Quiz Functions
-  // =====================
-  function addQuestion(data = null) {
-    questionCount++;
-    const qId = "q_" + questionCount;
-    const answerValue = data?.answer ?? data?.correctAnswer ?? data?.correctOption ?? "";
-
-    const div = document.createElement("div");
-    div.className = "question-card";
-    div.id = qId;
-
-    div.innerHTML = `
-      <div class="question-title">Question ${questionCount}</div>
-
-      <label>Question Text</label>
-      <textarea class="question-text" placeholder="Enter question here...">${data?.question || ""}</textarea>
-
-      <div class="row">
-        <div>
-          <label>Option A</label>
-          <input type="text" class="opt-a" value="${data?.options?.[0] || ""}" />
-        </div>
-        <div>
-          <label>Option B</label>
-          <input type="text" class="opt-b" value="${data?.options?.[1] || ""}" />
-        </div>
-      </div>
-
-      <div class="row">
-        <div>
-          <label>Option C</label>
-          <input type="text" class="opt-c" value="${data?.options?.[2] || ""}" />
-        </div>
-        <div>
-          <label>Option D</label>
-          <input type="text" class="opt-d" value="${data?.options?.[3] || ""}" />
-        </div>
-      </div>
-
-      <label>Correct Answer</label>
-      <select class="correct-answer">
-        <option value="">-- Select Correct Option --</option>
-        <option value="0" ${Number(answerValue) === 0 ? "selected" : ""}>A</option>
-        <option value="1" ${Number(answerValue) === 1 ? "selected" : ""}>B</option>
-        <option value="2" ${Number(answerValue) === 2 ? "selected" : ""}>C</option>
-        <option value="3" ${Number(answerValue) === 3 ? "selected" : ""}>D</option>
-      </select>
-
-      <label>Explanation / Correction</label>
-      <textarea class="explanation" placeholder="Why is this answer correct?">${data?.explanation || ""}</textarea>
-
-      <button class="btn btn-danger" onclick="removeQuestion('${qId}')">Remove Question</button>
-    `;
-
-    questionsContainer.appendChild(div);
-  }
-
-  window.addQuestion = addQuestion; // make button clickable globally
-
-  function removeQuestion(id) {
-    const el = document.getElementById(id);
-    if (el) el.remove();
-  }
-  window.removeQuestion = removeQuestion;
-
-  function setEditMode(isEditing) {
-    document.getElementById("formTitle").textContent = isEditing ? "Edit Quiz" : "Create Quiz";
-    document.getElementById("editBanner").style.display = isEditing ? "block" : "none";
-    document.getElementById("saveBtn").style.display = isEditing ? "none" : "inline-block";
-    document.getElementById("updateBtn").style.display = isEditing ? "inline-block" : "none";
-    document.getElementById("cancelEditBtn").style.display = isEditing ? "inline-block" : "none";
-  }
-
-  function resetForm() {
-    document.getElementById("subject").value = "";
-    document.getElementById("quizTitle").value = "";
-    document.getElementById("timeMinutes").value = 10;
-    questionsContainer.innerHTML = "";
-    questionCount = 0;
-    editingQuizId = null;
-    clearStatus();
-    setEditMode(false);
-    addQuestion();
-  }
-
-  window.resetForm = resetForm;
-  window.cancelEdit = () => { resetForm(); showStatus("Edit cancelled.", "success"); };
-
-  // =====================
-  // Collect Data
-  // =====================
-  function collectQuizData() {
-    const subject = document.getElementById("subject").value.trim();
-    const title = document.getElementById("quizTitle").value.trim();
-    const timeMinutes = parseInt(document.getElementById("timeMinutes").value);
-
-    if (!subject) { showStatus("Please select a course.", "error"); return null; }
-    if (!title) { showStatus("Please enter quiz title.", "error"); return null; }
-    if (!timeMinutes || timeMinutes < 1) { showStatus("Please enter a valid time in minutes.", "error"); return null; }
-
-    const questionCards = document.querySelectorAll(".question-card");
-    if (questionCards.length === 0) { showStatus("Please add at least one question.", "error"); return null; }
-
-    const questions = [];
-    for (let card of questionCards) {
-      const question = card.querySelector(".question-text").value.trim();
-      const a = card.querySelector(".opt-a").value.trim();
-      const b = card.querySelector(".opt-b").value.trim();
-      const c = card.querySelector(".opt-c").value.trim();
-      const d = card.querySelector(".opt-d").value.trim();
-      const answer = card.querySelector(".correct-answer").value;
-      const explanation = card.querySelector(".explanation").value.trim();
-
-      if (!question || !a || !b || !c || !d || answer === "") {
-        showStatus("Please complete all fields for every question.", "error");
-        return null;
-      }
-
-      questions.push({ question, options: [a, b, c, d], answer: parseInt(answer), explanation: explanation || "No explanation provided." });
-    }
-
-    return { subject, title, timeMinutes, questions };
-  }
-
-  // =====================
-  // Firebase CRUD
-  // =====================
-  async function saveQuiz() {
-    clearStatus();
-    const data = collectQuizData();
-    if (!data) return;
-    try {
-      showStatus("Saving quiz...", "success");
-      await db.collection("quizzes").add({ ...data, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-      showStatus("Quiz saved successfully! ✅", "success");
-      resetForm();
-      loadUploadedQuizzes();
-    } catch (error) { console.error(error); showStatus("Failed to save quiz: " + error.message, "error"); }
-  }
-  window.saveQuiz = saveQuiz;
-
-  async function loadUploadedQuizzes() {
-    quizList.innerHTML = `<div class="loading">Loading quizzes...</div>`;
-    try {
-      const snapshot = await db.collection("quizzes").get();
-      if (snapshot.empty) { quizList.innerHTML = `<div class="small">No quizzes uploaded yet.</div>`; return; }
-      let items = [];
-      snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
-      items.sort((a,b)=> (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
-      quizList.innerHTML = "";
-      items.forEach(item => {
-        const div = document.createElement("div");
-        div.className = "saved-item";
-        div.innerHTML = `
-          <div class="saved-item-title">${item.title}</div>
-          <div class="small"><strong>Course:</strong> ${item.subject || "N/A"}</div>
-          <div class="small"><strong>Time:</strong> ${item.timeMinutes || 0} min</div>
-          <div class="small"><strong>Questions:</strong> ${item.questions?.length || 0}</div>
-          <div class="button-row">
-            <button class="btn btn-warning" onclick="editQuiz('${item.id}')">Edit Quiz</button>
-            <button class="btn btn-danger" onclick="deleteQuiz('${item.id}')">Delete Quiz</button>
-          </div>`;
-        quizList.appendChild(div);
-      });
-    } catch (error) { console.error(error); quizList.innerHTML = `<div class="small" style="color:red;">Failed to load quizzes: ${error.message}</div>`; }
-  }
-  window.loadUploadedQuizzes = loadUploadedQuizzes;
-
-  async function deleteQuiz(id) {
-    if (!confirm("Delete this quiz?")) return;
-    try {
-      await db.collection("quizzes").doc(id).delete();
-      if (editingQuizId === id) resetForm();
-      showStatus("Quiz deleted successfully.", "success");
-      loadUploadedQuizzes();
-    } catch (error) { console.error(error); showStatus("Failed to delete quiz: " + error.message, "error"); }
-  }
-  window.deleteQuiz = deleteQuiz;
-
-  async function editQuiz(id) {
-    clearStatus();
-    try {
-      const doc = await db.collection("quizzes").doc(id).get();
-      if (!doc.exists) { showStatus("Quiz not found.", "error"); return; }
-      const data = doc.data();
-      editingQuizId = id;
-      document.getElementById("subject").value = data.subject || "";
-      document.getElementById("quizTitle").value = data.title || "";
-      document.getElementById("timeMinutes").value = data.timeMinutes || 10;
-      questionsContainer.innerHTML = "";
-      questionCount = 0;
-      (Array.isArray(data.questions)?data.questions:[]).forEach(q=>addQuestion(q));
-      if (!data.questions?.length) addQuestion();
-      setEditMode(true);
-      showStatus("Quiz loaded for editing.", "success");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } catch (error) { console.error(error); showStatus("Failed to load quiz for editing: " + error.message, "error"); }
-  }
-  window.editQuiz = editQuiz;
-
-  async function updateQuiz() {
-    clearStatus();
-    if (!editingQuizId) { showStatus("No quiz selected for editing.", "error"); return; }
-    const data = collectQuizData();
-    if (!data) return;
-    try {
-      showStatus("Updating quiz...", "success");
-      await db.collection("quizzes").doc(editingQuizId).update({ ...data, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
-      showStatus("Quiz updated successfully! ✏️", "success");
-      resetForm();
-      loadUploadedQuizzes();
-    } catch (error) { console.error(error); showStatus("Failed to update quiz: " + error.message, "error"); }
-  }
-  window.updateQuiz = updateQuiz;
-
-  // =====================
-  // Init
-  // =====================
-  addQuestion();
-  loadUploadedQuizzes();
-});
-  </script>
   
+};
+// Same Cloudinary configuration used across the platform
+const CLOUD_NAME="dpm7avyrl", CLOUD_PRESET="Unplug";
+const fapp=initializeApp(firebaseConfig), db=getFirestore(fapp);
+const $=id=>document.getElementById(id);
+const ini=n=>(n||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+const catIcon={lecturernotes:'📘',tutorialsheets:'📝',workedsolutions:'✅'};
+const catLabel={lecturernotes:'Lecturer Notes',tutorialsheets:'Tutorial Sheets',workedsolutions:'Worked Solutions'};
+
+let _courses=[],_res=[],_resAll=[],_videos=[],_papers=[],_quizzes=[],_ann=[],_users=[],_usersAll=[],_pending=[],_pendAll=[];
+let _activeUser=null, _resMethod='drive', _vidMethod='drive', _planMode='per_month';
+
+function toast(msg,ok=true){const t=$('toast');t.style.background=ok?'#081524':'#d1495b';t.textContent=msg;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2800);}
+function setAlert(id,msg,type){const el=$(id);if(!el)return;el.textContent=msg;el.className='alert '+(type==='ok'?'ok':'err');}
+function clrAlert(id){const el=$(id);if(el)el.className='alert';}
+function setCnt(id,n){const el=$(id);if(el)el.textContent=n;}
+
+const secLabels={overview:'Overview',pending:'Pending Payments',courses:'Courses',resources:'Resources',videos:'Videos',pastpapers:'Past Papers',quizzes:'Online Quizzes',announcements:'Announcements',users:'Students',settings:'Branding & Payments'};
+window.showSec=(name,btn)=>{
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.getElementById('sec-'+name).classList.add('on');
+  document.querySelectorAll('.sb-btn').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  $('topTitle').textContent=secLabels[name]||name;
+  closeSb();
+};
+window.openSb=()=>{$('sidebar').classList.add('open');$('sbOv').classList.add('on');};
+window.closeSb=()=>{$('sidebar').classList.remove('open');$('sbOv').classList.remove('on');};
+
+window.setUploadMethod=m=>{_resMethod=m;$('togDrive').classList.toggle('on',m==='drive');$('togCloud').classList.toggle('on',m==='cloudinary');$('driveSection').classList.toggle('on',m==='drive');$('cloudSection').classList.toggle('on',m==='cloudinary');};
+window.setVidMethod=m=>{_vidMethod=m;$('togVDrive').classList.toggle('on',m==='drive');$('togVCloud').classList.toggle('on',m==='cloudinary');$('vDriveSection').classList.toggle('on',m==='drive');$('vCloudSection').classList.toggle('on',m==='cloudinary');};
+
+async function cloudinaryUpload(file,progBar,progWrap,progTxt,resType='auto'){
+  const fd=new FormData();fd.append('file',file);fd.append('upload_preset',CLOUD_PRESET);
+  progWrap.style.display='block';
+  return new Promise((res,rej)=>{
+    const xhr=new XMLHttpRequest();
+    xhr.upload.onprogress=e=>{if(e.lengthComputable){const p=Math.round((e.loaded/e.total)*100);progBar.style.width=p+'%';progTxt.textContent='Uploading… '+p+'%';}};
+    xhr.onload=()=>{const d=JSON.parse(xhr.responseText);if(d.secure_url){progTxt.textContent='✅ Done!';res(d.secure_url);}else rej(new Error(d.error?.message||'Upload failed'));};
+    xhr.onerror=()=>rej(new Error('Network error'));
+    xhr.open('POST',`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${resType}/upload`);xhr.send(fd);
+  });
+}
+
+async function loadAll(){await Promise.all([loadPending(),loadCourses(),loadResources(),loadVideos(),loadPapers(),loadQuizzes(),loadAnnouncements(),loadUsers(),loadBrandingSettings(),loadPaymentSettings(),loadAccessSettings()]);updateOv();}
+
+function updateOv(){
+  setCnt('cnt-ov',_courses.length+_res.length);
+  $('ov-pend').textContent=_pending.filter(p=>p.status==='pending').length;
+  $('ov-c').textContent=_courses.length;$('ov-u').textContent=_users.length;$('ov-r').textContent=_res.length;$('ov-v').textContent=_videos.length;$('ov-pp').textContent=_papers.length;$('ov-qz').textContent=_quizzes.length;$('ov-an').textContent=_ann.length;
+  const el=$('ov-rec-list');
+  if(!_res.length){el.innerHTML='<div class="empty"><i class="fas fa-folder-open"></i><p>No resources uploaded yet</p></div>';return;}
+  el.innerHTML=_res.slice(0,8).map(r=>`<div class="li-item"><div class="li-ico">${catIcon[r.category]||'📁'}</div><div class="li-body"><div class="li-title">${r.title||'Untitled'}</div><div class="li-sub">${r.course||''} · ${catLabel[r.category]||''}</div></div><span class="tag tag-ok">Live</span></div>`).join('');
+}
+
+// ── PENDING PAYMENTS ──
+window.loadPending=async()=>{
+  try{const s=await getDocs(query(collection(db,'subscriptions'),orderBy('submittedAt','desc')));_pending=s.docs.map(d=>({id:d.id,...d.data()}));_pendAll=[..._pending];}catch{_pending=[];_pendAll=[];}
+  const pendCount=_pending.filter(p=>p.status==='pending').length;
+  setCnt('cnt-pend',pendCount);
+  $('pend-count').textContent=`${_pending.length} total · ${pendCount} pending`;
+  renderPending(_pending.filter(p=>p.status==='pending'));
+};
+function renderPending(data){
+  const el=$('pendingList');
+  if(!data.length){el.innerHTML='<div class="empty"><i class="fas fa-check-circle"></i><p>No items to show</p></div>';return;}
+  el.innerHTML=data.map(s=>{
+    const d=s.submittedAt?.toDate?s.submittedAt.toDate().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+    const statusTag=s.status==='approved'?'<span class="tag tag-ok">✅ Approved</span>':s.status==='rejected'?'<span class="tag tag-red">❌ Rejected</span>':'<span class="tag tag-pend">⏳ Pending</span>';
+    return `<div class="sub-card">
+      <div class="sub-card-hdr">
+        <div><div class="sub-card-name">${s.fullName||'—'} ${statusTag}</div><div class="sub-card-uni">${s.planMode==='per_course'?'Per course':'Per month'}</div></div>
+        <div style="font-size:.68rem;color:rgba(255,255,255,.4)">${d}</div>
+      </div>
+      <div class="sub-card-body">
+        <div class="sub-info-grid">
+          <div class="sub-info-item"><div class="sub-info-label">Email</div><div class="sub-info-val" style="font-size:.78rem">${s.email||'—'}</div></div>
+          <div class="sub-info-item"><div class="sub-info-label">Phone</div><div class="sub-info-val" style="font-size:.78rem">${s.phone||'—'}</div></div>
+          <div class="sub-info-item"><div class="sub-info-label">Amount</div><div class="sub-info-val" style="font-size:.78rem">K${s.amount||0}</div></div>
+        </div>
+        ${(s.requestedCourses&&s.requestedCourses.length)?`<div class="sub-courses"><div class="sub-courses-title">Requested Courses</div><div class="sub-courses-list">${s.requestedCourses.map(c=>`<span class="sub-course-chip">${c}</span>`).join('')}</div></div>`:''}
+        <div class="sub-txn"><div><div class="sub-txn-label">Transaction ID</div><div class="sub-txn-val">${s.transactionId||'—'}</div></div></div>
+        ${s.note?`<div class="sub-note"><strong>Note from student:</strong> ${s.note}</div>`:''}
+        ${s.status==='pending'?`
+        <div class="approve-form">
+          <div class="af-field"><label>Set Due Date <span style="color:var(--red)">*</span></label><input type="date" id="due-${s.id}" min="${new Date().toISOString().split('T')[0]}"/></div>
+          <button class="btn btn-approve" onclick="approveSubscription('${s.id}','${s.uid||''}')"><i class="fas fa-check"></i> Approve</button>
+          <button class="btn btn-reject" onclick="rejectSubscription('${s.id}')"><i class="fas fa-times"></i> Reject</button>
+        </div>`:s.status==='approved'?`<div style="display:flex;align-items:center;gap:.5rem;padding:.6rem .8rem;background:var(--green2);border-radius:9px;font-size:.78rem;font-weight:600;color:var(--green)"><i class="fas fa-check-circle"></i> Approved · Due: ${s.dueDate?new Date(s.dueDate).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—'}</div>`:
+        `<div style="display:flex;align-items:center;gap:.5rem;padding:.6rem .8rem;background:var(--red2);border-radius:9px;font-size:.78rem;font-weight:600;color:var(--red)"><i class="fas fa-times-circle"></i> Rejected</div>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+window.filterPend=(f,btn)=>{
+  if(f==='all')renderPending(_pendAll);
+  else renderPending(_pendAll.filter(p=>p.status===f));
+};
+window.approveSubscription=async(subId,uid)=>{
+  const dueInput=$('due-'+subId);
+  if(!dueInput||!dueInput.value){toast('Please set a due date before approving',false);return;}
+  const dueDate=dueInput.value;
+  try{
+    await updateDoc(doc(db,'subscriptions',subId),{status:'approved',dueDate,approvedAt:serverTimestamp()});
+    if(uid){await updateDoc(doc(db,'users',uid),{isSubscribed:true,dueDate,subscriptionStatus:'approved',canLogin:true});}
+    toast('✅ Payment approved! Student now has access.');
+    await loadPending();updateOv();
+  }catch(e){toast('Error: '+e.message,false);}
+};
+window.rejectSubscription=async(subId)=>{
+  if(!confirm('Reject this payment request?'))return;
+  try{await updateDoc(doc(db,'subscriptions',subId),{status:'rejected',rejectedAt:serverTimestamp()});toast('Payment rejected.');await loadPending();}catch(e){toast('Error: '+e.message,false);}
+};
+
+// ── COURSES ──
+window.loadCourses=async()=>{
+  try{const s=await getDocs(query(collection(db,'courses'),orderBy('name')));_courses=s.docs.map(d=>({id:d.id,...d.data()}));}catch{_courses=[];}
+  setCnt('cnt-c',_courses.length);
+  renderCoursesList(_courses);
+  populateCourseSelects();
+};
+function populateCourseSelects(){
+  const opts=_courses.length?'<option value="">— Select course —</option>'+_courses.map(c=>`<option value="${c.name}" data-id="${c.id}">${c.icon||''} ${c.name}</option>`).join(''):'<option value="">No courses yet — add one in the Courses tab</option>';
+  ['rCourse','vCourse','ppCourse','qzCourse'].forEach(id=>{const el=$(id);if(el)el.innerHTML=opts;});
+}
+function renderCoursesList(data){
+  $('course-count').textContent=data.length+' course'+(data.length!==1?'s':'');
+  const el=$('coursesList');
+  if(!data.length){el.innerHTML='<div class="empty"><i class="fas fa-book-open"></i><p>No courses added yet</p></div>';return;}
+  el.innerHTML=data.map(c=>`<div class="li-item"><div class="li-ico" style="font-size:1.3rem">${c.icon||'📚'}</div><div class="li-body"><div class="li-title">${c.name}</div><div class="li-sub">${c.code||''} ${c.description?'· '+c.description:''}</div></div><div class="li-actions"><button class="btn-sm btn-del" onclick="delItem('courses','${c.id}',loadCourses)"><i class="fas fa-trash"></i></button></div></div>`).join('');
+}
+window.addCourse=async()=>{
+  clrAlert('courseAlert');
+  const name=$('cName').value.trim();
+  if(!name){setAlert('courseAlert','Course name required','err');return;}
+  try{
+    await addDoc(collection(db,'courses'),{name,code:$('cCode').value.trim(),description:$('cDesc').value.trim(),icon:$('cIcon').value.trim()||'📚',createdAt:serverTimestamp()});
+    setAlert('courseAlert','✅ Course added!','ok');['cName','cCode','cDesc','cIcon'].forEach(id=>{const el=$(id);if(el)el.value='';});
+    await loadCourses();updateOv();toast('✅ Course added!');
+  }catch(e){setAlert('courseAlert','Error: '+e.message,'err');}
+};
+
+// ── RESOURCES ──
+window.loadResources=async()=>{
+  try{const s=await getDocs(query(collection(db,'resources'),orderBy('createdAt','desc')));_res=s.docs.map(d=>({id:d.id,...d.data()}));_resAll=[..._res];}catch{_res=[];_resAll=[];}
+  setCnt('cnt-r',_res.length);renderResList(_resAll);
+};
+function renderResList(data){
+  $('res-count').textContent=data.length+' item'+(data.length!==1?'s':'');
+  const el=$('resList');
+  if(!data.length){el.innerHTML='<div class="empty"><i class="fas fa-folder-open"></i><p>No resources uploaded yet</p></div>';return;}
+  el.innerHTML=data.map(r=>`<div class="li-item"><div class="li-ico">${catIcon[r.category]||'📁'}</div><div class="li-body"><div class="li-title">${r.title||'Untitled'}</div><div class="li-sub">${r.course||'—'} · ${catLabel[r.category]||'—'}</div></div><div class="li-actions">${r.driveLink?`<a href="${r.driveLink}" target="_blank" rel="noopener" class="btn-sm btn-edit"><i class="fas fa-external-link-alt"></i></a>`:''}<button class="btn-sm btn-del" onclick="delItem('resources','${r.id}',loadResources)"><i class="fas fa-trash"></i></button></div></div>`).join('');
+}
+window.filterRes=q=>{const n=q.toLowerCase();renderResList(_resAll.filter(r=>(r.title||'').toLowerCase().includes(n)||(r.course||'').toLowerCase().includes(n)));};
+window.filterResByType=t=>{renderResList(!t?_resAll:_resAll.filter(r=>r.category===t));};
+window.addResource=async()=>{
+  clrAlert('resAlert');
+  const title=$('rTitle').value.trim(),courseSel=$('rCourse'),course=courseSel.value,category=$('rType').value;
+  if(!title){setAlert('resAlert','Title required','err');return;}
+  if(!course){setAlert('resAlert','Select a course','err');return;}
+  if(!category){setAlert('resAlert','Select a category','err');return;}
+  const courseId=courseSel.selectedOptions[0]?.dataset.id||'';
+  let link='';
+  const btn=$('resBtn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Saving…';
+  try{
+    if(_resMethod==='drive'){link=$('rLink').value.trim();if(!link){setAlert('resAlert','Paste a Drive link','err');btn.disabled=false;btn.innerHTML='<i class="fas fa-cloud-upload-alt"></i> Upload Resource';return;}}
+    else{const f=$('rFile').files[0];if(!f){setAlert('resAlert','Select a file','err');btn.disabled=false;btn.innerHTML='<i class="fas fa-cloud-upload-alt"></i> Upload Resource';return;}link=await cloudinaryUpload(f,$('rProgBar'),$('rProg'),$('rProgTxt'),'raw');}
+    await addDoc(collection(db,'resources'),{title,course,courseId,category,driveLink:link,description:$('rDesc').value.trim(),createdAt:serverTimestamp()});
+    setAlert('resAlert','✅ Resource uploaded!','ok');
+    ['rTitle','rLink','rDesc'].forEach(id=>{const el=$(id);if(el)el.value='';});$('rCourse').value='';$('rType').value='';if($('rFile'))$('rFile').value='';$('rProg').style.display='none';
+    await loadResources();updateOv();toast('✅ Resource saved!');
+  }catch(e){setAlert('resAlert','Error: '+e.message,'err');}
+  btn.disabled=false;btn.innerHTML='<i class="fas fa-cloud-upload-alt"></i> Upload Resource';
+};
+
+// ── VIDEOS ──
+window.loadVideos=async()=>{
+  try{const s=await getDocs(query(collection(db,'videos'),orderBy('createdAt','desc')));_videos=s.docs.map(d=>({id:d.id,...d.data()}));}catch{_videos=[];}
+  setCnt('cnt-v',_videos.length);
+  const el=$('vidList');
+  if(!_videos.length){el.innerHTML='<div class="empty"><i class="fas fa-video"></i><p>No videos added yet</p></div>';return;}
+  el.innerHTML=_videos.map(v=>`<div class="li-item"><div class="li-ico" style="font-size:1.2rem">🎥</div><div class="li-body"><div class="li-title">${v.title||'Untitled'}</div><div class="li-sub">${v.course||'—'}${v.description?' · '+v.description:''}</div></div><div class="li-actions">${v.driveLink?`<a href="${v.driveLink}" target="_blank" rel="noopener" class="btn-sm btn-edit"><i class="fas fa-play"></i></a>`:''}<button class="btn-sm btn-del" onclick="delItem('videos','${v.id}',loadVideos)"><i class="fas fa-trash"></i></button></div></div>`).join('');
+};
+window.addVideo=async()=>{
+  clrAlert('vidAlert');const title=$('vTitle').value.trim(),courseSel=$('vCourse'),course=courseSel.value;
+  if(!title){setAlert('vidAlert','Title required','err');return;}
+  const courseId=courseSel.selectedOptions[0]?.dataset.id||'';
+  let link='';const btn=$('vidBtn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Saving…';
+  try{
+    if(_vidMethod==='drive'){link=$('vLink').value.trim();if(!link){setAlert('vidAlert','Paste a link','err');btn.disabled=false;btn.innerHTML='<i class="fas fa-plus-circle"></i> Add Video';return;}}
+    else{const f=$('vFile').files[0];if(!f){setAlert('vidAlert','Select a video file','err');btn.disabled=false;btn.innerHTML='<i class="fas fa-plus-circle"></i> Add Video';return;}link=await cloudinaryUpload(f,$('vProgBar'),$('vProg'),$('vProgTxt'),'video');}
+    await addDoc(collection(db,'videos'),{title,course,courseId,driveLink:link,url:link,description:$('vDesc').value.trim(),createdAt:serverTimestamp()});
+    setAlert('vidAlert','✅ Video added!','ok');['vTitle','vLink','vDesc'].forEach(id=>{const el=$(id);if(el)el.value='';});$('vCourse').value='';if($('vFile'))$('vFile').value='';$('vProg').style.display='none';
+    await loadVideos();updateOv();toast('✅ Video added!');
+  }catch(e){setAlert('vidAlert','Error: '+e.message,'err');}
+  btn.disabled=false;btn.innerHTML='<i class="fas fa-plus-circle"></i> Add Video';
+};
+
+// ── PAST PAPERS ──
+window.loadPapers=async()=>{
+  try{const s=await getDocs(query(collection(db,'pastpapers'),orderBy('createdAt','desc')));_papers=s.docs.map(d=>({id:d.id,...d.data()}));}catch{_papers=[];}
+  setCnt('cnt-pp',_papers.length);
+  const el=$('ppList');
+  if(!_papers.length){el.innerHTML='<div class="empty"><i class="fas fa-scroll"></i><p>No past papers yet</p></div>';return;}
+  el.innerHTML=_papers.map(p=>`<div class="li-item"><div class="li-ico" style="font-size:1.1rem">📝</div><div class="li-body"><div class="li-title">${p.title||'Untitled'}</div><div class="li-sub">${p.course||'—'} ${p.examYear?'· '+p.examYear:''} ${p.duration?'· '+p.duration:''} ${p.marks?'· '+p.marks:''}</div><div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">${p.paperLink?`<a href="${p.paperLink}" target="_blank" class="btn-sm btn-edit" style="font-size:.62rem">📄 Paper</a>`:''} ${p.schemeLink?`<a href="${p.schemeLink}" target="_blank" class="btn-sm" style="background:var(--amber2);color:#7a5c1f;font-size:.62rem">✅ Scheme</a>`:''} ${p.modelLink?`<a href="${p.modelLink}" target="_blank" class="btn-sm" style="background:var(--green2);color:var(--green);font-size:.62rem">💡 Answers</a>`:''}</div></div><div class="li-actions"><button class="btn-sm btn-del" onclick="delItem('pastpapers','${p.id}',loadPapers)"><i class="fas fa-trash"></i></button></div></div>`).join('');
+};
+window.addPaper=async()=>{
+  clrAlert('ppAlert');
+  const title=$('ppTitle').value.trim(),courseSel=$('ppCourse'),course=courseSel.value,examYear=$('ppYear').value;
+  if(!title||!course||!examYear){setAlert('ppAlert','Title, course and exam year required','err');return;}
+  const courseId=courseSel.selectedOptions[0]?.dataset.id||'';
+  try{
+    await addDoc(collection(db,'pastpapers'),{title,course,courseId,examYear:parseInt(examYear),duration:$('ppDuration').value.trim(),marks:$('ppMarks').value.trim(),paperLink:$('ppPaper').value.trim(),schemeLink:$('ppScheme').value.trim(),modelLink:$('ppModel').value.trim(),createdAt:serverTimestamp()});
+    setAlert('ppAlert','✅ Saved!','ok');['ppTitle','ppYear','ppDuration','ppMarks','ppPaper','ppScheme','ppModel'].forEach(id=>{const el=$(id);if(el)el.value='';});$('ppCourse').value='';
+    await loadPapers();updateOv();toast('✅ Past paper saved!');
+  }catch(e){setAlert('ppAlert','Error: '+e.message,'err');}
+};
+
+// ── QUIZZES ──
+window.loadQuizzes=async()=>{
+  try{const s=await getDocs(query(collection(db,'quizzes'),orderBy('createdAt','desc')));_quizzes=s.docs.map(d=>({id:d.id,...d.data()}));}catch{_quizzes=[];}
+  setCnt('cnt-qz',_quizzes.length);
+  const el=$('qzList');
+  if(!_quizzes.length){el.innerHTML='<div class="empty"><i class="fas fa-puzzle-piece"></i><p>No quizzes yet</p></div>';return;}
+  el.innerHTML=_quizzes.map(q=>`<div class="li-item"><div class="li-ico" style="font-size:1.1rem">🧩</div><div class="li-body"><div class="li-title">${q.title||'Untitled'}</div><div class="li-sub">${q.course||'—'}${q.description?' · '+q.description:''}</div></div><div class="li-actions">${q.quizLink?`<a href="${q.quizLink}" target="_blank" rel="noopener" class="btn-sm btn-edit"><i class="fas fa-external-link-alt"></i></a>`:''}<button class="btn-sm btn-del" onclick="delItem('quizzes','${q.id}',loadQuizzes)"><i class="fas fa-trash"></i></button></div></div>`).join('');
+};
+window.addQuiz=async()=>{
+  clrAlert('qzAlert');
+  const title=$('qzTitle').value.trim(),courseSel=$('qzCourse'),course=courseSel.value,link=$('qzLink').value.trim();
+  if(!title||!link){setAlert('qzAlert','Title and quiz link required','err');return;}
+  const courseId=courseSel.selectedOptions[0]?.dataset.id||'';
+  try{
+    await addDoc(collection(db,'quizzes'),{title,course,courseId,quizLink:link,description:$('qzDesc').value.trim(),createdAt:serverTimestamp()});
+    setAlert('qzAlert','✅ Quiz added!','ok');['qzTitle','qzLink','qzDesc'].forEach(id=>{const el=$(id);if(el)el.value='';});$('qzCourse').value='';
+    await loadQuizzes();updateOv();toast('✅ Quiz added!');
+  }catch(e){setAlert('qzAlert','Error: '+e.message,'err');}
+};
+
+// ── ANNOUNCEMENTS ──
+window.loadAnnouncements=async()=>{
+  try{const s=await getDocs(query(collection(db,'announcements'),orderBy('createdAt','desc')));_ann=s.docs.map(d=>({id:d.id,...d.data()}));}catch{_ann=[];}
+  setCnt('cnt-an',_ann.length);
+  const el=$('annList');
+  if(!_ann.length){el.innerHTML='<div class="empty"><i class="fas fa-bullhorn"></i><p>No announcements yet</p></div>';return;}
+  const pc={High:'var(--amber)',Urgent:'var(--red)',Normal:'var(--accent)'};
+  el.innerHTML=_ann.map(a=>`<div class="ann-item"><div class="ann-t">${a.title||'—'}</div><div class="ann-b">${a.body||''}</div><div class="ann-foot"><div style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap">${a.priority&&a.priority!=='Normal'?`<span class="tag" style="background:${pc[a.priority]||'var(--accent)'}22;color:${pc[a.priority]||'var(--accent)'}">${a.priority}</span>`:''}<span style="font-size:.66rem;color:var(--text3)">${a.createdAt?.toDate?a.createdAt.toDate().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):''}</span></div><button class="btn-sm btn-del" onclick="delItem('announcements','${a.id}',loadAnnouncements)"><i class="fas fa-trash"></i> Delete</button></div></div>`).join('');
+};
+window.addAnnouncement=async()=>{
+  clrAlert('annAlert');const title=$('annTitle').value.trim(),body=$('annBody').value.trim();if(!title||!body){setAlert('annAlert','Title and message required','err');return;}
+  try{await addDoc(collection(db,'announcements'),{title,body,target:'All Students',priority:$('annPriority').value,createdAt:serverTimestamp()});setAlert('annAlert','✅ Posted!','ok');$('annTitle').value='';$('annBody').value='';await loadAnnouncements();updateOv();toast('✅ Announcement posted!');}catch(e){setAlert('annAlert','Error: '+e.message,'err');}
+};
+
+// ── USERS ──
+window.loadUsers=async()=>{
+  try{const s=await getDocs(collection(db,'users'));_users=s.docs.map(d=>({id:d.id,...d.data()}));_usersAll=[..._users];}catch{_users=[];_usersAll=[];}
+  setCnt('cnt-u',_users.length);$('u-count').textContent=_users.length+' student'+(_users.length!==1?'s':'');
+  renderUsers(_usersAll);
+};
+function renderUsers(data){
+  $('u-count').textContent=data.length+' student'+(data.length!==1?'s':'');
+  const el=$('usersList');
+  if(!data.length){el.innerHTML='<div class="empty"><i class="fas fa-users"></i><p>No students registered yet</p></div>';return;}
+  el.innerHTML=data.map(u=>{
+    const banned=u.status==='banned'||u.canLogin===false;
+    const subscribed=u.isSubscribed===true;
+    const signupDate=u.createdAt?.toDate?u.createdAt.toDate().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—';
+    const dueDate=u.dueDate?new Date(u.dueDate).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—';
+    const isDue=u.dueDate&&new Date(u.dueDate)<new Date();
+    return `<div class="li-item" onclick="openUserModal('${u.id}')" style="cursor:pointer">
+      <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--navy2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.88rem;flex-shrink:0;overflow:hidden">${u.profilePhoto?`<img src="${u.profilePhoto}" style="width:100%;height:100%;object-fit:cover"/>`:ini(u.fullName)}</div>
+      <div class="li-body">
+        <div style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap">
+          <div class="li-title">${u.fullName||'—'}</div>
+          ${banned?'<span class="tag tag-red">Suspended</span>':subscribed?'<span class="tag tag-ok">Subscribed</span>':'<span class="tag tag-amber">Unsubscribed</span>'}
+          ${isDue&&!banned?'<span class="tag tag-red">Expired</span>':''}
+        </div>
+        <div class="li-sub" style="line-height:1.75">
+          ${u.email||'—'} &nbsp;·&nbsp; ${u.phone||'—'}<br/>
+          Signed up: <strong>${signupDate}</strong> &nbsp;·&nbsp; Due: <strong style="color:${isDue&&subscribed?'var(--red)':'var(--text)'}">${dueDate}</strong>
+        </div>
+      </div>
+      <div class="li-actions" onclick="event.stopPropagation()"><button class="btn-sm btn-edit" onclick="openUserModal('${u.id}')"><i class="fas fa-user-cog"></i> Manage</button></div>
+    </div>`;
+  }).join('');
+}
+window.filterUsers=q=>{const n=q.toLowerCase();renderUsers(_usersAll.filter(u=>(u.fullName||'').toLowerCase().includes(n)||(u.email||'').toLowerCase().includes(n)));};
+window.filterByStatus=st=>{if(!st){renderUsers(_usersAll);return;}if(st==='banned')renderUsers(_usersAll.filter(u=>u.status==='banned'||u.canLogin===false));else renderUsers(_usersAll.filter(u=>u.status!=='banned'&&u.canLogin!==false));};
+
+window.openUserModal=async(uid)=>{
+  _activeUser=_usersAll.find(u=>u.id===uid);if(!_activeUser)return;
+  const u=_activeUser;const banned=u.status==='banned'||u.canLogin===false;
+  const av=$('modalAvatar');
+  if(u.profilePhoto){av.innerHTML=`<img src="${u.profilePhoto}" style="width:100%;height:100%;object-fit:cover"/>`;}else{av.textContent=ini(u.fullName);}
+  $('modalUserName').textContent=u.fullName||'—';$('modalUserEmail').textContent=u.email||'—';
+  $('modalStatusBadge').innerHTML=banned?'<span class="tag tag-red">Suspended</span>':u.isSubscribed?'<span class="tag tag-ok">Subscribed</span>':'<span class="tag tag-amber">Unsubscribed</span>';
+  $('mName').value=u.fullName||'';$('mPhone').value=u.phone||'';$('mSid').value=u.studentId||'';$('mEmail').value=u.email||'';
+  $('mSignupDate').value=u.createdAt?.toDate?u.createdAt.toDate().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+  $('mDueDate').value=u.dueDate?new Date(u.dueDate).toISOString().split('T')[0]:'';
+  $('mCanLogin').checked=u.canLogin!==false;
+  $('mIsSubscribed').checked=u.isSubscribed===true;
+  $('modalBanLabel').textContent=banned?'Unsuspend':'Suspend';
+  $('modalBanBtn').className=banned?'btn btn-unban':'btn btn-ban';
+  clrAlert('modalAlert');
+  $('userModal').classList.add('on');
+};
+window.closeUserModal=()=>$('userModal').classList.remove('on');
+window.saveUserChanges=async()=>{
+  if(!_activeUser)return;clrAlert('modalAlert');
+  const d={fullName:$('mName').value.trim(),phone:$('mPhone').value.trim(),studentId:$('mSid').value.trim(),dueDate:$('mDueDate').value||'',canLogin:$('mCanLogin').checked,isSubscribed:$('mIsSubscribed').checked};
+  try{await updateDoc(doc(db,'users',_activeUser.id),d);Object.assign(_activeUser,d);const idx=_usersAll.findIndex(u=>u.id===_activeUser.id);if(idx>-1)Object.assign(_usersAll[idx],d);setAlert('modalAlert','✅ Student updated!','ok');renderUsers(_usersAll);toast('✅ Saved!');}catch(e){setAlert('modalAlert','Error: '+e.message,'err');}
+};
+window.toggleBanUser=async()=>{
+  if(!_activeUser)return;const banned=_activeUser.status==='banned'||_activeUser.canLogin===false;const ns=banned?'active':'banned';const nc=banned;
+  try{await updateDoc(doc(db,'users',_activeUser.id),{status:ns,canLogin:nc});_activeUser.status=ns;_activeUser.canLogin=nc;
+    $('modalBanLabel').textContent=nc?'Suspend':'Unsuspend';$('modalBanBtn').className=nc?'btn btn-ban':'btn btn-unban';
+    $('modalStatusBadge').innerHTML=nc?'<span class="tag tag-ok">Active</span>':'<span class="tag tag-red">Suspended</span>';
+    $('mCanLogin').checked=nc;const idx=_usersAll.findIndex(u=>u.id===_activeUser.id);if(idx>-1){_usersAll[idx].status=ns;_usersAll[idx].canLogin=nc;}renderUsers(_usersAll);toast(nc?'✅ Unsuspended':'🚫 Suspended');}catch(e){toast('Error: '+e.message,false);}
+};
+window.deleteUser=async()=>{
+  if(!_activeUser||!confirm('Permanently delete this student?'))return;
+  try{await deleteDoc(doc(db,'users',_activeUser.id));_users=_users.filter(u=>u.id!==_activeUser.id);_usersAll=_usersAll.filter(u=>u.id!==_activeUser.id);closeUserModal();renderUsers(_usersAll);setCnt('cnt-u',_usersAll.length);toast('🗑️ Deleted');}catch(e){toast('Error: '+e.message,false);}
+};
+window.delItem=async(col,id,reload)=>{if(!confirm('Delete permanently?'))return;try{await deleteDoc(doc(db,col,id));toast('🗑️ Deleted');await reload();updateOv();}catch(e){toast('Error: '+e.message,false);}};
+
+// ── SETTINGS: BRANDING ──
+async function loadBrandingSettings(){
+  try{
+    const s=await getDoc(doc(db,'settings','branding'));
+    const url=s.exists()?s.data().logoUrl:'';
+    if(url){$('logoPreview').innerHTML=`<img src="${url}"/>`;$('sbMark').innerHTML=`<img src="${url}"/>`;}
+  }catch(e){}
+}
+window.uploadLogo=async()=>{
+  clrAlert('brandAlert');
+  const f=$('logoFile').files[0];
+  if(!f){setAlert('brandAlert','Choose an image first','err');return;}
+  const btn=$('logoBtn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Uploading…';
+  try{
+    const fd=new FormData();fd.append('file',f);fd.append('upload_preset',CLOUD_PRESET);
+    const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{method:'POST',body:fd});
+    const data=await res.json();
+    if(!data.secure_url)throw new Error(data.error?.message||'Upload failed');
+    await setDoc(doc(db,'settings','branding'),{logoUrl:data.secure_url,updatedAt:serverTimestamp()},{merge:true});
+    $('logoPreview').innerHTML=`<img src="${data.secure_url}"/>`;$('sbMark').innerHTML=`<img src="${data.secure_url}"/>`;
+    setAlert('brandAlert','✅ Logo saved! It now shows across the student app.','ok');toast('✅ Logo updated!');
+  }catch(e){setAlert('brandAlert','Error: '+e.message,'err');}
+  btn.disabled=false;btn.innerHTML='<i class="fas fa-upload"></i> Upload & Save Logo';
+};
+
+// ── SETTINGS: ACCESS (trial vs restricted) ──
+async function loadAccessSettings(){
+  try{
+    const s=await getDoc(doc(db,'settings','access'));
+    const d=s.exists()?s.data():{trialEnabled:true,trialDays:5};
+    $('trialToggle').checked=d.trialEnabled!==false;
+    $('trialDays').value=d.trialDays||5;
+  }catch(e){$('trialToggle').checked=true;$('trialDays').value=5;}
+}
+window.saveAccessSettings=async()=>{
+  clrAlert('accessAlert');
+  const trialEnabled=$('trialToggle').checked;
+  const trialDays=parseInt($('trialDays').value)||5;
+  try{
+    await setDoc(doc(db,'settings','access'),{trialEnabled,trialDays,updatedAt:serverTimestamp()},{merge:true});
+    setAlert('accessAlert','✅ Access settings saved!','ok');toast('✅ Saved!');
+  }catch(e){setAlert('accessAlert','Error: '+e.message,'err');}
+};
+
+// ── SETTINGS: PAYMENT PLAN ──
+window.setPlanMode=m=>{_planMode=m;$('ptogMonth').classList.toggle('on',m==='per_month');$('ptogCourse').classList.toggle('on',m==='per_course');};
+async function loadPaymentSettings(){
+  try{
+    const s=await getDoc(doc(db,'settings','payment'));
+    const d=s.exists()?s.data():{mode:'per_month',amount:0,paymentNumber:'',paymentName:'',note:'',whatsapp:''};
+    _planMode=d.mode||'per_month';setPlanMode(_planMode);
+    $('planAmount').value=d.amount||'';$('planNumber').value=d.paymentNumber||'';$('planName').value=d.paymentName||'';$('planWhatsapp').value=d.whatsapp||'';$('planNote').value=d.note||'';
+  }catch(e){setPlanMode('per_month');}
+}
+window.savePaymentPlan=async()=>{
+  clrAlert('planAlert');
+  const amount=parseFloat($('planAmount').value);
+  if(isNaN(amount)||amount<0){setAlert('planAlert','Enter a valid amount','err');return;}
+  const d={mode:_planMode,amount,paymentNumber:$('planNumber').value.trim(),paymentName:$('planName').value.trim(),whatsapp:$('planWhatsapp').value.trim(),note:$('planNote').value.trim(),updatedAt:serverTimestamp()};
+  try{await setDoc(doc(db,'settings','payment'),d,{merge:true});setAlert('planAlert','✅ Payment plan saved!','ok');toast('✅ Payment plan updated!');}catch(e){setAlert('planAlert','Error: '+e.message,'err');}
+};
+
+loadAll();
+</script>
 </body>
 </html>
